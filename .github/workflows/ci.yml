@@ -40,7 +40,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Use dummy values for build process
-          DATABASE_URL: "postgresql://dummy:dummy@dummy:5432/dummy"
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "dummy"
-          CLERK_SECRET_KEY: "dummy"
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
