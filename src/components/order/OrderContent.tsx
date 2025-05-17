@@ -69,8 +69,8 @@ export function OrderContent({
     updateOrderError,
     shippingError,
   } = useOrderMutation({
-    onSuccess: (order) => {
-      setOrderId(order.id);
+    onSuccess: (data) => {
+      setOrderId(data.id);
 
       // For digital products, go directly to payment
       // For physical products, go to shipping selection
@@ -80,7 +80,7 @@ export function OrderContent({
         setStep("shipping");
       }
     },
-    onUpdateSuccess: (order) => {
+    onUpdateSuccess: () => {
       // For digital products, go directly to payment
       // For physical products, go to shipping selection
       if (productType === ProductType.EBOOK) {
@@ -89,8 +89,8 @@ export function OrderContent({
         setStep("shipping");
       }
     },
-    onShippingSuccess: (order) => {
-      setOrderId(order.id);
+    onShippingSuccess: (data) => {
+      setOrderId(data.id);
       setStep("payment");
     },
     onError: (error) => {
