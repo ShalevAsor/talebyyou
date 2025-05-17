@@ -8,6 +8,12 @@ import PageHeader from "@/components/layout/PageHeader";
 import { BookStoreLoading } from "@/components/common/BookStoreLoading";
 import { createMetadata, generateStructuredData } from "@/config/site";
 
+interface LibraryPageProps {
+  searchParams: Promise<{
+    genres?: string;
+  }>;
+}
+
 // Generate metadata using our centralized function
 export const metadata = createMetadata({
   title: "Book Library - Explore Customizable Children's Books",
@@ -19,11 +25,7 @@ export const metadata = createMetadata({
  * Library page component that displays book templates
  * Server component that fetches data and passes to client components
  */
-export default async function LibraryPage({
-  searchParams,
-}: {
-  searchParams: { genres?: string };
-}) {
+export default async function LibraryPage({ searchParams }: LibraryPageProps) {
   // Parse genre filter from URL (handle both string and array cases)
   const params = await searchParams;
   const genreParam = params.genres;
