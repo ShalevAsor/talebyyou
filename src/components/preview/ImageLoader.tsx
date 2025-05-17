@@ -52,7 +52,7 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ bookTitle }) => {
       clearInterval(progressInterval);
       clearInterval(stepInterval);
     };
-  }, []);
+  }, [steps.length]);
 
   const CurrentIcon = steps[currentStep].icon;
 

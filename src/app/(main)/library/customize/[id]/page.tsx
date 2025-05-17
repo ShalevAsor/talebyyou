@@ -13,6 +13,7 @@ interface BookCustomizePageProps {
   params: {
     id: string;
   };
+  searchParams?: Record<string, string | string[] | undefined>;
 }
 
 // Generate metadata for SEO
