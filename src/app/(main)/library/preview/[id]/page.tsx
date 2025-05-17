@@ -19,9 +19,9 @@ import { Button } from "@/components/ui/button";
  * Props for the BookPreviewPage component
  */
 interface BookPreviewPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 /**

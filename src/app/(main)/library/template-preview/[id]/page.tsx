@@ -29,9 +29,9 @@ export const revalidate = 86400;
 // REMOVED static metadata export since we're using generateMetadata
 
 interface TemplatePreviewPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 /**
