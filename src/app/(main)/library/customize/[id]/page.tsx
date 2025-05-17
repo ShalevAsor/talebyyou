@@ -10,10 +10,9 @@ import { FiArrowLeft } from "react-icons/fi";
 import { createMetadata, siteConfig } from "@/config/site";
 
 interface BookCustomizePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
-  searchParams?: Record<string, string | string[] | undefined>;
+  }>;
 }
 
 // Generate metadata for SEO
