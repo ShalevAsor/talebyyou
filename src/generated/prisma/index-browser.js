@@ -121,6 +121,202 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   clerkId: 'clerkId',
   email: 'email',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GuestSessionScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  lastActive: 'lastActive',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+};
+
+exports.Prisma.GenreScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
+exports.Prisma.BookScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  status: 'status',
+  characterImageReference: 'characterImageReference',
+  coverImage: 'coverImage',
+  coverImageOptions: 'coverImageOptions',
+  coverPrompt: 'coverPrompt',
+  pageCount: 'pageCount',
+  coverDedication: 'coverDedication',
+  pageDedication: 'pageDedication',
+  templateId: 'templateId',
+  userId: 'userId',
+  guestSessionId: 'guestSessionId',
+  orderId: 'orderId',
+  printJobId: 'printJobId',
+  printingDeadline: 'printingDeadline',
+  ebookS3Key: 'ebookS3Key',
+  ebookFileName: 'ebookFileName',
+  ebookFileType: 'ebookFileType',
+  ebookExpiresAt: 'ebookExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CharacterScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  age: 'age',
+  gender: 'gender',
+  eyeColor: 'eyeColor',
+  hairColor: 'hairColor',
+  hairStyle: 'hairStyle',
+  skinTone: 'skinTone',
+  wearingGlasses: 'wearingGlasses',
+  bookId: 'bookId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BookTemplateScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  pageCount: 'pageCount',
+  published: 'published',
+  coverImage: 'coverImage',
+  coverPrompt: 'coverPrompt',
+  minAge: 'minAge',
+  maxAge: 'maxAge',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TemplatePageContentScalarFieldEnum = {
+  id: 'id',
+  pageNumber: 'pageNumber',
+  content: 'content',
+  imagePrompt: 'imagePrompt',
+  imageUrl: 'imageUrl',
+  templateId: 'templateId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PageScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  pageNumber: 'pageNumber',
+  textContent: 'textContent',
+  imagePrompt: 'imagePrompt',
+  imageUrl: 'imageUrl',
+  imageOptions: 'imageOptions',
+  bookId: 'bookId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ImageGenerationScalarFieldEnum = {
+  id: 'id',
+  generationId: 'generationId',
+  bookId: 'bookId',
+  pageId: 'pageId',
+  type: 'type',
+  prompt: 'prompt',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  apiCreditCost: 'apiCreditCost',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.OrderScalarFieldEnum = {
+  id: 'id',
+  orderNumber: 'orderNumber',
+  productType: 'productType',
+  totalPrice: 'totalPrice',
+  currency: 'currency',
+  status: 'status',
+  paymentProvider: 'paymentProvider',
+  quantity: 'quantity',
+  paymentId: 'paymentId',
+  transactionId: 'transactionId',
+  pricePaid: 'pricePaid',
+  payerEmail: 'payerEmail',
+  shippingCost: 'shippingCost',
+  printingCost: 'printingCost',
+  imagesCost: 'imagesCost',
+  shippingLevel: 'shippingLevel',
+  phoneNumber: 'phoneNumber',
+  name: 'name',
+  street1: 'street1',
+  street2: 'street2',
+  city: 'city',
+  state_code: 'state_code',
+  postcode: 'postcode',
+  country: 'country',
+  poProviderOrderId: 'poProviderOrderId',
+  trackingNumber: 'trackingNumber',
+  customerEmail: 'customerEmail',
+  bookId: 'bookId',
+  userId: 'userId',
+  printJobId: 'printJobId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  paidAt: 'paidAt',
+  fulfilledAt: 'fulfilledAt'
+};
+
+exports.Prisma.PrintJobScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  bookId: 'bookId',
+  luluPrintJobId: 'luluPrintJobId',
+  paymentId: 'paymentId',
+  podPackageId: 'podPackageId',
+  interiorPdfUrl: 'interiorPdfUrl',
+  coverPdfUrl: 'coverPdfUrl',
+  interiorS3Key: 'interiorS3Key',
+  coverS3Key: 'coverS3Key',
+  pageCount: 'pageCount',
+  interiorValidationId: 'interiorValidationId',
+  coverValidationId: 'coverValidationId',
+  interiorValidationStatus: 'interiorValidationStatus',
+  coverValidationStatus: 'coverValidationStatus',
+  validationErrors: 'validationErrors',
+  status: 'status',
+  statusMessage: 'statusMessage',
+  currency: 'currency',
+  printingCostExclTax: 'printingCostExclTax',
+  printingCostInclTax: 'printingCostInclTax',
+  shippingCostExclTax: 'shippingCostExclTax',
+  shippingCostInclTax: 'shippingCostInclTax',
+  totalCostExclTax: 'totalCostExclTax',
+  totalCostInclTax: 'totalCostInclTax',
+  totalTax: 'totalTax',
+  trackingNumber: 'trackingNumber',
+  trackingUrls: 'trackingUrls',
+  shippingCarrier: 'shippingCarrier',
+  estimatedShipDate: 'estimatedShipDate',
+  estimatedDeliveryDate: 'estimatedDeliveryDate',
+  attempts: 'attempts',
+  errorMessage: 'errorMessage',
+  sentByAdminId: 'sentByAdminId',
+  adminNotes: 'adminNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  sentToPrinterAt: 'sentToPrinterAt',
+  paidAt: 'paidAt',
+  inProductionAt: 'inProductionAt',
+  shippedAt: 'shippedAt'
+};
+
+exports.Prisma.ConfigurationScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -135,9 +331,93 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.BookStatus = exports.$Enums.BookStatus = {
+  CUSTOMIZING: 'CUSTOMIZING',
+  ORDERED: 'ORDERED',
+  READY_FOR_PRINTING: 'READY_FOR_PRINTING',
+  COMPLETED: 'COMPLETED'
+};
+
+exports.PageType = exports.$Enums.PageType = {
+  TEXT: 'TEXT',
+  IMAGE: 'IMAGE',
+  DEDICATION: 'DEDICATION',
+  GENERAL: 'GENERAL'
+};
+
+exports.ImageType = exports.$Enums.ImageType = {
+  COVER: 'COVER',
+  PAGE: 'PAGE'
+};
+
+exports.GenerationStatus = exports.$Enums.GenerationStatus = {
+  PENDING: 'PENDING',
+  COMPLETE: 'COMPLETE',
+  FAILED: 'FAILED'
+};
+
+exports.ProductType = exports.$Enums.ProductType = {
+  EBOOK: 'EBOOK',
+  BOOK: 'BOOK'
+};
+
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  PRINTING: 'PRINTING',
+  SHIPPED: 'SHIPPED',
+  FULFILLED: 'FULFILLED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  ERROR: 'ERROR'
+};
+
+exports.ShippingLevel = exports.$Enums.ShippingLevel = {
+  MAIL: 'MAIL',
+  PRIORITY_MAIL: 'PRIORITY_MAIL',
+  GROUND: 'GROUND',
+  EXPEDITED: 'EXPEDITED',
+  EXPRESS: 'EXPRESS'
+};
+
+exports.FileValidationStatus = exports.$Enums.FileValidationStatus = {
+  NULL: 'NULL',
+  VALIDATING: 'VALIDATING',
+  VALIDATED: 'VALIDATED',
+  NORMALIZING: 'NORMALIZING',
+  NORMALIZED: 'NORMALIZED',
+  ERROR: 'ERROR'
+};
+
+exports.PrintJobStatus = exports.$Enums.PrintJobStatus = {
+  CREATED: 'CREATED',
+  UNPAID: 'UNPAID',
+  PAYMENT_IN_PROGRESS: 'PAYMENT_IN_PROGRESS',
+  PRODUCTION_DELAYED: 'PRODUCTION_DELAYED',
+  PRODUCTION_READY: 'PRODUCTION_READY',
+  IN_PRODUCTION: 'IN_PRODUCTION',
+  SHIPPED: 'SHIPPED',
+  REJECTED: 'REJECTED',
+  CANCELED: 'CANCELED'
+};
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  GuestSession: 'GuestSession',
+  Genre: 'Genre',
+  Book: 'Book',
+  Character: 'Character',
+  BookTemplate: 'BookTemplate',
+  TemplatePageContent: 'TemplatePageContent',
+  Page: 'Page',
+  ImageGeneration: 'ImageGeneration',
+  Order: 'Order',
+  PrintJob: 'PrintJob',
+  Configuration: 'Configuration'
 };
 
 /**

@@ -1,6 +1,13 @@
 // src/app/api/webhooks/clerk/route.ts
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
-import { createUser, updateUser, deleteUser } from "@/actions/user-actions";
+import {
+  createUser,
+  updateUser,
+  deleteUser,
+  getUserByClerkId,
+} from "@/actions/user-actions";
+import { logger } from "@/lib/logger";
+import { migrateGuestSessionToUser } from "@/actions/guest-actions";
 
 export async function POST(req: Request) {
   try {
@@ -24,6 +31,8 @@ export async function POST(req: Request) {
             id: clerkId,
             email_addresses,
             primary_email_address_id,
+            first_name,
+            last_name,
           } = evt.data;
 
           // Find the primary email address
@@ -38,7 +47,12 @@ export async function POST(req: Request) {
 
           try {
             // Use the server action to create a new user
-            await createUser(clerkId, primaryEmail.email_address);
+            await createUser(
+              clerkId,
+              primaryEmail.email_address,
+              first_name || undefined,
+              last_name || undefined
+            );
 
             return new Response(JSON.stringify({ success: true }), {
               status: 201,
@@ -121,6 +135,44 @@ export async function POST(req: Request) {
             });
           } catch (error) {
             console.error("Error deleting user:", error);
+            return new Response(
+              JSON.stringify({ success: false, error: "Database error" }),
+              {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              }
+            );
+          }
+        }
+        break;
+      }
+      case "session.created": {
+        if (evt.type === "session.created") {
+          // Type narrowing for TypeScript
+          const { id: clerkId } = evt.data;
+
+          // Make sure clerkId is defined
+          if (!clerkId) {
+            console.error("No Clerk ID found for deleted user");
+            return new Response("Missing Clerk ID", { status: 400 });
+          }
+          // get user from database
+          const user = await getUserByClerkId(clerkId);
+          if (!user) {
+            console.error("User not found in database");
+            return new Response("User not found", { status: 400 });
+          }
+          try {
+            await migrateGuestSessionToUser(user.id);
+            return new Response(JSON.stringify({ success: true }), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            });
+          } catch (migrationError) {
+            logger.error(
+              { error: migrationError, userId: user.id },
+              "Error migrating guest books to user account"
+            );
             return new Response(
               JSON.stringify({ success: false, error: "Database error" }),
               {

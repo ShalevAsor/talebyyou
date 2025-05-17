@@ -1,25 +1,84 @@
-export default function Home() {
+import { Suspense, lazy } from "react";
+import { Loader2 } from "lucide-react";
+import Hero from "@/components/home/Hero";
+import HowItWorks from "@/components/home/HowItWorks";
+import BestSellers from "@/components/home/BestSellers";
+import { createMetadata, generateStructuredData } from "@/config/site";
+
+// Lazy load components that are likely below the fold
+const Example = lazy(() => import("@/components/home/Example"));
+const Testimonials = lazy(() => import("@/components/home/Testimonials"));
+const QASection = lazy(() => import("@/components/home/QASection"));
+const CTASection = lazy(() => import("@/components/home/CTA"));
+
+// Generate metadata using our centralized function
+export const metadata = createMetadata();
+
+export default function HomePage() {
+  // Generate structured data as JSON string
+  const structuredData = JSON.stringify(generateStructuredData("WebSite"));
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Welcome to Custom Books Store</h1>
-      <p className="text-lg text-gray-700">
-        Discover your next favorite book from our curated collection.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Book cards would go here */}
-        <div className="border rounded-lg p-4 shadow-sm">
-          <h2 className="text-xl font-semibold">Featured Book</h2>
-          <p className="text-gray-600">Book description would go here.</p>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm">
-          <h2 className="text-xl font-semibold">Popular Book</h2>
-          <p className="text-gray-600">Book description would go here.</p>
-        </div>
-        <div className="border rounded-lg p-4 shadow-sm">
-          <h2 className="text-xl font-semibold">New Release</h2>
-          <p className="text-gray-600">Book description would go here.</p>
-        </div>
-      </div>
-    </div>
+    <>
+      {/* Structured data for search engines */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: structuredData }}
+      />
+
+      {/* Above the fold content - load immediately */}
+      <Hero />
+      <HowItWorks />
+
+      {/* Below the fold content - lazy load with Suspense */}
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        }
+      >
+        <BestSellers />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        }
+      >
+        <Example />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        }
+      >
+        <Testimonials />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        }
+      >
+        <QASection />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        }
+      >
+        <CTASection />
+      </Suspense>
+    </>
   );
 }

@@ -1,0 +1,224 @@
+// services/storage/s3-service.ts
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import fs from "fs";
+import config from "@/lib/config";
+import { S3EbookResult } from "@/types/ebook";
+
+// Initialize S3 client
+const s3Client = new S3Client({
+  region: config.AWS.REGION,
+  credentials: {
+    accessKeyId: config.AWS.ACCESS_KEY_ID,
+    secretAccessKey: config.AWS.SECRET_ACCESS_KEY,
+  },
+});
+
+const BUCKET_NAME = config.AWS.S3_BUCKET_NAME;
+const DOWNLOAD_URL_EXPIRY = 24 * 60 * 60; // 24 hours in seconds
+
+/**
+ * Uploads a file to S3 and returns a pre-signed URL
+ */
+export async function uploadFileToS3(
+  filePath: string,
+  fileName: string,
+  mimeType: string
+): Promise<S3EbookResult | null> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    // Read file
+    const fileContent = fs.readFileSync(filePath);
+
+    // Create S3 key with date-based folder structure
+    const datePrefix = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const key = `ebooks/${datePrefix}/${fileName}`;
+
+    // Upload to S3
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+        Body: fileContent,
+        ContentType: mimeType,
+      })
+    );
+
+    // Generate pre-signed URL
+    const url = await getSignedUrl(
+      s3Client,
+      new GetObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+      }),
+      { expiresIn: DOWNLOAD_URL_EXPIRY }
+    );
+
+    // Calculate expiry date
+    const expiresAt = new Date();
+    expiresAt.setSeconds(expiresAt.getSeconds() + DOWNLOAD_URL_EXPIRY);
+
+    return {
+      key,
+      downloadUrl: url,
+      expiresAt,
+    };
+  } catch (error) {
+    console.error("Error uploading file to S3:", error);
+    return null;
+  }
+}
+
+/**
+ * Deletes a file from S3 by its key
+ */
+export async function deleteFileFromS3(s3Key: string): Promise<boolean> {
+  try {
+    // Initialize S3 client
+    const s3Client = new S3Client({
+      region: process.env.AWS_REGION || "us-east-1",
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+      },
+    });
+
+    // Create delete command
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME || "",
+      Key: s3Key,
+    });
+
+    // Execute delete command
+    await s3Client.send(deleteCommand);
+    console.log(`Successfully deleted file from S3: ${s3Key}`);
+    return true;
+  } catch (error) {
+    console.error("Error deleting file from S3:", error);
+    return false;
+  }
+}
+/**
+ * Uploads a PDF file to S3 for Lulu printing and returns a pre-signed URL with long expiration
+ * This provides Lulu access to the file without making it permanently public
+ */
+export async function uploadPrintingPdfToS3(
+  filePath: string,
+  fileName: string,
+  bookId: string,
+  pdfType: "interior" | "cover"
+): Promise<string | null> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    // Read file
+    const fileContent = fs.readFileSync(filePath);
+
+    // Create S3 key with proper folder structure
+    const datePrefix = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    const key = `printing/${datePrefix}/${bookId}/${pdfType}_${fileName}`;
+
+    // Upload to S3 - note we're no longer using ACL: "public-read"
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+        Body: fileContent,
+        ContentType: "application/pdf",
+        // No ACL here, keeping the file private
+      })
+    );
+
+    // Create a pre-signed URL with long expiration (7 days = 604800 seconds)
+    // Lulu should be able to access this URL during this time window
+    const url = await getSignedUrl(
+      s3Client,
+      new GetObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+      }),
+      { expiresIn: 604800 } // 7 days in seconds
+    );
+
+    // Clean up local temp file after successful upload
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    return url;
+  } catch (error) {
+    console.error(`Error uploading ${pdfType} PDF to S3:`, error);
+    return null;
+  }
+}
+
+export async function cleanupPrintingFiles(bookId: string): Promise<void> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    // First, list all objects with the prefix for this book
+    const listCommand = new ListObjectsV2Command({
+      Bucket: BUCKET_NAME,
+      Prefix: `printing/${bookId}/`,
+    });
+
+    const { Contents } = await s3Client.send(listCommand);
+
+    if (!Contents || Contents.length === 0) {
+      return;
+    }
+
+    // Delete each object
+    for (const object of Contents) {
+      if (object.Key) {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: object.Key,
+          })
+        );
+        console.log(`Deleted printing file: ${object.Key}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error cleaning up printing files:", error);
+  }
+}
+
+/**
+ * Generates a fresh pre-signed URL for an existing S3 object
+ */
+export async function getDownloadUrl(key: string): Promise<string | null> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    const url = await getSignedUrl(
+      s3Client,
+      new GetObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+      }),
+      { expiresIn: DOWNLOAD_URL_EXPIRY }
+    );
+
+    return url;
+  } catch (error) {
+    console.error("Error generating download URL:", error);
+    return null;
+  }
+}

@@ -1,0 +1,163 @@
+// src/components/admin/template/TemplateList.tsx
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Eye, Trash2 } from "lucide-react";
+import { Genre, BookTemplate } from "@/generated/prisma";
+import { PublishToggleButton } from "@/components/admin/template/PublishToggleButton";
+import AdminActionDialog from "@/components/admin/AdminActionDialog";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import {
+  deleteBookTemplate,
+  toggleTemplatePublished,
+} from "@/actions/template-actions";
+import Link from "next/link";
+
+type TemplateWithGenres = BookTemplate & {
+  genres: Genre[];
+};
+
+interface TemplateListProps {
+  initialTemplates: TemplateWithGenres[];
+  onTemplateDeleted: (id: string) => void;
+}
+
+export function TemplateList({
+  initialTemplates,
+  onTemplateDeleted,
+}: TemplateListProps) {
+  const [templates, setTemplates] =
+    useState<TemplateWithGenres[]>(initialTemplates);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const togglePublishMutation = useMutation({
+    mutationFn: async (templateId: string) => {
+      const result = await toggleTemplatePublished(templateId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update template");
+      }
+      return result.data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Template ${data.published ? "published" : "unpublished"}`);
+      // Update local state
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((t) =>
+          t.id === data.id ? { ...t, published: data.published } : t
+        )
+      );
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update template"
+      );
+    },
+  });
+
+  const handleDeleteTemplate = async (id: string, title: string) => {
+    setDeleteLoading(true);
+    try {
+      const result = await deleteBookTemplate(id);
+      if (result.success) {
+        toast.success(`Successfully deleted template "${title}"`);
+        // Remove from local state
+        setTemplates(templates.filter((t) => t.id !== id));
+        // Notify parent component
+        onTemplateDeleted(id);
+      } else {
+        toast.error(result.error);
+      }
+    } catch (error) {
+      console.error("Error deleting template:", error);
+      toast.error("An error occurred while deleting the template");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleViewTemplate = (id: string) => {
+    window.open(`/library/template-preview/${id}`, "_blank");
+  };
+
+  if (templates.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground mb-4">No templates found</p>
+        <Button asChild>
+          <Link href="/admin/templates/create">Create Your First Template</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4">
+      <div className="grid grid-cols-12 font-medium text-sm p-2 border-b">
+        <div className="col-span-4">Title</div>
+        <div className="col-span-4">Genres</div>
+        <div className="col-span-2">Pages</div>
+        <div className="col-span-2">Actions</div>
+      </div>
+
+      {templates.map((template) => (
+        <div
+          key={template.id}
+          className="grid grid-cols-12 items-center p-2 border-b hover:bg-accent/10 rounded"
+        >
+          <div className="col-span-4 font-medium">
+            {template.title}
+            {!template.published && (
+              <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+                Draft
+              </span>
+            )}
+          </div>
+          <div className="col-span-4">
+            <div className="flex flex-wrap gap-1">
+              {template.genres.map((genre) => (
+                <span
+                  key={genre.id}
+                  className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded"
+                >
+                  {genre.name}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-2">{template.pageCount} pages</div>
+          <div className="col-span-2 flex space-x-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleViewTemplate(template.id)}
+              title="View template preview"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+
+            <PublishToggleButton
+              publish={template.published}
+              isPending={togglePublishMutation.isPending}
+              onToggle={() => togglePublishMutation.mutate(template.id)}
+            />
+
+            <AdminActionDialog
+              title={`Delete Template: ${template.title}`}
+              description="This will permanently delete this template. If any books are using this template, they may be affected."
+              actionLabel="Delete Template"
+              triggerLabel=""
+              triggerIcon={<Trash2 className="h-4 w-4" />}
+              isLoading={deleteLoading}
+              onAction={() => handleDeleteTemplate(template.id, template.title)}
+              variant="default"
+              size="sm"
+              actionVariant="destructive"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

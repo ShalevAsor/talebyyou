@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -10,9 +9,341 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
+  id    String     @id @default(cuid())
   clerkId   String   @unique
   email String  @unique
+  firstName String?
+  lastName String?
+  books Book[]
+  orders    Order[]    // Relationship to orders
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model GuestSession {
+  id          String    @id @default(cuid())
+  sessionId   String    @unique     // Stored in the cookie
+  books       Book[]                // Books created by this guest
+  lastActive  DateTime  @default(now()) @updatedAt
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime               // When this session should expire
+}
+
+model Genre {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  // Relationship
+  templates   BookTemplate[] // Templates with this genre
+}
+
+// Books in the library (pre-made books)
+model Book {
+  id             String       @id @default(cuid()) 
+  title          String       
+  status          BookStatus  @default(CUSTOMIZING)
+  characterImageReference String? 
+  coverImage     String?       // URL to cover image
+  coverImageOptions String[]   @default([])
+  coverPrompt    String 
+  pageCount      Int
+  pages           Page[]
+  character      Character?   
+  coverDedication String? // Optional dedication text for the book cover
+  pageDedication String? // Optional dedication text for the the first page 
+  templateId     String
+  template       BookTemplate @relation(fields: [templateId], references: [id]) 
+  userId          String?      
+  user            User?        @relation(fields: [userId], references: [id])
+  guestSessionId  String?
+  guestSession    GuestSession? @relation(fields: [guestSessionId], references: [id], onDelete: SetNull)
+  imageGenerations ImageGeneration[] 
+  orderId        String?
+  order          Order? 
+  printJobId    String?
+  printJob       PrintJob?
+  printingDeadline DateTime? // When book will be automatically sent to printing
+  ebookS3Key     String?    // S3 key for the generated ebook
+  ebookFileName  String?    // Original filename
+  ebookFileType  String?    // "PDF" or "EPUB"
+  ebookExpiresAt DateTime?  // When the file expires
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Character {
+  id             String       @id @default(cuid())
+  name           String       
+  age            Int          
+  gender         String      
+  eyeColor       String?
+  hairColor      String?
+  hairStyle      String?
+  skinTone       String?
+  wearingGlasses Boolean?
+  
+  // Relation to book
+  bookId         String       @unique
+  book           Book         @relation(fields: [bookId], references: [id])
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+// Templates for generating new books
+model BookTemplate {
+  id             String       @id @default(cuid())
+  title           String      @unique
+  description    String
+  pageCount      Int
+  published      Boolean   
+  coverImage     String         
+  coverPrompt    String
+  minAge         Int         @default(3)  // Minimum recommended age
+  maxAge         Int         @default(8)  // Maximum recommended age
+  pages          TemplatePageContent[] 
+  books          Book[]
+  genres         Genre[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model TemplatePageContent {
+  id           String       @id @default(cuid())
+  pageNumber   Int          // To maintain the order of pages
+  content      String       // The default text content
+  imagePrompt  String       // The default prompt used to generate the image
+  imageUrl     String      // The image displayed on the book template preview 
+  templateId   String
+  template     BookTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  
+  @@unique([templateId, pageNumber])  // Ensure no duplicate page numbers per template
+}
+
+
+model Page {
+  id          String    @id @default(cuid())
+  type        PageType   @default(TEXT)
+  pageNumber  Int       // To maintain the order of pages
+  textContent String?    // The editable text content
+  imagePrompt String?    // The prompt used to generate the image
+  imageUrl    String?   // URL to the generated image (nullable until generated)
+  imageOptions String[]  @default([])
+  bookId      String
+  book        Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@unique([bookId, pageNumber])  // Ensure no duplicate page numbers per book
+}
+
+model ImageGeneration {
+  id             String           @id @default(cuid())
+  generationId   String           @unique
+  bookId         String
+  book           Book             @relation(fields: [bookId], references: [id])
+  pageId         String?
+  type           ImageType
+  prompt         String
+  status         GenerationStatus @default(PENDING)
+  errorMessage   String?
+  apiCreditCost   Float? // Amount of credit cost for the API call
+  createdAt      DateTime         @default(now())
+  completedAt    DateTime?
+}
+
+
+
+model Order {
+  id              String         @id @default(cuid())
+  orderNumber     String         @unique // Human-readable order number 
+  // Product information
+  productType     ProductType    // eBook or PhysicalBundle
+  totalPrice    Decimal        @db.Decimal(10, 2)
+  currency        String         @default("USD")
+  // Payment information
+  status          OrderStatus    @default(PENDING)
+  paymentProvider String         @default("PAYPAL")
+  quantity        Int            @default(1) // Number of copies ordered
+  paymentId       String?        // PayPal order ID
+  transactionId   String?        // PayPal transaction ID after payment
+  pricePaid       Float?
+  // Payer information
+  payerEmail      String?
+  // Cost information 
+  shippingCost    Decimal?     @db.Decimal(10, 2)
+  printingCost   Decimal?     @db.Decimal(10, 2)
+  imagesCost    Decimal?     @db.Decimal(10, 2)
+  // Shipping information (for physical books)
+  shippingLevel    ShippingLevel? 
+  phoneNumber     String?
+  name            String?
+  street1         String?
+  street2         String?
+  city            String?
+  state_code      String?
+  postcode        String?
+  country         String?
+  
+  // Print on demand information
+  poProviderOrderId String?      // Lulu xPress order ID
+  trackingNumber    String?      // Shipping tracking number
+  // Guest user information
+  customerEmail      String         // Required for all orders (guest or registered)
+  // Relationships
+  bookId          String         @unique  // One order per book
+  book            Book           @relation(fields: [bookId], references: [id])
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id])
+   printJobId     String?
+   printJob        PrintJob?
+  // Events
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  paidAt          DateTime?
+  fulfilledAt     DateTime?
+}
+
+model PrintJob {
+  id                String              @id @default(cuid())
+  
+  // References to related entities
+  orderId           String              @unique  // One print job per order
+  order             Order               @relation(fields: [orderId], references: [id])
+  bookId            String              @unique
+  book              Book                @relation(fields: [bookId], references: [id])
+  
+  // Lulu xPress information
+  luluPrintJobId    Int?                // Lulu's print job ID
+  paymentId         Int?
+  podPackageId      String              // The SKU
+  
+  // PDF file information
+  interiorPdfUrl    String?             // S3 pre-signed URL for interior PDF
+  coverPdfUrl       String?             // S3 pre-signed URL for cover PDF
+  interiorS3Key     String?             // S3 key for interior PDF (for reference)
+  coverS3Key        String?             // S3 key for cover PDF (for reference)
+  pageCount         Int                 // Number of pages in the book
+  
+  // Validation information
+  interiorValidationId    Int?          // Lulu's validation ID for interior
+  coverValidationId       Int?          // Lulu's validation ID for cover
+  interiorValidationStatus FileValidationStatus @default(NULL)
+  coverValidationStatus    FileValidationStatus @default(NULL)
+  validationErrors        String[]      @default([])
+  
+  // Print job status
+  status            PrintJobStatus      @default(CREATED)
+  statusMessage     String?             // Message associated with current status
+  
+  // Cost information (NEW FIELDS)
+  currency          String              @default("USD")
+  printingCostExclTax Decimal?          @db.Decimal(10, 2)  // Printing cost before tax
+  printingCostInclTax Decimal?          @db.Decimal(10, 2)  // Printing cost with tax
+  shippingCostExclTax Decimal?          @db.Decimal(10, 2)  // Shipping cost before tax
+  shippingCostInclTax Decimal?          @db.Decimal(10, 2)  // Shipping cost with tax
+  totalCostExclTax  Decimal?            @db.Decimal(10, 2)  // Total cost before tax
+  totalCostInclTax  Decimal?            @db.Decimal(10, 2)  // Total cost with tax
+  totalTax          Decimal?            @db.Decimal(10, 2)  // Total tax amount
+  
+  // Shipping information
+  trackingNumber    String?             // Shipping tracking number
+  trackingUrls      String[]            @default([])
+  shippingCarrier   String?             // Shipping carrier name
+  estimatedShipDate DateTime?           // Estimated ship date
+  estimatedDeliveryDate DateTime?       // Estimated delivery date
+  
+  // Additional information
+  attempts          Int                 @default(0)  // Number of attempts to send to printer
+  errorMessage      String?             // Last error message if any
+  
+  // Admin information
+  sentByAdminId     String?             // Admin user who sent the job to printer
+  adminNotes        String?             // Notes from admin about this print job
+  
+  // Timestamps
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  sentToPrinterAt   DateTime?           // When job was sent to printer
+  paidAt            DateTime?           // When Lulu was paid for the job
+  inProductionAt    DateTime?           // When job entered production
+  shippedAt         DateTime?           // When job was shipped
+}
+
+
+model Configuration {
+  key         String    @id
+  value       String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum BookStatus {
+  CUSTOMIZING        // After form submission, generating initial images
+  ORDERED           // After payment
+  READY_FOR_PRINTING // Book is finalized and ready to be sent to printer
+  COMPLETED         // All customization done
+}
+
+enum PageType {
+  TEXT
+  IMAGE
+  DEDICATION
+  GENERAL
+}
+
+enum GenerationStatus {
+  PENDING
+  COMPLETE
+  FAILED
+}
+
+enum ImageType {
+  COVER
+  PAGE
+}
+
+enum ProductType {
+  EBOOK            // Digital product only
+  BOOK  // Physical book + eBook bundle
+}
+
+enum OrderStatus {
+  PENDING          // Created but not paid
+  PAID             // Payment complete
+  PRINTING         // Book being printed (for physical)
+  SHIPPED          // Physical book shipped
+  FULFILLED        // Order complete
+  CANCELLED        // Order cancelled
+  REFUNDED         // Payment refunded
+  ERROR            // Error occurred
+}
+
+enum ShippingLevel {
+  MAIL
+  PRIORITY_MAIL
+  GROUND
+  EXPEDITED
+  EXPRESS
+}
+
+enum FileValidationStatus {
+  NULL // not started
+  VALIDATING
+  VALIDATED
+  NORMALIZING
+  NORMALIZED
+  ERROR
+}
+
+enum PrintJobStatus {
+  CREATED
+  UNPAID
+  PAYMENT_IN_PROGRESS
+  PRODUCTION_DELAYED
+  PRODUCTION_READY
+  IN_PRODUCTION
+  SHIPPED
+  REJECTED
+  CANCELED
 }
