@@ -113,10 +113,16 @@ import {
 import { logger } from "@/lib/logger";
 import { notFound } from "next/navigation";
 
+interface OrderPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
 /**
  * Metadata generator for the Order page
  */
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: OrderPageProps) {
   try {
     const { id } = await params;
     const bookResult = await getBookById(id);
@@ -152,11 +158,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
  * OrderPage component - Handles the book ordering process
  * This page validates the book is eligible for ordering and displays the order form
  */
-export default async function OrderPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function OrderPage({ params }: OrderPageProps) {
   try {
     const { id } = await params;
 
