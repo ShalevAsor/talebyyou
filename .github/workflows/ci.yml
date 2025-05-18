@@ -69,3 +69,8 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          LULU_API_URL: ${{ secrets.LULU_API_URL }}
+          LULU_API_CLIENT_KEY: ${{ secrets.LULU_API_CLIENT_KEY }}
+          LULU_API_CLIENT_SECRET: ${{ secrets.LULU_API_CLIENT_SECRET }}
+          LULU_API_BASE64: ${{ secrets.LULU_API_BASE64 }}
+          LULU_CONTACT_EMAIL: ${{ secrets.LULU_CONTACT_EMAIL }}
