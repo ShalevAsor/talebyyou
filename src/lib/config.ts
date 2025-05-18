@@ -39,3 +39,5 @@ const config = {
 };
 
 export default config;
+
+// TODO: Add more configurations as needed + env.production
