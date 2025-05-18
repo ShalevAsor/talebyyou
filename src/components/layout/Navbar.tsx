@@ -51,7 +51,7 @@ export const Navbar: React.FC = memo(() => {
           __html: JSON.stringify(navigationSchema),
         }}
       />
-      <div className="container px-4 mx-auto">
+      <div className=" px-4 mx-auto">
         <div className="flex h-16 items-center justify-between">
           {/* Left: Logo */}
           <Logo />
