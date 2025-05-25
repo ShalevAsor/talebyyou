@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BookFull } from "@/types/book";
 import { ErrorAlert } from "@/components/common";
 import { Loading } from "@/components/common";
@@ -37,7 +37,7 @@ const BookPreviewClient: React.FC<BookPreviewClientProps> = ({
     initializeStore,
     reset,
   } = useBookStore();
-
+  const [isSaving, setIsSaving] = useState(false);
   // React Query manages server state
   const {
     data: serverBook,
@@ -78,14 +78,18 @@ const BookPreviewClient: React.FC<BookPreviewClientProps> = ({
     }
 
     try {
+      // Set local loading state
+      setIsSaving(true);
       // Save the book
       await updateBookAsync(bookPreview);
-
+      // Show success toast
+      toast.success("Book saved successfully! Redirecting to order page...");
       // Navigate to order page after successful save
       router.push(`/my-books/order/${bookPreview.id}`);
     } catch (error) {
       console.error("Error saving book:", error);
-      // Error already handled by mutation
+      // Reset loading state on error
+      setIsSaving(false);
     }
   };
 
@@ -95,6 +99,7 @@ const BookPreviewClient: React.FC<BookPreviewClientProps> = ({
       return;
     }
     try {
+      setIsSaving(true);
       // Create a copy of the book preview with updated status
       const bookToUpdate = {
         ...bookPreview,
@@ -107,13 +112,15 @@ const BookPreviewClient: React.FC<BookPreviewClientProps> = ({
       // Send email book complete notification
       await completeBookAsync(updatedBook.id);
       // Show success toast
-
-      toast.success("Book saved and email sent");
+      toast.success(
+        "Book submitted successfully! check your email for confirmation."
+      );
       // redirect to my-books page
       router.push(`/my-books`);
     } catch (error) {
       console.error("Error saving book for printing:", error);
-      // Error already handled by mutation
+      // Reset loading state on error
+      setIsSaving(false);
     }
   };
   // Check if images are still generating
@@ -135,7 +142,7 @@ const BookPreviewClient: React.FC<BookPreviewClientProps> = ({
         toggleEditMode={toggleEditMode}
         isEditMode={isEditMode}
         title={bookPreview?.title || initialBook.title}
-        isSaving={isUpdating}
+        isSaving={isSaving || isUpdating}
         saveAndOrder={handleSaveAndOrder}
         saveAndPrint={handleSaveAndPrint}
         isCompletingBook={isCompletingBook || isUpdating}

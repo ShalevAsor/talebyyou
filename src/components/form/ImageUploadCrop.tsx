@@ -104,17 +104,13 @@ const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
         );
 
         // As a Blob
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(new Error("Canvas is empty"));
-              return;
-            }
-            resolve(blob);
-          },
-          "image/jpeg",
-          0.95 // Quality
-        );
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error("Canvas is empty"));
+            return;
+          }
+          resolve(blob);
+        }, "image/png");
       };
 
       image.onerror = () => reject(new Error("Could not load image"));

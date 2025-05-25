@@ -60,10 +60,11 @@ export type ImageGenerationFull = ImageGeneration & {
 
 export type BookTemplateCreateData = Omit<
   BookTemplate,
-  "id" | "createdAt" | "updatedAt"
+  "id" | "slug" | "createdAt" | "updatedAt"
 > & {
   pages: BookTemplatePageCreateData[];
   genres: string[];
+  characterGender: "boy" | "girl";
 };
 export type BookTemplatePageCreateData = Omit<
   TemplatePageContent,

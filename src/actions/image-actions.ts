@@ -9,13 +9,11 @@ import { logger } from "@/lib/logger";
 import prisma from "@/lib/prisma";
 import {
   BookImageGenerationsStatus,
-  GenerationOptions,
   ImageGenerationFull,
   ImageMetadata,
 } from "@/types/image";
 import { GenerationStatus, ImageType, PageType } from "@/generated/prisma";
 import { leonardoImageService } from "@/services/image/image-generation-service";
-import { NUM_IMAGES } from "@/constants/image";
 
 /**
  * Get the image generation by id
@@ -178,7 +176,7 @@ export async function processFailedGeneration(
  * @returns ActionResult with the image ID from Leonardo
  */
 export async function uploadCharacterImage(
-  imageData: Blob,
+  imageData: File,
   filename?: string
 ): Promise<ActionResult<string>> {
   try {
@@ -230,7 +228,7 @@ export async function uploadCharacterImage(
  */
 export async function generateBookCoverImage(
   bookId: string,
-  characterImageId?: string
+  characterImageId: string
 ): Promise<ActionResult<string>> {
   try {
     // Get the book
@@ -252,20 +250,9 @@ export async function generateBookCoverImage(
       return createErrorResult("Cover prompt not found for book");
     }
 
-    // Generate the cover image
-    const options: GenerationOptions = {
-      characterImageId,
-      width: 768,
-      height: 1024,
-      styleStrength: "Low",
-      characterStrength: "High",
-      numImages: NUM_IMAGES,
-      imageType: ImageType.COVER,
-      seed: 2481752061,
-    };
     const imageResult = await leonardoImageService.generateImage(
       coverPrompt,
-      options
+      characterImageId
     );
 
     if (!imageResult.success) {
@@ -357,7 +344,7 @@ export async function getBookImageGenerationsStatus(
 export async function generateBookPageImage(
   bookId: string,
   pageId: string,
-  characterImageId?: string
+  characterImageId: string
 ): Promise<ActionResult<string>> {
   try {
     // Get the book with the specific page
@@ -388,21 +375,9 @@ export async function generateBookPageImage(
       return createErrorResult("Page has no image prompt");
     }
 
-    // Generate the page image
-    const options: GenerationOptions = {
-      characterImageId,
-      width: 768,
-      height: 1024,
-      styleStrength: "Low",
-      characterStrength: "High",
-      numImages: NUM_IMAGES,
-      imageType: ImageType.PAGE,
-      seed: 2481752061,
-    };
-
     const imageResult = await leonardoImageService.generateImage(
       page.imagePrompt,
-      options
+      characterImageId
     );
 
     if (!imageResult.success) {
@@ -450,7 +425,7 @@ export async function generateBookPageImage(
  */
 export async function generateBookFirstPageImage(
   bookId: string,
-  characterImageId?: string
+  characterImageId: string
 ): Promise<ActionResult<string>> {
   try {
     // Get the book with the first image page
@@ -523,6 +498,10 @@ export async function generateRemainingPageImages(
       return createSuccessResult([]); // No pages need generation
     }
 
+    if (!book.characterImageReference) {
+      return createErrorResult("No character image reference found for book");
+    }
+
     const generationIds: string[] = [];
     const errors: string[] = [];
 
@@ -531,7 +510,7 @@ export async function generateRemainingPageImages(
       const result = await generateBookPageImage(
         bookId,
         page.id,
-        book.characterImageReference || undefined
+        book.characterImageReference
       );
 
       if (result.success) {

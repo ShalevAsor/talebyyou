@@ -10,14 +10,14 @@ import {
 export const metadata: Metadata = createMetadata({
   title: "Privacy Policy",
   description:
-    "Our Privacy Policy explains how we collect, use, and protect your information when you use BookWizard's personalized children's book platform.",
+    "Our Privacy Policy explains how StorySpark collects, uses, and protects your information when you use our personalized children's book platform with AI-powered image generation.",
 });
 
 export default function PrivacyPolicyPage() {
   // Generate structured data as JSON string
   const structuredData = JSON.stringify(
     generateStructuredData("WebPage", {
-      mainContentOfPage: "Privacy Policy for BookWizard",
+      mainContentOfPage: "Privacy Policy for StorySpark",
       datePublished: privacyPolicyLastUpdated,
     })
   );

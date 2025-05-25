@@ -580,12 +580,6 @@ import { EbookDownloadButton } from "./EbookDownloadButton";
 import { FaTruck, FaEdit, FaFileDownload, FaBook } from "react-icons/fa";
 import { MdCancel, MdPrint, MdPaid } from "react-icons/md";
 import { RiRefund2Fill } from "react-icons/ri";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface BookCardProps {
   book: BookFull;
@@ -716,6 +710,15 @@ export function BookCard({ book }: BookCardProps) {
             textColor: "text-blue-700",
           };
         case OrderStatus.PAID:
+          if (bookStatus === BookStatus.READY_FOR_PRINTING) {
+            return {
+              text: "READY FOR PRINTING",
+              variant: "default" as const,
+              icon: <MdPrint className="h-4 w-4" aria-hidden="true" />,
+              bgColor: "bg-indigo-50",
+              textColor: "text-indigo-500",
+            };
+          }
           return {
             text: "PAID",
             variant: "default" as const,
@@ -793,6 +796,14 @@ export function BookCard({ book }: BookCardProps) {
           if (hasActiveGenerations) {
             return "Thank you for your order! We're generating the remaining images for your book. This may take a few minutes.";
           } else {
+            if (bookStatus === BookStatus.READY_FOR_PRINTING) {
+              if (productType === ProductType.EBOOK) {
+                return "Thank you for your order! You can now download your eBook.";
+              } else {
+                return "Your book is being printed and bound. This typically takes 3-5 business days.";
+              }
+            }
+
             return "Thank you for your order! You can now finish customizing your book before saving for production.";
           }
         case OrderStatus.PRINTING:
@@ -1057,138 +1068,117 @@ export function BookCard({ book }: BookCardProps) {
   );
 
   return (
-    <TooltipProvider>
-      <Card
-        className="overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg border-0 bg-white rounded-xl shadow-md"
-        tabIndex={0}
-        aria-label={`${book.title} - ${statusBadge.text}`}
-      >
-        <div
-          className={`absolute top-0 left-0 right-0 h-1 ${statusBadge.bgColor}`}
-        ></div>
+    <Card
+      className="overflow-hidden flex flex-col h-full transition-all duration-300 hover:shadow-lg border-0 bg-white rounded-xl shadow-md"
+      tabIndex={0}
+      aria-label={`${book.title} - ${statusBadge.text}`}
+    >
+      <div
+        className={`absolute top-0 left-0 right-0 h-1 ${statusBadge.bgColor}`}
+      ></div>
 
-        <CardHeader className="pb-3 pt-4">
-          <div className="flex items-start gap-4">
-            {/* Book Cover Thumbnail */}
-            <div className="relative w-24 h-32 flex-shrink-0 rounded-lg overflow-hidden shadow-md transition-transform transform hover:scale-105">
-              {book.coverImage ? (
-                <Image
-                  src={book.coverImage}
-                  alt={`Cover of ${book.title}`}
-                  fill
-                  sizes="96px"
-                  className="object-cover"
-                  priority={false}
-                  loading="lazy"
-                />
-              ) : (
-                <div
-                  className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-300 flex items-center justify-center"
-                  aria-label="No cover image available"
-                >
-                  <span className="text-sm text-gray-500">No cover</span>
-                </div>
-              )}
+      <CardHeader className="pb-3 pt-4">
+        <div className="flex items-start gap-4">
+          {/* Book Cover Thumbnail */}
+          <div className="relative w-24 h-32 flex-shrink-0 rounded-lg overflow-hidden shadow-md transition-transform transform hover:scale-105">
+            {book.coverImage ? (
+              <Image
+                src={book.coverImage}
+                alt={`Cover of ${book.title}`}
+                fill
+                sizes="96px"
+                className="object-cover"
+                priority={false}
+                loading="lazy"
+              />
+            ) : (
+              <div
+                className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-300 flex items-center justify-center"
+                aria-label="No cover image available"
+              >
+                <span className="text-sm text-gray-500">No cover</span>
+              </div>
+            )}
+          </div>
+
+          {/* Book Details */}
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-xl font-bold line-clamp-2 mb-1">
+              {book.title}
+            </CardTitle>
+
+            <div className="flex items-center gap-1 mt-1">
+              <p className="text-sm text-gray-500">Created {formattedDate}</p>
             </div>
 
-            {/* Book Details */}
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-xl font-bold line-clamp-2 mb-1">
-                {book.title}
-              </CardTitle>
-
-              <div className="flex items-center gap-1 mt-1">
-                <p className="text-sm text-gray-500">Created {formattedDate}</p>
-              </div>
-
-              <div className="flex gap-2 mt-3 flex-wrap">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge
-                      className={`px-2.5 py-1 ${statusBadge.bgColor} ${statusBadge.textColor} border-0`}
-                    >
-                      {statusBadge.icon && (
-                        <span className="mr-1">{statusBadge.icon}</span>
-                      )}
-                      <span>{statusBadge.text}</span>
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p className="text-xs max-w-xs">{statusExplanation}</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                {hasActiveGenerations && (
-                  <Badge className="px-2.5 py-1 bg-amber-50 text-amber-700 border-0 animate-pulse">
-                    <Loader2
-                      className="w-3 h-3 mr-1 animate-spin"
-                      aria-hidden="true"
-                    />
-                    <span>Generating</span>
-                  </Badge>
+            <div className="flex gap-2 mt-3 flex-wrap">
+              <Badge
+                className={`px-2.5 py-1 ${statusBadge.bgColor} ${statusBadge.textColor} border-0`}
+              >
+                {statusBadge.icon && (
+                  <span className="mr-1">{statusBadge.icon}</span>
                 )}
-              </div>
+                <span>{statusBadge.text}</span>
+              </Badge>
             </div>
           </div>
-        </CardHeader>
+        </div>
+      </CardHeader>
 
-        <CardContent className="pb-4 pt-1 flex-grow flex flex-col gap-3">
-          {/* Status explanation text - now in tooltip */}
-          <p className="text-sm text-gray-500 mb-1 line-clamp-2">
+      <CardContent className="pb-4 pt-1 flex-grow flex flex-col gap-3">
+        {/* Status explanation text - full text visible */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <p className="text-sm text-gray-700 leading-relaxed">
             {statusExplanation}
           </p>
+        </div>
 
-          {/* Shipping information when applicable */}
-          {shippingInfo}
+        {/* Shipping information when applicable */}
+        {shippingInfo}
 
-          {/* Image Generation Progress - shown for relevant statuses */}
-          {(bookStatus === BookStatus.CUSTOMIZING ||
-            bookStatus === BookStatus.ORDERED ||
-            hasActiveGenerations) && (
-            <div
-              className="space-y-1 mt-auto bg-gray-50 p-3 rounded-lg"
-              aria-label="Image generation progress"
-            >
-              <div className="flex justify-between text-xs text-gray-600 font-medium">
-                <span className="flex items-center">
-                  <Loader2
-                    className={`w-3 h-3 mr-1.5 ${
-                      hasActiveGenerations ? "animate-spin" : ""
-                    }`}
-                    aria-hidden="true"
-                  />
-                  Image Generation
-                </span>
-                <span>
-                  {isLoadingGenerationStatus ? (
-                    <span className="italic">Loading...</span>
-                  ) : (
-                    `${completedImages}/${totalImages}`
-                  )}
-                </span>
-              </div>
-              <Progress
-                value={
-                  bookStatus === BookStatus.COMPLETED ? 100 : imageProgress
-                }
-                className={`h-2.5 ${
-                  hasActiveGenerations ? "animate-pulse" : ""
-                }`}
-                aria-label={`Image generation progress: ${Math.round(
-                  imageProgress
-                )}%`}
-                aria-valuenow={Math.round(imageProgress)}
-                aria-valuemin={0}
-                aria-valuemax={100}
-              />
+        {/* Image Generation Progress - shown for relevant statuses */}
+        {(bookStatus === BookStatus.CUSTOMIZING ||
+          bookStatus === BookStatus.ORDERED ||
+          hasActiveGenerations) && (
+          <div
+            className="space-y-1 mt-auto bg-gray-50 p-3 rounded-lg"
+            aria-label="Image generation progress"
+          >
+            <div className="flex justify-between text-xs text-gray-600 font-medium">
+              <span className="flex items-center">
+                <Loader2
+                  className={`w-3 h-3 mr-1.5 ${
+                    hasActiveGenerations ? "animate-spin" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+                Image Generation
+              </span>
+              <span>
+                {isLoadingGenerationStatus ? (
+                  <span className="italic">Loading...</span>
+                ) : (
+                  `${completedImages}/${totalImages}`
+                )}
+              </span>
             </div>
-          )}
-        </CardContent>
+            <Progress
+              value={bookStatus === BookStatus.COMPLETED ? 100 : imageProgress}
+              className={`h-2.5 ${hasActiveGenerations ? "animate-pulse" : ""}`}
+              aria-label={`Image generation progress: ${Math.round(
+                imageProgress
+              )}%`}
+              aria-valuenow={Math.round(imageProgress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            />
+          </div>
+        )}
+      </CardContent>
 
-        <CardFooter className="flex flex-wrap gap-2 px-4 pb-4 pt-1 mt-auto">
-          {actionButtons}
-        </CardFooter>
-      </Card>
-    </TooltipProvider>
+      <CardFooter className="flex flex-wrap gap-2 px-4 pb-4 pt-1 mt-auto">
+        {actionButtons}
+      </CardFooter>
+    </Card>
   );
 }

@@ -1,18 +1,466 @@
+// /**
+//  * Implementation of image generation service using Leonardo AI
+//  * Image generation using  reference approach
+//  * Character reference
+//  */
+
+// import { DEFAULT_MODEL_ID, NUM_IMAGES } from "@/constants/image";
+// import { getLeonardoClient } from "@/lib/leonardo-ai";
+// import { logger } from "@/lib/logger";
+// import {
+//   ImageGenerationResult,
+//   ImageMetadata,
+//   ImageUploadResult,
+// } from "@/types/image";
+// import {
+//   InitImageType,
+//   StrengthType,
+// } from "@leonardo-ai/sdk/sdk/models/shared";
+
+// export const leonardoImageService = {
+//   /**
+//    * Uploads an image to Leonardo AI
+//    * @param image URL, path to the image, or image data as Blob
+//    * @param extension Image extension (jpg, png, etc.)
+//    * @param filename Optional filename to use
+//    * @returns Promise resolving to the uploaded image ID
+//    */
+//   async uploadImage(
+//     image: string | Blob,
+//     extension: string = "png",
+//     filename: string = "image.png"
+//   ): Promise<string> {
+//     try {
+//       logger.debug(
+//         {
+//           imageType: typeof image === "string" ? "url" : "blob",
+//           extension,
+//           filename,
+//         },
+//         "Starting image upload to Leonardo"
+//       );
+//       // Get Leonardo client (singleton)
+//       const leonardoClient = getLeonardoClient();
+
+//       // Get a presigned URL for upload
+//       const uploadResponse = await leonardoClient.initImages.uploadInitImage({
+//         extension,
+//       });
+
+//       if (!uploadResponse.object?.uploadInitImage) {
+//         throw new Error("Failed to get presigned URL for image upload");
+//       }
+
+//       const { uploadInitImage: uploadData } = uploadResponse.object;
+
+//       if (!uploadData.id || !uploadData.url || !uploadData.fields) {
+//         throw new Error("Missing required fields in upload response");
+//       }
+//       // Get image as Blob
+//       let imageBlob: Blob;
+
+//       if (typeof image === "string") {
+//         // It's a URL or path - fetch it
+//         const fullImageUrl = image.startsWith("http")
+//           ? image
+//           : `${process.env.NEXT_PUBLIC_APP_URL}${
+//               image.startsWith("/") ? "" : "/"
+//             }${image}`;
+
+//         const imageResponse = await fetch(fullImageUrl);
+//         if (!imageResponse.ok) {
+//           throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+//         }
+//         imageBlob = await imageResponse.blob();
+//       } else {
+//         // It's already a Blob
+//         imageBlob = image;
+//       }
+//       // Prepare form data with ordered fields
+//       const formData = new FormData();
+//       const fields =
+//         typeof uploadData.fields === "string"
+//           ? JSON.parse(uploadData.fields)
+//           : uploadData.fields;
+
+//       // Add key field first (this was different in your test route)
+//       if (fields.key) {
+//         formData.append("key", fields.key);
+//       }
+
+//       // Add the rest of the fields in a specific order
+//       const fieldOrder = [
+//         "Content-Type",
+//         "bucket",
+//         "Policy",
+//         "X-Amz-Algorithm",
+//         "X-Amz-Credential",
+//         "X-Amz-Date",
+//         "X-Amz-Security-Token",
+//         "X-Amz-Signature",
+//       ];
+
+//       // Add fields in the specified order
+//       fieldOrder.forEach((fieldName) => {
+//         if (fields[fieldName]) {
+//           formData.append(fieldName, fields[fieldName]);
+//         }
+//       });
+
+//       // Add any remaining fields not in our order list
+//       Object.entries(fields).forEach(([key, value]) => {
+//         if (key !== "key" && !fieldOrder.includes(key)) {
+//           formData.append(key, value as string);
+//         }
+//       });
+
+//       // Add the file last
+//       formData.append("file", imageBlob, filename);
+
+//       // Send the upload request
+//       const uploadResult = await fetch(uploadData.url, {
+//         method: "POST",
+//         body: formData,
+//       });
+
+//       if (!uploadResult.ok) {
+//         throw new Error(`Failed to upload image: ${uploadResult.statusText}`);
+//       }
+
+//       // Extract the image ID from response
+//       const imageId = fields.key.split("/").pop().split(".")[0];
+//       console.log("Image id in production flow is:",);
+//       logger.info(
+//         { imageId, filename },
+//         "Image uploaded successfully to Leonardo"
+//       );
+//       return imageId;
+//     } catch (error) {
+//       logger.error(
+//         { error, imageType: typeof image },
+//         "Failed to upload image to Leonardo"
+//       );
+//       throw error;
+//     }
+//   },
+//   /**
+//    * Uploads a character image to be used as a reference
+//    * @param imageData The image data to upload
+//    * @param metadata Optional metadata about the image
+//    * @returns Promise resolving to the upload result
+//    */
+//   async uploadCharacterImage(
+//     imageData: Blob,
+//     metadata?: ImageMetadata
+//   ): Promise<ImageUploadResult> {
+//     try {
+//       // Determine extension from mime type or metadata
+//       const extension = "png";
+
+//       const filename = metadata?.filename
+//         ? metadata.filename.includes(".")
+//           ? metadata.filename
+//           : `${metadata.filename}.png`
+//         : `character.png`;
+
+//       // Use uploadImage method
+//       const imageId = await this.uploadImage(imageData, extension, filename);
+
+//       logger.info(
+//         { imageId },
+//         "Character image successfully uploaded to Leonardo AI"
+//       );
+
+//       return {
+//         success: true,
+//         imageId: imageId,
+//       };
+//     } catch (error) {
+//       logger.error({ error }, "Error uploading character image");
+//       return {
+//         success: false,
+//         error:
+//           error instanceof Error ? error.message : "Unknown error occurred",
+//       };
+//     }
+//   },
+
+//   /**
+//    * Deletes an image from Leonardo AI
+//    * @param imageId The image ID to delete
+//    * @returns Promise resolving to a boolean indicating success
+//    */
+//   async deleteImage(imageId: string): Promise<boolean> {
+//     try {
+//       logger.debug({ imageId }, "Starting image deletion from Leonardo");
+
+//       // Get Leonardo client (singleton)
+//       const leonardoClient = getLeonardoClient();
+
+//       // Delete the image
+//       const result = await leonardoClient.initImages.deleteInitImageById(
+//         imageId
+//       );
+//       logger.debug({ result }, "Image deletion result from Leonardo");
+//       logger.debug({ imageId }, "Image successfully deleted from Leonardo AI");
+//       return true;
+//     } catch (error) {
+//       logger.error({ error, imageId }, "Failed to delete image from Leonardo");
+//       return false;
+//     }
+//   },
+//   /**
+//    * Generates an image using character and style references
+//    * @param prompt The text prompt for image generation
+//    * @param options Generation options including character reference, size, etc.
+//    * @returns Promise resolving to generation result
+//    */
+//   async generateImage(
+//     prompt: string,
+//     characterImageId: string
+//   ): Promise<ImageGenerationResult> {
+//     try {
+//       console.log("generate image with the prompt:", prompt);
+
+//       // Set up generation parameters
+//       const width = 768;
+//       const height = 1024;
+//       const modelId = DEFAULT_MODEL_ID;
+//       const numImages = NUM_IMAGES;
+//       const controlnets = [
+//         {
+//           initImageId: characterImageId,
+//           initImageType: InitImageType.Uploaded,
+//           preprocessorId: 133, // Character Reference preprocessor ID
+//           strengthType: StrengthType.Mid,
+//         },
+//       ];
+
+//       const leonardoClient = getLeonardoClient();
+
+//       // Start the generation
+//       const result = await leonardoClient.image.createGeneration({
+//         height,
+//         width,
+//         modelId,
+//         prompt,
+//         numImages,
+//         public: false,
+//         alchemy: true, // Enable Alchemy for better quality
+//         controlnets,
+//       });
+//       console.log("image generation result:", result);
+
+//       // Extract generation ID
+//       const generationId = result.object?.sdGenerationJob?.generationId;
+//       // Extract API credit cost
+//       const apiCreditCost = result.object?.sdGenerationJob?.apiCreditCost;
+//       if (!generationId) {
+//         return {
+//           success: false,
+//           error: "Failed to get generation ID from Leonardo API",
+//         };
+//       }
+
+//       logger.info(
+//         {
+//           generationId,
+//         },
+//         "Image generation started successfully"
+//       );
+
+//       return {
+//         success: true,
+//         generationId,
+//         estimatedTime: 20, // Approximate time in seconds
+//         apiCreditCost: apiCreditCost || 0,
+//       };
+//     } catch (error) {
+//       logger.error(
+//         {
+//           error,
+//           prompt: prompt.substring(0, 100) + (prompt.length > 100 ? "..." : ""),
+//         },
+//         "Error generating image"
+//       );
+
+//       return {
+//         success: false,
+//         error:
+//           error instanceof Error ? error.message : "Unknown error occurred",
+//       };
+//     }
+//   },
+//   // async generateImage(
+//   //   prompt: string,
+//   //   characterImageId: string
+//   // ): Promise<ImageGenerationResult> {
+//   //   try {
+//   //     console.log("generate image with the prompt:", prompt);
+
+//   //     // TEMPORARY TEST: Use the test image directly instead of the uploaded one
+//   //     const testImageUrl = "http://localhost:3000/testImage2.png";
+//   //     console.log("USING TEST IMAGE FOR DEBUGGING:", testImageUrl);
+
+//   //     // Upload the test image instead
+//   //     const leonardoClient = getLeonardoClient();
+
+//   //     // Get a presigned URL for upload
+//   //     const characterUploadResponse =
+//   //       await leonardoClient.initImages.uploadInitImage({
+//   //         extension: "png",
+//   //       });
+
+//   //     if (!characterUploadResponse.object?.uploadInitImage) {
+//   //       throw new Error("Failed to get presigned URL for character upload");
+//   //     }
+
+//   //     const { uploadInitImage: characterUploadData } =
+//   //       characterUploadResponse.object;
+
+//   //     if (
+//   //       !characterUploadData.id ||
+//   //       !characterUploadData.url ||
+//   //       !characterUploadData.fields
+//   //     ) {
+//   //       throw new Error("Missing required fields in character upload response");
+//   //     }
+
+//   //     // Use the same upload function as in the test route
+//   //     const imageResponse = await fetch(testImageUrl);
+//   //     if (!imageResponse.ok) {
+//   //       throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+//   //     }
+//   //     const imageBlob = await imageResponse.blob();
+
+//   //     // Create FormData with ordered fields
+//   //     const formData = new FormData();
+//   //     const fields =
+//   //       typeof characterUploadData.fields === "string"
+//   //         ? JSON.parse(characterUploadData.fields)
+//   //         : characterUploadData.fields;
+
+//   //     // Make sure 'key' is added first
+//   //     if (fields.key) {
+//   //       formData.append("key", fields.key);
+//   //     }
+
+//   //     // Add the rest of the fields in a specific order (like in test route)
+//   //     const fieldOrder = [
+//   //       "Content-Type",
+//   //       "bucket",
+//   //       "Policy",
+//   //       "X-Amz-Algorithm",
+//   //       "X-Amz-Credential",
+//   //       "X-Amz-Date",
+//   //       "X-Amz-Security-Token",
+//   //       "X-Amz-Signature",
+//   //     ];
+
+//   //     // Add fields in the specified order
+//   //     fieldOrder.forEach((fieldName) => {
+//   //       if (fields[fieldName]) {
+//   //         formData.append(fieldName, fields[fieldName]);
+//   //       }
+//   //     });
+
+//   //     // Add any remaining fields not in our order list
+//   //     Object.entries(fields).forEach(([key, value]) => {
+//   //       if (key !== "key" && !fieldOrder.includes(key)) {
+//   //         formData.append(key, value as string);
+//   //       }
+//   //     });
+
+//   //     // Add the file last
+//   //     formData.append("file", imageBlob, "characterImage.png");
+
+//   //     // Send without headers
+//   //     const uploadResult = await fetch(characterUploadData.url, {
+//   //       method: "POST",
+//   //       body: formData,
+//   //     });
+
+//   //     if (!uploadResult.ok) {
+//   //       throw new Error(`Failed to upload image: ${uploadResult.statusText}`);
+//   //     }
+
+//   //     // Extract the ID from the fields
+//   //     const testCharacterImageId = fields.key.split("/").pop().split(".")[0];
+//   //     console.log("Using test character image ID:", testCharacterImageId);
+
+//   //     // Continue with the same generation process but use the new ID
+//   //     const result = await leonardoClient.image.createGeneration({
+//   //       height: 1024,
+//   //       width: 768,
+//   //       modelId: DEFAULT_MODEL_ID,
+//   //       prompt,
+//   //       numImages: NUM_IMAGES,
+//   //       public: false,
+//   //       alchemy: true, // Enable Alchemy for better quality
+//   //       controlnets: [
+//   //         {
+//   //           initImageId: testCharacterImageId, // Use the test image ID instead
+//   //           initImageType: InitImageType.Uploaded,
+//   //           preprocessorId: 133, // Character Reference Id
+//   //           strengthType: StrengthType.Mid,
+//   //         },
+//   //       ],
+//   //     });
+
+//   //     console.log("image generation result:", result);
+
+//   //     // Extract generation ID
+//   //     const generationId = result.object?.sdGenerationJob?.generationId;
+//   //     // Extract API credit cost
+//   //     const apiCreditCost = result.object?.sdGenerationJob?.apiCreditCost;
+
+//   //     if (!generationId) {
+//   //       return {
+//   //         success: false,
+//   //         error: "Failed to get generation ID from Leonardo API",
+//   //       };
+//   //     }
+
+//   //     logger.info(
+//   //       {
+//   //         generationId,
+//   //       },
+//   //       "Image generation started successfully"
+//   //     );
+
+//   //     return {
+//   //       success: true,
+//   //       generationId,
+//   //       estimatedTime: 20, // Approximate time in seconds
+//   //       apiCreditCost: apiCreditCost || 0,
+//   //     };
+//   //   } catch (error) {
+//   //     logger.error(
+//   //       {
+//   //         error,
+//   //         prompt: prompt.substring(0, 100) + (prompt.length > 100 ? "..." : ""),
+//   //       },
+//   //       "Error generating image"
+//   //     );
+
+//   //     return {
+//   //       success: false,
+//   //       error:
+//   //         error instanceof Error ? error.message : "Unknown error occurred",
+//   //     };
+//   //   }
+//   // },
+// };
 /**
  * Implementation of image generation service using Leonardo AI
- * Image generation using dual reference approach
- * Character reference + style reference
+ * Image generation using  reference approach
+ * Character reference
  */
 
-import {
-  DEFAULT_MODEL_ID,
-  STYLE_IMAGE_REFERENCE_ID,
-  STYLE_IMAGE_REFERENCE_URL,
-} from "@/constants/image";
+import { DEFAULT_MODEL_ID, NUM_IMAGES } from "@/constants/image";
 import { getLeonardoClient } from "@/lib/leonardo-ai";
 import { logger } from "@/lib/logger";
 import {
-  GenerationOptions,
   ImageGenerationResult,
   ImageMetadata,
   ImageUploadResult,
@@ -32,8 +480,8 @@ export const leonardoImageService = {
    */
   async uploadImage(
     image: string | Blob,
-    extension: string = "jpg",
-    filename: string = "image.jpg"
+    extension: string = "png",
+    filename: string = "image.png"
   ): Promise<string> {
     try {
       logger.debug(
@@ -88,10 +536,37 @@ export const leonardoImageService = {
           ? JSON.parse(uploadData.fields)
           : uploadData.fields;
 
-      // Add all form fields
-      Object.entries(fields).forEach(([key, value]) => {
-        formData.append(key, value as string);
+      // Add key field first (this was different in your test route)
+      if (fields.key) {
+        formData.append("key", fields.key);
+      }
+
+      // Add the rest of the fields in a specific order
+      const fieldOrder = [
+        "Content-Type",
+        "bucket",
+        "Policy",
+        "X-Amz-Algorithm",
+        "X-Amz-Credential",
+        "X-Amz-Date",
+        "X-Amz-Security-Token",
+        "X-Amz-Signature",
+      ];
+
+      // Add fields in the specified order
+      fieldOrder.forEach((fieldName) => {
+        if (fields[fieldName]) {
+          formData.append(fieldName, fields[fieldName]);
+        }
       });
+
+      // Add any remaining fields not in our order list
+      Object.entries(fields).forEach(([key, value]) => {
+        if (key !== "key" && !fieldOrder.includes(key)) {
+          formData.append(key, value as string);
+        }
+      });
+
       // Add the file last
       formData.append("file", imageBlob, filename);
 
@@ -107,7 +582,7 @@ export const leonardoImageService = {
 
       // Extract the image ID from response
       const imageId = fields.key.split("/").pop().split(".")[0];
-
+      console.log("Image id in production flow is:");
       logger.info(
         { imageId, filename },
         "Image uploaded successfully to Leonardo"
@@ -128,23 +603,18 @@ export const leonardoImageService = {
    * @returns Promise resolving to the upload result
    */
   async uploadCharacterImage(
-    imageData: Blob,
+    imageData: File,
     metadata?: ImageMetadata
   ): Promise<ImageUploadResult> {
     try {
       // Determine extension from mime type or metadata
-      const mimeTypeExtension =
-        imageData.type === "image/jpeg"
-          ? "jpg"
-          : imageData.type === "image/png"
-          ? "png"
-          : "jpg"; // Default to jpg
+      const extension = "png";
 
-      const extension = metadata?.filename?.includes(".")
-        ? metadata.filename.split(".").pop() || mimeTypeExtension
-        : mimeTypeExtension;
-
-      const filename = metadata?.filename || `character.${extension}`;
+      const filename = metadata?.filename
+        ? metadata.filename.includes(".")
+          ? metadata.filename
+          : `${metadata.filename}.png`
+        : `character.png`;
 
       // Use uploadImage method
       const imageId = await this.uploadImage(imageData, extension, filename);
@@ -167,70 +637,7 @@ export const leonardoImageService = {
       };
     }
   },
-  /**
-   * Gets the style reference image ID to use
-   * @param customStyleId Optional custom style reference ID to use
-   * @returns Promise resolving to the style reference image ID
-   */
-  async getStyleReferenceId(customStyleId?: string): Promise<string> {
-    try {
-      // First try the constant ID - just use it directly without verifying
-      if (STYLE_IMAGE_REFERENCE_ID) {
-        logger.info(
-          { styleRefId: STYLE_IMAGE_REFERENCE_ID },
-          "Using predefined style reference ID without verification"
-        );
-        return STYLE_IMAGE_REFERENCE_ID;
-      }
 
-      // Then try custom style ID if provided - without verification
-      if (customStyleId) {
-        logger.info(
-          { styleRefId: customStyleId },
-          "Using custom style reference ID without verification"
-        );
-        return customStyleId;
-      }
-
-      // Only reach here if no IDs are available
-      logger.warn(
-        "No style reference ID available, will try to upload new image"
-      );
-
-      // Use a fully qualified URL for uploading
-      const styleRefUrl =
-        STYLE_IMAGE_REFERENCE_URL && process.env.NEXT_PUBLIC_APP_URL
-          ? `${process.env.NEXT_PUBLIC_APP_URL}${
-              STYLE_IMAGE_REFERENCE_URL.startsWith("/") ? "" : "/"
-            }${STYLE_IMAGE_REFERENCE_URL}`
-          : `${process.env.NEXT_PUBLIC_APP_URL}/images/style/styleImageAnime.jpg`;
-
-      logger.info({ styleRefUrl }, "Uploading new style reference image");
-
-      // Upload the style reference image
-      const timestamp = Date.now();
-      const newStyleId = await this.uploadImage(
-        styleRefUrl,
-        "jpg",
-        `style-reference-${timestamp}.jpg`
-      );
-
-      logger.info({ newStyleId }, "New style reference image uploaded");
-
-      // Add a delay to ensure the image is processed by Leonardo
-      logger.info("Waiting for image to be processed...");
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      return newStyleId;
-    } catch (error) {
-      logger.error({ error }, "Failed to get style reference image");
-      throw new Error(
-        `Style reference initialization failed: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
-    }
-  },
   /**
    * Deletes an image from Leonardo AI
    * @param imageId The image ID to delete
@@ -263,44 +670,24 @@ export const leonardoImageService = {
    */
   async generateImage(
     prompt: string,
-    options: GenerationOptions = {}
+    characterImageId: string
   ): Promise<ImageGenerationResult> {
     try {
       console.log("generate image with the prompt:", prompt);
 
       // Set up generation parameters
-      const width = options.width || 768;
-      const height = options.height || 1024;
-      const modelId = options.modelId || DEFAULT_MODEL_ID;
-      const numImages = options.numImages || 3;
-
-      // Default strength types
-      const characterStrength =
-        options.characterStrength === "Low"
-          ? StrengthType.Low
-          : options.characterStrength === "Mid"
-          ? StrengthType.Mid
-          : StrengthType.High; // Default to High
-
-      // const styleStrength =
-      //   options.styleStrength === "Low"
-      //     ? StrengthType.Low
-      //     : options.styleStrength === "Mid"
-      //     ? StrengthType.Mid
-      //     : StrengthType.High; // Default to High
-
-      // Set up the controlnets array based on available references
-      const controlnets = [];
-
-      // Add character reference if provided
-      if (options.characterImageId) {
-        controlnets.push({
-          initImageId: options.characterImageId,
+      const width = 768;
+      const height = 1024;
+      const modelId = DEFAULT_MODEL_ID;
+      const numImages = NUM_IMAGES;
+      const controlnets = [
+        {
+          initImageId: characterImageId,
           initImageType: InitImageType.Uploaded,
           preprocessorId: 133, // Character Reference preprocessor ID
-          strengthType: characterStrength,
-        });
-      }
+          strengthType: StrengthType.Mid,
+        },
+      ];
 
       const leonardoClient = getLeonardoClient();
 
@@ -313,9 +700,9 @@ export const leonardoImageService = {
         numImages,
         public: false,
         alchemy: true, // Enable Alchemy for better quality
-        seed: options.seed,
         controlnets,
       });
+      console.log("image generation result:", result);
 
       // Extract generation ID
       const generationId = result.object?.sdGenerationJob?.generationId;
@@ -357,4 +744,163 @@ export const leonardoImageService = {
       };
     }
   },
+  // async generateImage(
+  //   prompt: string,
+  //   characterImageId: string
+  // ): Promise<ImageGenerationResult> {
+  //   try {
+  //     console.log("generate image with the prompt:", prompt);
+
+  //     // TEMPORARY TEST: Use the test image directly instead of the uploaded one
+  //     const testImageUrl = "http://localhost:3000/testImage2.png";
+  //     console.log("USING TEST IMAGE FOR DEBUGGING:", testImageUrl);
+
+  //     // Upload the test image instead
+  //     const leonardoClient = getLeonardoClient();
+
+  //     // Get a presigned URL for upload
+  //     const characterUploadResponse =
+  //       await leonardoClient.initImages.uploadInitImage({
+  //         extension: "png",
+  //       });
+
+  //     if (!characterUploadResponse.object?.uploadInitImage) {
+  //       throw new Error("Failed to get presigned URL for character upload");
+  //     }
+
+  //     const { uploadInitImage: characterUploadData } =
+  //       characterUploadResponse.object;
+
+  //     if (
+  //       !characterUploadData.id ||
+  //       !characterUploadData.url ||
+  //       !characterUploadData.fields
+  //     ) {
+  //       throw new Error("Missing required fields in character upload response");
+  //     }
+
+  //     // Use the same upload function as in the test route
+  //     const imageResponse = await fetch(testImageUrl);
+  //     if (!imageResponse.ok) {
+  //       throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+  //     }
+  //     const imageBlob = await imageResponse.blob();
+
+  //     // Create FormData with ordered fields
+  //     const formData = new FormData();
+  //     const fields =
+  //       typeof characterUploadData.fields === "string"
+  //         ? JSON.parse(characterUploadData.fields)
+  //         : characterUploadData.fields;
+
+  //     // Make sure 'key' is added first
+  //     if (fields.key) {
+  //       formData.append("key", fields.key);
+  //     }
+
+  //     // Add the rest of the fields in a specific order (like in test route)
+  //     const fieldOrder = [
+  //       "Content-Type",
+  //       "bucket",
+  //       "Policy",
+  //       "X-Amz-Algorithm",
+  //       "X-Amz-Credential",
+  //       "X-Amz-Date",
+  //       "X-Amz-Security-Token",
+  //       "X-Amz-Signature",
+  //     ];
+
+  //     // Add fields in the specified order
+  //     fieldOrder.forEach((fieldName) => {
+  //       if (fields[fieldName]) {
+  //         formData.append(fieldName, fields[fieldName]);
+  //       }
+  //     });
+
+  //     // Add any remaining fields not in our order list
+  //     Object.entries(fields).forEach(([key, value]) => {
+  //       if (key !== "key" && !fieldOrder.includes(key)) {
+  //         formData.append(key, value as string);
+  //       }
+  //     });
+
+  //     // Add the file last
+  //     formData.append("file", imageBlob, "characterImage.png");
+
+  //     // Send without headers
+  //     const uploadResult = await fetch(characterUploadData.url, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     if (!uploadResult.ok) {
+  //       throw new Error(`Failed to upload image: ${uploadResult.statusText}`);
+  //     }
+
+  //     // Extract the ID from the fields
+  //     const testCharacterImageId = fields.key.split("/").pop().split(".")[0];
+  //     console.log("Using test character image ID:", testCharacterImageId);
+
+  //     // Continue with the same generation process but use the new ID
+  //     const result = await leonardoClient.image.createGeneration({
+  //       height: 1024,
+  //       width: 768,
+  //       modelId: DEFAULT_MODEL_ID,
+  //       prompt,
+  //       numImages: NUM_IMAGES,
+  //       public: false,
+  //       alchemy: true, // Enable Alchemy for better quality
+  //       controlnets: [
+  //         {
+  //           initImageId: testCharacterImageId, // Use the test image ID instead
+  //           initImageType: InitImageType.Uploaded,
+  //           preprocessorId: 133, // Character Reference Id
+  //           strengthType: StrengthType.Mid,
+  //         },
+  //       ],
+  //     });
+
+  //     console.log("image generation result:", result);
+
+  //     // Extract generation ID
+  //     const generationId = result.object?.sdGenerationJob?.generationId;
+  //     // Extract API credit cost
+  //     const apiCreditCost = result.object?.sdGenerationJob?.apiCreditCost;
+
+  //     if (!generationId) {
+  //       return {
+  //         success: false,
+  //         error: "Failed to get generation ID from Leonardo API",
+  //       };
+  //     }
+
+  //     logger.info(
+  //       {
+  //         generationId,
+  //       },
+  //       "Image generation started successfully"
+  //     );
+
+  //     return {
+  //       success: true,
+  //       generationId,
+  //       estimatedTime: 20, // Approximate time in seconds
+  //       apiCreditCost: apiCreditCost || 0,
+  //     };
+  //   } catch (error) {
+  //     logger.error(
+  //       {
+  //         error,
+  //         prompt: prompt.substring(0, 100) + (prompt.length > 100 ? "..." : ""),
+  //       },
+  //       "Error generating image"
+  //     );
+
+  //     return {
+  //       success: false,
+  //       error:
+  //         error instanceof Error ? error.message : "Unknown error occurred",
+  //     };
+  //   }
+  // },
 };

@@ -1,206 +1,3 @@
-// "use client";
-
-// import React from "react";
-// import Image from "next/image";
-// import useBookStore from "@/store/useBookPreviewStore";
-// import { FiEdit, FiImage, FiLock } from "react-icons/fi";
-// import { TooltipButton } from "@/components/common/TooltipButton";
-// import { BookStatus, PageType } from "@/types/book";
-
-// export interface BookPageProps {
-//   pageNumber: number;
-//   type: PageType;
-//   textContent?: string | null;
-//   imageUrl?: string | null;
-//   pageId: string; // Add pageId prop to identify the page
-// }
-
-// const BookPage = React.forwardRef<HTMLDivElement, BookPageProps>(
-//   ({ pageNumber, type, textContent, imageUrl, pageId }, ref) => {
-//     // Get edit mode state and actions from the store
-//     const isEditMode = useBookStore((state) => state.isEditMode);
-//     const setCurrentlyEditing = useBookStore(
-//       (state) => state.setCurrentlyEditing
-//     );
-//     // Ready for print status - Dont display edit buttons
-//     const bookStatus = useBookStore((state) => state.book?.status);
-
-//     const isReadyForPrint = bookStatus === BookStatus.READY_FOR_PRINTING;
-
-//     // Handle edit button clicks
-//     const handleTextEdit = () => {
-//       setCurrentlyEditing("text", pageId);
-//     };
-
-//     const handleImageEdit = () => {
-//       setCurrentlyEditing("image", pageId);
-//     };
-//     const handleDedicationEdit = () => {
-//       setCurrentlyEditing("dedication", pageId);
-//     };
-
-//     // Dedication page
-//     if (type === PageType.DEDICATION) {
-//       return (
-//         <div
-//           className="bg-white border border-gray-200 h-full relative"
-//           ref={ref}
-//         >
-//           <div className="flex flex-col h-full">
-//             <div className="flex-1 flex items-center justify-center p-8 relative">
-//               {isEditMode && !isReadyForPrint && (
-//                 <TooltipButton
-//                   onClick={handleDedicationEdit}
-//                   tooltip="Edit dedication"
-//                   className="absolute top-4 right-4 z-20"
-//                   ariaLabel="Edit dedication"
-//                 >
-//                   <FiEdit className="w-4 h-4 text-indigo-600" />
-//                 </TooltipButton>
-//               )}
-
-//               <div className="text-center max-w-md mx-auto px-4">
-//                 <p className="text-gray-700 leading-relaxed text-lg italic font-serif relative px-8 break-words whitespace-pre-wrap overflow-hidden">
-//                   <span className="absolute left-0 top-0 text-2xl text-gray-300">
-//                     &ldquo;
-//                   </span>
-//                   {textContent || "Click to add your dedication"}
-//                   <span className="absolute right-0 bottom-0 text-2xl text-gray-300">
-//                     &rdquo;
-//                   </span>
-//                 </p>
-//               </div>
-//             </div>
-//             <div className="text-center text-xs text-gray-600 pb-3">
-//               {pageNumber}
-//             </div>
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     // General page
-//     if (type === PageType.GENERAL) {
-//       return (
-//         <div
-//           className="bg-white border border-gray-200 h-full relative"
-//           ref={ref}
-//         >
-//           <div className="flex flex-col h-full">
-//             <div className="flex-1 flex items-center justify-center p-8 relative">
-//               <p className="text-gray-400 italic text-center mx-auto max-w-md">
-//                 Turn the page to continue customizing your story →
-//               </p>
-//             </div>
-//             <div className="text-center text-xs text-gray-600 pb-3">
-//               {pageNumber}
-//             </div>
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     // Text page rendering
-//     if (type === PageType.TEXT) {
-//       return (
-//         <div
-//           className="bg-white border border-gray-200 h-full relative"
-//           ref={ref}
-//         >
-//           <div className="flex flex-col h-full">
-//             <div className="flex-1 flex items-center justify-center p-8 relative">
-//               {/* Edit text button - only show in edit mode */}
-//               {isEditMode && !isReadyForPrint && (
-//                 <TooltipButton
-//                   onClick={handleTextEdit}
-//                   tooltip="Edit text"
-//                   className="absolute top-4 right-4 z-20"
-//                   ariaLabel="Edit text"
-//                 >
-//                   <FiEdit className="w-4 h-4 text-indigo-600" />
-//                 </TooltipButton>
-//               )}
-
-//               <div className="mx-auto max-w-md w-full">
-//                 <p className="text-black leading-relaxed text-base break-words whitespace-pre-wrap">
-//                   {textContent}
-//                 </p>
-//               </div>
-//             </div>
-//             <div className="text-center text-xs text-gray-600 pb-3">
-//               {pageNumber}
-//             </div>
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     // Image page rendering
-//     return (
-//       <div
-//         className="bg-white border border-gray-200 h-full relative"
-//         ref={ref}
-//       >
-//         <div className="w-full h-full">
-//           {imageUrl ? (
-//             <div className="relative w-full h-full">
-//               <Image
-//                 src={imageUrl}
-//                 alt={`Illustration for page ${pageNumber}`}
-//                 fill
-//                 style={{ objectFit: "cover" }}
-//                 priority
-//               />
-
-//               {/* Edit image button - only show in edit mode */}
-//               {isEditMode && !isReadyForPrint && (
-//                 <TooltipButton
-//                   onClick={handleImageEdit}
-//                   tooltip="Edit image"
-//                   className="absolute bottom-16 right-4 z-20"
-//                   ariaLabel="Edit image"
-//                 >
-//                   <FiImage className="w-4 h-4 text-indigo-600" />
-//                 </TooltipButton>
-//               )}
-//             </div>
-//           ) : (
-//             <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
-//               <div className="text-center p-6 max-w-xs">
-//                 <div className="flex justify-center mb-4">
-//                   <FiLock className="w-8 h-8 text-indigo-500" />
-//                 </div>
-//                 <h3 className="font-medium text-gray-800 mb-2">
-//                   Illustration Preview
-//                 </h3>
-//                 <p className="text-gray-600 mb-2">
-//                   {bookStatus === BookStatus.ORDERED
-//                     ? "Your illustrations are being generated."
-//                     : "Additional illustrations will be generated when you order your book."}
-//                 </p>
-//                 <p className="text-sm text-indigo-600 font-medium">
-//                   {bookStatus === BookStatus.ORDERED
-//                     ? "Please wait while we bring your story to life!"
-//                     : "Finalize your book to see all illustrations."}
-//                 </p>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-
-//         <div className="absolute bottom-3 w-full text-center z-10">
-//           <div className="inline-block bg-white bg-opacity-70 px-3 py-1 rounded-full text-xs text-black">
-//             {pageNumber}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-// );
-
-// BookPage.displayName = "BookPage";
-
-// export default BookPage;
 "use client";
 import React, { memo, useCallback } from "react";
 import Image from "next/image";
@@ -224,7 +21,8 @@ export interface BookPageProps {
 const BookPage = React.forwardRef<HTMLDivElement, BookPageProps>(
   ({ pageNumber, type, textContent, imageUrl, pageId }, ref) => {
     // Get edit mode state and actions from the store
-    const { isEditMode, setCurrentlyEditing, book } = useBookPreviewStore();
+    const { isEditMode, setCurrentlyEditing, book, currentPageIndex } =
+      useBookPreviewStore();
     const bookStatus = book?.status;
     const isReadyForPrint = bookStatus === BookStatus.READY_FOR_PRINTING;
 
@@ -358,7 +156,6 @@ const BookPage = React.forwardRef<HTMLDivElement, BookPageProps>(
         </div>
       );
     }
-
     // Image page rendering (default)
     return (
       <div
@@ -375,7 +172,6 @@ const BookPage = React.forwardRef<HTMLDivElement, BookPageProps>(
                 alt={`Illustration for page ${pageNumber}`}
                 fill
                 style={{ objectFit: "cover" }}
-                priority={pageNumber <= 3} // Only prioritize loading first few pages
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
                 quality={85}
               />

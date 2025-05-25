@@ -132,6 +132,7 @@ import {
 } from "@/actions/payment-actions";
 import { toast } from "react-toastify";
 import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PaymentSectionProps {
   orderId: string;
@@ -148,7 +149,7 @@ export const PaymentSection = memo(function PaymentSection({
 }: PaymentSectionProps) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-
+  const router = useRouter();
   // Create PayPal order when user clicks payment button
   const handleCreatePaypalOrder = useCallback(async () => {
     try {
@@ -175,6 +176,7 @@ export const PaymentSection = memo(function PaymentSection({
         toast.success(
           "Payment successful! You'll receive a confirmation email shortly."
         );
+        router.push("/my-books");
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Payment processing failed";
@@ -185,7 +187,7 @@ export const PaymentSection = memo(function PaymentSection({
         setIsProcessingPayment(false);
       }
     },
-    [orderId]
+    [orderId, router]
   );
 
   if (!orderId) {

@@ -211,6 +211,7 @@ export const OrderReview = memo(function OrderReview({
   onBack,
 }: OrderReviewProps) {
   const totalCost = useOrderStore((state) => state.totalCost);
+
   const quantity = useOrderStore((state) => state.quantity);
 
   // Type guards with proper memoization

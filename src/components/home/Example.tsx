@@ -4,21 +4,16 @@ import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { siteConfig } from "@/config/site";
+
 import Link from "next/link";
 
 export default function Example() {
-  // Demo images - in a real implementation, you could use actual example images
-  const originalImage = "/images/demo/original-child-photo.jpg"; // Replace with actual path
-  const generatedImage = "/images/demo/ai-generated-illustration.jpg"; // Replace with actual path
-
-  // Fallback placeholder for development
-  const placeholderImage = "/placeholder.svg?height=400&width=400";
-
   // For SEO - structured data for this example section
   const demoSchema = {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    contentUrl: generatedImage,
+    contentUrl: siteConfig.images.homePage.example.after,
     description:
       "Example of AI-generated illustration from a child's photo for personalized children's books",
     name: "BookWizard AI Image Generation Example",
@@ -59,7 +54,7 @@ export default function Example() {
               <CardContent className="p-0">
                 <div className="aspect-square relative">
                   <Image
-                    src={originalImage || placeholderImage}
+                    src={siteConfig.images.homePage.example.before}
                     alt="Original photo of a child that will be transformed into a book illustration"
                     fill
                     sizes="(max-width: 768px) 100vw, 40vw"
@@ -94,11 +89,11 @@ export default function Example() {
               <CardContent className="p-0">
                 <div className="aspect-square relative">
                   <Image
-                    src={generatedImage || placeholderImage}
+                    src={siteConfig.images.homePage.example.after}
                     alt="AI-generated book illustration transformed from the original photo"
                     fill
                     sizes="(max-width: 768px) 100vw, 40vw"
-                    className="object-cover"
+                    className="object-center"
                     placeholder="blur"
                     blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWRlOWZlIj48L3JlY3Q+PC9zdmc+"
                   />

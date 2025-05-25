@@ -20,18 +20,20 @@ import {
 } from "@/types/book";
 import { Genre } from "@/generated/prisma";
 import { z } from "zod";
+import { GenreSelector } from "./GenreSelector";
+import { generateSlug } from "@/utils/slugUtils";
+import { toast } from "react-toastify";
 
-// Define the schema to exactly match BookTemplatePageCreateData
+// Define the schema
 const templatePageSchema = z.object({
   pageNumber: z.number().min(1),
   content: z.string().min(5, "Content must be at least 5 characters"),
   imagePrompt: z
     .string()
     .min(10, "Image prompt must be at least 10 characters"),
-  imageUrl: z.string(), // Required, not optional
+  imageUrl: z.string(),
 });
 
-// Define the schema to exactly match BookTemplateCreateData
 const templateSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
@@ -43,16 +45,19 @@ const templateSchema = z.object({
   published: z.boolean(),
   minAge: z.number().min(0),
   maxAge: z.number().min(0),
+  characterGender: z.enum(["boy", "girl"], {
+    required_error: "Please select a character gender",
+    invalid_type_error: "Character gender must be either 'boy' or 'girl'",
+  }),
   genres: z.array(z.string()).min(1, "Select at least one genre"),
   pages: z.array(templatePageSchema).min(1, "Add at least one page"),
 });
 
-// Default page for form - make sure it matches BookTemplatePageCreateData
 const defaultPage: BookTemplatePageCreateData = {
   pageNumber: 1,
   content: "",
   imagePrompt: "",
-  imageUrl: "/images/style/styleImageCartoon.jpg", // Default value for required field
+  imageUrl: "/images/placeholders/book-template-placeholder.jpg",
 };
 
 interface BookTemplateFormProps {
@@ -72,14 +77,16 @@ export default function BookTemplateForm({
     type: "success" | "error";
   } | null>(null);
 
-  // Set defaults ensuring all required fields have values
   const defaultValues: BookTemplateCreateData = {
     title: initialData?.title || "",
     description: initialData?.description || "",
     pageCount: initialData?.pageCount || 1,
     coverPrompt: initialData?.coverPrompt || "",
-    coverImage: initialData?.coverImage || "/images/style/styleImageAnime.jpg",
+    coverImage:
+      initialData?.coverImage ||
+      "/images/placeholders/book-template-placeholder.jpg",
     published: initialData?.published || false,
+    characterGender: initialData?.characterGender || "boy",
     minAge: initialData?.minAge || 0,
     maxAge: initialData?.maxAge || 8,
     genres: initialData?.genres || [],
@@ -93,7 +100,6 @@ export default function BookTemplateForm({
     formState: { errors },
     watch,
     setValue,
-    getValues,
   } = useForm<BookTemplateCreateData>({
     resolver: zodResolver(templateSchema),
     defaultValues,
@@ -106,13 +112,11 @@ export default function BookTemplateForm({
 
   const watchPageCount = watch("pageCount");
 
-  // Sync page count with actual pages array
   const syncPageCount = () => {
     const currentCount = fields.length;
     const targetCount = watchPageCount;
 
     if (targetCount > currentCount) {
-      // Add new pages
       for (let i = currentCount + 1; i <= targetCount; i++) {
         append({
           ...defaultPage,
@@ -120,48 +124,45 @@ export default function BookTemplateForm({
         });
       }
     } else if (targetCount < currentCount) {
-      // Remove excess pages
       for (let i = currentCount - 1; i >= targetCount; i--) {
         remove(i);
       }
     }
   };
 
-  // Form submission handler
-  const onSubmit = async () => {
-    // Get values and ensure they match BookTemplateCreateData
-    const formData = getValues();
+  const onSubmit = async (data: BookTemplateCreateData) => {
+    console.log("Form submitted!");
 
-    // Ensure imageUrl is not undefined for any page
-    const validPages: BookTemplatePageCreateData[] = formData.pages.map(
+    const validPages: BookTemplatePageCreateData[] = data.pages.map(
       (page, index) => ({
         pageNumber: index + 1,
         content: page.content,
         imagePrompt: page.imagePrompt,
-        imageUrl: page.imageUrl || "/images/style/styleImageCartoon.jpg", // Default if missing
+        imageUrl:
+          page.imageUrl || "/images/placeholders/book-template-placeholder.jpg",
       })
     );
 
-    // Create properly typed data object
     const templateData: BookTemplateCreateData = {
-      ...formData,
+      ...data,
       pages: validPages,
     };
 
     setLoading(true);
     try {
       const result = await createBookTemplate(templateData);
-
       if (result.success) {
+        const successMessage =
+          "Template created successfully! Redirecting to upload images...";
         setMessage({
-          text: "Template created successfully!",
+          text: successMessage,
           type: "success",
         });
+        toast.success(successMessage);
 
-        // Navigate back to templates list after successful creation
         setTimeout(() => {
-          router.push("/admin/templates");
-          router.refresh();
+          const templateSlug = generateSlug(templateData.title);
+          router.push(`/admin/templates/${templateSlug}/images`);
         }, 2000);
       } else {
         setMessage({
@@ -171,6 +172,7 @@ export default function BookTemplateForm({
       }
     } catch (error) {
       console.error("Error creating template:", error);
+      toast.error("Failed to create template");
       setMessage({
         text: "An unexpected error occurred",
         type: "error",
@@ -270,11 +272,6 @@ export default function BookTemplateForm({
                     type="number"
                     {...register("minAge", { valueAsNumber: true })}
                   />
-                  {errors.minAge && (
-                    <p className="text-sm text-red-500">
-                      {errors.minAge.message}
-                    </p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -284,42 +281,70 @@ export default function BookTemplateForm({
                     type="number"
                     {...register("maxAge", { valueAsNumber: true })}
                   />
-                  {errors.maxAge && (
-                    <p className="text-sm text-red-500">
-                      {errors.maxAge.message}
-                    </p>
-                  )}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Genres</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {genres.map((genre) => (
-                    <div key={genre.id} className="flex items-center space-x-2">
-                      <Controller
-                        control={control}
-                        name="genres"
-                        render={({ field }) => (
-                          <Checkbox
-                            id={`genre-${genre.id}`}
-                            checked={field.value?.includes(genre.name)}
-                            onCheckedChange={(checked) => {
-                              const currentValue = field.value || [];
-                              const newValue = checked
-                                ? [...currentValue, genre.name]
-                                : currentValue.filter(
-                                    (val) => val !== genre.name
-                                  );
-                              field.onChange(newValue);
-                            }}
-                          />
-                        )}
-                      />
-                      <Label htmlFor={`genre-${genre.id}`}>{genre.name}</Label>
+              {/* Character Gender Selection */}
+              <div className="space-y-3">
+                <Label className="text-base font-medium">
+                  Character Gender
+                </Label>
+                <Controller
+                  control={control}
+                  name="characterGender"
+                  render={({ field }) => (
+                    <div className="flex flex-col space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="gender-boy"
+                          checked={field.value === "boy"}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              field.onChange("boy");
+                            }
+                          }}
+                        />
+                        <Label htmlFor="gender-boy" className="cursor-pointer">
+                          Boy
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="gender-girl"
+                          checked={field.value === "girl"}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              field.onChange("girl");
+                            }
+                          }}
+                        />
+                        <Label htmlFor="gender-girl" className="cursor-pointer">
+                          Girl
+                        </Label>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  )}
+                />
+                {errors.characterGender && (
+                  <p className="text-sm text-red-500">
+                    {errors.characterGender.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Controller
+                  control={control}
+                  name="genres"
+                  render={({ field }) => (
+                    <GenreSelector
+                      control={control}
+                      initialGenres={genres}
+                      value={field.value || []}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
                 {errors.genres && (
                   <p className="text-sm text-red-500">
                     {errors.genres.message}
@@ -407,14 +432,9 @@ export default function BookTemplateForm({
                       </Label>
                       <Input
                         id={`pages.${index}.imageUrl`}
-                        defaultValue="/images/style/styleImageCartoon.jpg"
+                        defaultValue="/images/placeholders/book-template-placeholder.jpg"
                         {...register(`pages.${index}.imageUrl`)}
                       />
-                      {errors.pages?.[index]?.imageUrl && (
-                        <p className="text-sm text-red-500">
-                          {errors.pages[index]?.imageUrl?.message}
-                        </p>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -472,7 +492,8 @@ export default function BookTemplateForm({
 
                   <div className="text-sm text-gray-500 mb-4">
                     Ages {watch("minAge")}-{watch("maxAge")} •{" "}
-                    {watch("pageCount")} pages
+                    {watch("pageCount")} pages • Character:{" "}
+                    {watch("characterGender")}
                   </div>
 
                   <div className="mt-4 p-4 bg-gray-50 rounded">
@@ -501,6 +522,33 @@ export default function BookTemplateForm({
                   )}
                 </Button>
               </div>
+
+              {/* Simple validation error display */}
+              {Object.keys(errors).length > 0 && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <h4 className="font-medium text-red-800 mb-2">
+                    Please fix these errors:
+                  </h4>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-red-600">
+                    {errors.title && <li>Title: {errors.title.message}</li>}
+                    {errors.description && (
+                      <li>Description: {errors.description.message}</li>
+                    )}
+                    {errors.coverPrompt && (
+                      <li>Cover Prompt: {errors.coverPrompt.message}</li>
+                    )}
+                    {errors.characterGender && (
+                      <li>
+                        Character Gender: {errors.characterGender.message}
+                      </li>
+                    )}
+                    {errors.genres && <li>Genres: {errors.genres.message}</li>}
+                    {errors.pages && (
+                      <li>Check page content and image prompts</li>
+                    )}
+                  </ul>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

@@ -35,14 +35,14 @@ export const BookTemplateCard: React.FC<BookTemplateCardProps> = ({
       aria-describedby={descriptionId}
     >
       {/* Cover Image */}
-      <div className="relative h-56 w-full">
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-t-lg bg-gray-100">
         <Image
           src={imageUrl}
           alt={`Cover for ${template.title}`}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           priority={false}
-          className="transition-transform duration-300 hover:scale-105 object-cover"
+          className="transition-transform duration-300 hover:scale-105 object-contain"
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTJlOGYwIj48L3JlY3Q+PC9zdmc+"
         />
@@ -103,7 +103,7 @@ export const BookTemplateCard: React.FC<BookTemplateCardProps> = ({
         <div className="mt-auto pt-4">
           <Button asChild variant="default" className="w-full">
             <Link
-              href={`/library/template-preview/${template.id}`}
+              href={`/library/template-preview/${template.slug}`}
               aria-label={`View details for ${template.title}`}
             >
               Preview Book

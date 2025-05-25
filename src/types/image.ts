@@ -9,12 +9,8 @@ import {
  * Optional parameters for image generation
  */
 export interface GenerationOptions {
-  styleReferenceId?: string;
-  characterImageId?: string;
-  seed?: number;
+  characterImageId: string;
   characterStrength?: "Low" | "Mid" | "High";
-  styleStrength?: "Low" | "Mid" | "High";
-  modelId?: string;
   numImages?: number;
   width?: number;
   height?: number;

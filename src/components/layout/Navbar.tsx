@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, memo } from "react";
-import { Logo } from "./Logo";
+import TaleByYouLogo from "./Logo";
 import { NavLinks } from "./NavLinks";
 import { AuthSection } from "./AuthSection";
 import { MobileNavbar } from "./MobileNavbar";
@@ -54,7 +54,7 @@ export const Navbar: React.FC = memo(() => {
       <div className=" px-4 mx-auto">
         <div className="flex h-16 items-center justify-between">
           {/* Left: Logo */}
-          <Logo />
+          <TaleByYouLogo isNavbar={true} />
 
           {/* Center: Navigation Links (desktop only) */}
           <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">

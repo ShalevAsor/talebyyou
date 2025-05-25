@@ -1,27 +1,39 @@
 // src/config/site.ts
 
 export const siteConfig = {
-  name: "BookWizard", // Replace with your actual site name
+  name: "TaleByYou", // Replace with your actual site name
   description:
     "Create personalized children's books with custom characters, stories and illustrations.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://bookwizard.com", // Default fallback, but use environment variable
-  ogImage: "/images/og-default.jpg",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://talebyyou.com", // Default fallback, but use environment variable
+  ogImage: "/images/logo/og-logo.png",
   links: {
-    twitter: "https://twitter.com/bookwizard",
-    github: "https://github.com/bookwizard",
+    twitter: "https://twitter.com/talebyyou",
+    github: "https://github.com/shalevasor/talebyyou",
+    facebook: "https://facebook.com/talebyyou",
+    instagram: "https://instagram.com/talebyyou",
   },
-  creator: "BookWizard Team",
+  creator: "TaleByYou Team",
   keywords: [
     "custom books",
     "children books",
     "personalized stories",
     "custom illustration",
     "gift books",
+    "custom characters",
+    "custom illustrations",
+    "personalized gifts",
+    "children's books",
+    "custom children books",
+    "tale by you",
   ],
-  contactEmail: "hello@bookwizard.com",
+  contactEmail: "hello@talebyyou.com",
   images: {
     homePage: {
-      hero: "/images/hero.jpg",
+      hero: "https://shalev-book-store-bucket.s3.us-east-1.amazonaws.com/templates/around-the-world/page11.jpg",
+      example: {
+        before: "/images/example/before.png",
+        after: "/images/example/after.jpg",
+      },
     },
   },
 };
@@ -57,7 +69,7 @@ export function createMetadata({
         {
           url: ogImageUrl,
           width: 1200,
-          height: 630,
+          height: 720,
           alt: `${siteConfig.name} - ${
             description || "Custom children's books"
           }`,

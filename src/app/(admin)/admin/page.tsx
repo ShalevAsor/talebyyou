@@ -5,24 +5,27 @@ import {
   MetricCardSkeleton,
 } from "@/components/admin/dashboard/DashboardMetrics";
 import { getUsersCount } from "@/actions/user-actions";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { getTemplatesCount } from "@/actions/template-actions";
 import { getOrdersCount } from "@/actions/order-actions";
+import { getMaintenanceStatus } from "@/actions/maintenance-actions"; // ADD THIS
+import MaintenanceControl from "@/components/admin/MaintenanceControl"; // ADD THIS
 
 // This component handles data fetching
 async function DashboardContent() {
   // Server-side data fetching
   const usersResult = await getUsersCount();
   const templatesResult = await getTemplatesCount();
-  const ordersResult = await getOrdersCount(); // Added orders count fetching
+  const ordersResult = await getOrdersCount();
+  const maintenanceResult = await getMaintenanceStatus(); // ADD THIS
 
   // Handle errors
   if (
     !usersResult.success ||
     !templatesResult.success ||
-    !ordersResult.success
+    !ordersResult.success ||
+    !maintenanceResult.success // ADD THIS
   ) {
     return (
       <Alert variant="destructive">
@@ -35,6 +38,8 @@ async function DashboardContent() {
             ? templatesResult.error
             : !ordersResult.success
             ? ordersResult.error
+            : !maintenanceResult.success
+            ? maintenanceResult.error
             : "Failed to load dashboard data"}
         </AlertDescription>
       </Alert>
@@ -42,11 +47,17 @@ async function DashboardContent() {
   }
 
   return (
-    <DashboardMetrics
-      usersCount={usersResult.data}
-      templatesCount={templatesResult.data}
-      ordersCount={ordersResult.data}
-    />
+    <div className="space-y-6">
+      {" "}
+      {/* ADD WRAPPER */}
+      <DashboardMetrics
+        usersCount={usersResult.data}
+        templatesCount={templatesResult.data}
+        ordersCount={ordersResult.data}
+      />
+      {/* ADD MAINTENANCE CONTROL */}
+      <MaintenanceControl initialConfig={maintenanceResult.data.config} />
+    </div>
   );
 }
 

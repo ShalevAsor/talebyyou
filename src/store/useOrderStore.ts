@@ -21,6 +21,7 @@ interface OrderState {
   // Actions
   initializeOrder: (bookId: string) => void;
   setStep: (step: OrderStep) => void;
+  setTotalCost: (cost: string) => void;
   setProductType: (type: ProductType) => void;
   setFormData: (data: CheckoutFormData | null) => void;
   setOrderId: (id: string | null) => void;
@@ -163,6 +164,11 @@ export const useOrderStore = create<OrderState>()(
               quantity, // Store quantity in cache
             },
           },
+        });
+      },
+      setTotalCost: (cost: string) => {
+        set({
+          totalCost: cost,
         });
       },
 

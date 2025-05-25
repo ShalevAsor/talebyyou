@@ -8123,11 +8123,13 @@ export namespace Prisma {
   export type BookTemplateMinAggregateOutputType = {
     id: string | null
     title: string | null
+    slug: string | null
     description: string | null
     pageCount: number | null
     published: boolean | null
     coverImage: string | null
     coverPrompt: string | null
+    characterGender: string | null
     minAge: number | null
     maxAge: number | null
     createdAt: Date | null
@@ -8137,11 +8139,13 @@ export namespace Prisma {
   export type BookTemplateMaxAggregateOutputType = {
     id: string | null
     title: string | null
+    slug: string | null
     description: string | null
     pageCount: number | null
     published: boolean | null
     coverImage: string | null
     coverPrompt: string | null
+    characterGender: string | null
     minAge: number | null
     maxAge: number | null
     createdAt: Date | null
@@ -8151,11 +8155,13 @@ export namespace Prisma {
   export type BookTemplateCountAggregateOutputType = {
     id: number
     title: number
+    slug: number
     description: number
     pageCount: number
     published: number
     coverImage: number
     coverPrompt: number
+    characterGender: number
     minAge: number
     maxAge: number
     createdAt: number
@@ -8179,11 +8185,13 @@ export namespace Prisma {
   export type BookTemplateMinAggregateInputType = {
     id?: true
     title?: true
+    slug?: true
     description?: true
     pageCount?: true
     published?: true
     coverImage?: true
     coverPrompt?: true
+    characterGender?: true
     minAge?: true
     maxAge?: true
     createdAt?: true
@@ -8193,11 +8201,13 @@ export namespace Prisma {
   export type BookTemplateMaxAggregateInputType = {
     id?: true
     title?: true
+    slug?: true
     description?: true
     pageCount?: true
     published?: true
     coverImage?: true
     coverPrompt?: true
+    characterGender?: true
     minAge?: true
     maxAge?: true
     createdAt?: true
@@ -8207,11 +8217,13 @@ export namespace Prisma {
   export type BookTemplateCountAggregateInputType = {
     id?: true
     title?: true
+    slug?: true
     description?: true
     pageCount?: true
     published?: true
     coverImage?: true
     coverPrompt?: true
+    characterGender?: true
     minAge?: true
     maxAge?: true
     createdAt?: true
@@ -8308,11 +8320,13 @@ export namespace Prisma {
   export type BookTemplateGroupByOutputType = {
     id: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender: string
     minAge: number
     maxAge: number
     createdAt: Date
@@ -8341,11 +8355,13 @@ export namespace Prisma {
   export type BookTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
+    slug?: boolean
     description?: boolean
     pageCount?: boolean
     published?: boolean
     coverImage?: boolean
     coverPrompt?: boolean
+    characterGender?: boolean
     minAge?: boolean
     maxAge?: boolean
     createdAt?: boolean
@@ -8359,11 +8375,13 @@ export namespace Prisma {
   export type BookTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
+    slug?: boolean
     description?: boolean
     pageCount?: boolean
     published?: boolean
     coverImage?: boolean
     coverPrompt?: boolean
+    characterGender?: boolean
     minAge?: boolean
     maxAge?: boolean
     createdAt?: boolean
@@ -8373,11 +8391,13 @@ export namespace Prisma {
   export type BookTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
+    slug?: boolean
     description?: boolean
     pageCount?: boolean
     published?: boolean
     coverImage?: boolean
     coverPrompt?: boolean
+    characterGender?: boolean
     minAge?: boolean
     maxAge?: boolean
     createdAt?: boolean
@@ -8387,18 +8407,20 @@ export namespace Prisma {
   export type BookTemplateSelectScalar = {
     id?: boolean
     title?: boolean
+    slug?: boolean
     description?: boolean
     pageCount?: boolean
     published?: boolean
     coverImage?: boolean
     coverPrompt?: boolean
+    characterGender?: boolean
     minAge?: boolean
     maxAge?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BookTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "pageCount" | "published" | "coverImage" | "coverPrompt" | "minAge" | "maxAge" | "createdAt" | "updatedAt", ExtArgs["result"]["bookTemplate"]>
+  export type BookTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "slug" | "description" | "pageCount" | "published" | "coverImage" | "coverPrompt" | "characterGender" | "minAge" | "maxAge" | "createdAt" | "updatedAt", ExtArgs["result"]["bookTemplate"]>
   export type BookTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pages?: boolean | BookTemplate$pagesArgs<ExtArgs>
     books?: boolean | BookTemplate$booksArgs<ExtArgs>
@@ -8418,11 +8440,13 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       title: string
+      slug: string
       description: string
       pageCount: number
       published: boolean
       coverImage: string
       coverPrompt: string
+      characterGender: string
       minAge: number
       maxAge: number
       createdAt: Date
@@ -8855,11 +8879,13 @@ export namespace Prisma {
   interface BookTemplateFieldRefs {
     readonly id: FieldRef<"BookTemplate", 'String'>
     readonly title: FieldRef<"BookTemplate", 'String'>
+    readonly slug: FieldRef<"BookTemplate", 'String'>
     readonly description: FieldRef<"BookTemplate", 'String'>
     readonly pageCount: FieldRef<"BookTemplate", 'Int'>
     readonly published: FieldRef<"BookTemplate", 'Boolean'>
     readonly coverImage: FieldRef<"BookTemplate", 'String'>
     readonly coverPrompt: FieldRef<"BookTemplate", 'String'>
+    readonly characterGender: FieldRef<"BookTemplate", 'String'>
     readonly minAge: FieldRef<"BookTemplate", 'Int'>
     readonly maxAge: FieldRef<"BookTemplate", 'Int'>
     readonly createdAt: FieldRef<"BookTemplate", 'DateTime'>
@@ -17033,11 +17059,13 @@ export namespace Prisma {
   export const BookTemplateScalarFieldEnum: {
     id: 'id',
     title: 'title',
+    slug: 'slug',
     description: 'description',
     pageCount: 'pageCount',
     published: 'published',
     coverImage: 'coverImage',
     coverPrompt: 'coverPrompt',
+    characterGender: 'characterGender',
     minAge: 'minAge',
     maxAge: 'maxAge',
     createdAt: 'createdAt',
@@ -17851,11 +17879,13 @@ export namespace Prisma {
     NOT?: BookTemplateWhereInput | BookTemplateWhereInput[]
     id?: StringFilter<"BookTemplate"> | string
     title?: StringFilter<"BookTemplate"> | string
+    slug?: StringFilter<"BookTemplate"> | string
     description?: StringFilter<"BookTemplate"> | string
     pageCount?: IntFilter<"BookTemplate"> | number
     published?: BoolFilter<"BookTemplate"> | boolean
     coverImage?: StringFilter<"BookTemplate"> | string
     coverPrompt?: StringFilter<"BookTemplate"> | string
+    characterGender?: StringFilter<"BookTemplate"> | string
     minAge?: IntFilter<"BookTemplate"> | number
     maxAge?: IntFilter<"BookTemplate"> | number
     createdAt?: DateTimeFilter<"BookTemplate"> | Date | string
@@ -17868,11 +17898,13 @@ export namespace Prisma {
   export type BookTemplateOrderByWithRelationInput = {
     id?: SortOrder
     title?: SortOrder
+    slug?: SortOrder
     description?: SortOrder
     pageCount?: SortOrder
     published?: SortOrder
     coverImage?: SortOrder
     coverPrompt?: SortOrder
+    characterGender?: SortOrder
     minAge?: SortOrder
     maxAge?: SortOrder
     createdAt?: SortOrder
@@ -17885,6 +17917,7 @@ export namespace Prisma {
   export type BookTemplateWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     title?: string
+    slug?: string
     AND?: BookTemplateWhereInput | BookTemplateWhereInput[]
     OR?: BookTemplateWhereInput[]
     NOT?: BookTemplateWhereInput | BookTemplateWhereInput[]
@@ -17893,6 +17926,7 @@ export namespace Prisma {
     published?: BoolFilter<"BookTemplate"> | boolean
     coverImage?: StringFilter<"BookTemplate"> | string
     coverPrompt?: StringFilter<"BookTemplate"> | string
+    characterGender?: StringFilter<"BookTemplate"> | string
     minAge?: IntFilter<"BookTemplate"> | number
     maxAge?: IntFilter<"BookTemplate"> | number
     createdAt?: DateTimeFilter<"BookTemplate"> | Date | string
@@ -17900,16 +17934,18 @@ export namespace Prisma {
     pages?: TemplatePageContentListRelationFilter
     books?: BookListRelationFilter
     genres?: GenreListRelationFilter
-  }, "id" | "title">
+  }, "id" | "title" | "slug">
 
   export type BookTemplateOrderByWithAggregationInput = {
     id?: SortOrder
     title?: SortOrder
+    slug?: SortOrder
     description?: SortOrder
     pageCount?: SortOrder
     published?: SortOrder
     coverImage?: SortOrder
     coverPrompt?: SortOrder
+    characterGender?: SortOrder
     minAge?: SortOrder
     maxAge?: SortOrder
     createdAt?: SortOrder
@@ -17927,11 +17963,13 @@ export namespace Prisma {
     NOT?: BookTemplateScalarWhereWithAggregatesInput | BookTemplateScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"BookTemplate"> | string
     title?: StringWithAggregatesFilter<"BookTemplate"> | string
+    slug?: StringWithAggregatesFilter<"BookTemplate"> | string
     description?: StringWithAggregatesFilter<"BookTemplate"> | string
     pageCount?: IntWithAggregatesFilter<"BookTemplate"> | number
     published?: BoolWithAggregatesFilter<"BookTemplate"> | boolean
     coverImage?: StringWithAggregatesFilter<"BookTemplate"> | string
     coverPrompt?: StringWithAggregatesFilter<"BookTemplate"> | string
+    characterGender?: StringWithAggregatesFilter<"BookTemplate"> | string
     minAge?: IntWithAggregatesFilter<"BookTemplate"> | number
     maxAge?: IntWithAggregatesFilter<"BookTemplate"> | number
     createdAt?: DateTimeWithAggregatesFilter<"BookTemplate"> | Date | string
@@ -19157,11 +19195,13 @@ export namespace Prisma {
   export type BookTemplateCreateInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -19174,11 +19214,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedCreateInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -19191,11 +19233,13 @@ export namespace Prisma {
   export type BookTemplateUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19208,11 +19252,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19225,11 +19271,13 @@ export namespace Prisma {
   export type BookTemplateCreateManyInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -19239,11 +19287,13 @@ export namespace Prisma {
   export type BookTemplateUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19253,11 +19303,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20652,11 +20704,13 @@ export namespace Prisma {
   export type BookTemplateCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
+    slug?: SortOrder
     description?: SortOrder
     pageCount?: SortOrder
     published?: SortOrder
     coverImage?: SortOrder
     coverPrompt?: SortOrder
+    characterGender?: SortOrder
     minAge?: SortOrder
     maxAge?: SortOrder
     createdAt?: SortOrder
@@ -20672,11 +20726,13 @@ export namespace Prisma {
   export type BookTemplateMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
+    slug?: SortOrder
     description?: SortOrder
     pageCount?: SortOrder
     published?: SortOrder
     coverImage?: SortOrder
     coverPrompt?: SortOrder
+    characterGender?: SortOrder
     minAge?: SortOrder
     maxAge?: SortOrder
     createdAt?: SortOrder
@@ -20686,11 +20742,13 @@ export namespace Prisma {
   export type BookTemplateMinOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
+    slug?: SortOrder
     description?: SortOrder
     pageCount?: SortOrder
     published?: SortOrder
     coverImage?: SortOrder
     coverPrompt?: SortOrder
+    characterGender?: SortOrder
     minAge?: SortOrder
     maxAge?: SortOrder
     createdAt?: SortOrder
@@ -22989,11 +23047,13 @@ export namespace Prisma {
   export type BookTemplateCreateWithoutGenresInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -23005,11 +23065,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedCreateWithoutGenresInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -23045,11 +23107,13 @@ export namespace Prisma {
     NOT?: BookTemplateScalarWhereInput | BookTemplateScalarWhereInput[]
     id?: StringFilter<"BookTemplate"> | string
     title?: StringFilter<"BookTemplate"> | string
+    slug?: StringFilter<"BookTemplate"> | string
     description?: StringFilter<"BookTemplate"> | string
     pageCount?: IntFilter<"BookTemplate"> | number
     published?: BoolFilter<"BookTemplate"> | boolean
     coverImage?: StringFilter<"BookTemplate"> | string
     coverPrompt?: StringFilter<"BookTemplate"> | string
+    characterGender?: StringFilter<"BookTemplate"> | string
     minAge?: IntFilter<"BookTemplate"> | number
     maxAge?: IntFilter<"BookTemplate"> | number
     createdAt?: DateTimeFilter<"BookTemplate"> | Date | string
@@ -23126,11 +23190,13 @@ export namespace Prisma {
   export type BookTemplateCreateWithoutBooksInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -23142,11 +23208,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedCreateWithoutBooksInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -23499,11 +23567,13 @@ export namespace Prisma {
   export type BookTemplateUpdateWithoutBooksInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23515,11 +23585,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedUpdateWithoutBooksInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24121,11 +24193,13 @@ export namespace Prisma {
   export type BookTemplateCreateWithoutPagesInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -24137,11 +24211,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedCreateWithoutPagesInput = {
     id?: string
     title: string
+    slug: string
     description: string
     pageCount: number
     published: boolean
     coverImage: string
     coverPrompt: string
+    characterGender?: string
     minAge?: number
     maxAge?: number
     createdAt?: Date | string
@@ -24169,11 +24245,13 @@ export namespace Prisma {
   export type BookTemplateUpdateWithoutPagesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24185,11 +24263,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedUpdateWithoutPagesInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25499,11 +25579,13 @@ export namespace Prisma {
   export type BookTemplateUpdateWithoutGenresInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25515,11 +25597,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedUpdateWithoutGenresInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25531,11 +25615,13 @@ export namespace Prisma {
   export type BookTemplateUncheckedUpdateManyWithoutGenresInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pageCount?: IntFieldUpdateOperationsInput | number
     published?: BoolFieldUpdateOperationsInput | boolean
     coverImage?: StringFieldUpdateOperationsInput | string
     coverPrompt?: StringFieldUpdateOperationsInput | string
+    characterGender?: StringFieldUpdateOperationsInput | string
     minAge?: IntFieldUpdateOperationsInput | number
     maxAge?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

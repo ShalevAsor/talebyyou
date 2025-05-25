@@ -7,16 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Plus } from "lucide-react"; // Removed Loader2 since it's not used
-import { Genre, BookTemplate } from "@/generated/prisma";
 import { TemplateList } from "./TemplateList";
 import { TemplateManagementTools } from "./TemplateManagementTools";
-
-type TemplateWithGenres = BookTemplate & {
-  genres: Genre[];
-};
+import { BookTemplateFull } from "@/types/book";
 
 interface TemplatesClientProps {
-  initialTemplates: TemplateWithGenres[];
+  initialTemplates: BookTemplateFull[];
 }
 
 export function TemplatesClient({ initialTemplates }: TemplatesClientProps) {
@@ -26,7 +22,7 @@ export function TemplatesClient({ initialTemplates }: TemplatesClientProps) {
     type: "success" | "error";
   } | null>(null);
   const [templates, setTemplates] =
-    useState<TemplateWithGenres[]>(initialTemplates);
+    useState<BookTemplateFull[]>(initialTemplates);
   // Removed isLoading state since it's not being used
 
   const handleTemplateDeleted = (id: string) => {

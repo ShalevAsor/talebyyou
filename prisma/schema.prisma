@@ -83,7 +83,7 @@ model Character {
   
   // Relation to book
   bookId         String       @unique
-  book           Book         @relation(fields: [bookId], references: [id])
+  book           Book         @relation(fields: [bookId], references: [id] , onDelete: Cascade)
   
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -91,12 +91,14 @@ model Character {
 // Templates for generating new books
 model BookTemplate {
   id             String       @id @default(cuid())
-  title           String      @unique
+  title          String       @unique
+  slug           String       @unique
   description    String
   pageCount      Int
   published      Boolean   
   coverImage     String         
   coverPrompt    String
+  characterGender String     @default("boy")
   minAge         Int         @default(3)  // Minimum recommended age
   maxAge         Int         @default(8)  // Maximum recommended age
   pages          TemplatePageContent[] 
@@ -140,7 +142,7 @@ model ImageGeneration {
   id             String           @id @default(cuid())
   generationId   String           @unique
   bookId         String
-  book           Book             @relation(fields: [bookId], references: [id])
+  book           Book             @relation(fields: [bookId], references: [id] , onDelete: Cascade)
   pageId         String?
   type           ImageType
   prompt         String

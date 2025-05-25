@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = createMetadata({
   title: "Terms of Use",
   description:
-    "Read the Terms of Use for BookWizard. These terms govern your use of our platform for creating personalized children's books.",
+    "Read the Terms of Use for StorySpark. These terms govern your use of our platform for creating personalized children's books with AI-powered image generation.",
 });
 
 export default function TermsOfUsePage() {

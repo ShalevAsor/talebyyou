@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { getAllTemplates } from "@/actions/template-actions";
+import { getAllBookTemplates } from "@/actions/template-actions";
 import { TemplatesClient } from "@/components/admin/template/TemplatesClient";
 
 // Loading component
@@ -21,9 +21,14 @@ function TemplatesLoading() {
 
 // Server component to fetch data
 async function TemplatesContent() {
-  const templates = await getAllTemplates();
-
-  return <TemplatesClient initialTemplates={templates} />;
+  const templates = await getAllBookTemplates({
+    publishedOnly: false, // CHANGE THIS: Show all templates in admin
+    orderBy: "newest",
+  });
+  if (!templates.success) {
+    return <div>Error: {templates.error}</div>;
+  }
+  return <TemplatesClient initialTemplates={templates.data} />;
 }
 
 // Main page component (server component)

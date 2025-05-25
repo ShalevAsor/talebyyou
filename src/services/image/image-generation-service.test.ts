@@ -1,6 +1,6 @@
 import { leonardoImageService } from "./image-generation-service";
 import { getLeonardoClient } from "@/lib/leonardo-ai";
-import { GenerationOptions, ImageMetadata } from "@/types/image";
+import { ImageMetadata } from "@/types/image";
 import {
   InitImageType,
   StrengthType,
@@ -23,8 +23,7 @@ jest.mock("@/lib/logger", () => ({
 
 jest.mock("@/constants/image", () => ({
   DEFAULT_MODEL_ID: "fantasy-model-id",
-  STYLE_IMAGE_REFERENCE_ID: "style-ref-123",
-  STYLE_IMAGE_REFERENCE_URL: "/images/style/styleImageAnime.jpg",
+  NUM_IMAGES: 3,
 }));
 
 // Mock global fetch
@@ -196,14 +195,14 @@ describe("Leonardo Image Service", () => {
 
       // Act
       const result = await leonardoImageService.uploadCharacterImage(
-        mockBlob,
+        mockBlob as File,
         mockMetadata
       );
 
-      // Assert
+      // Assert - The service uses "png" extension but keeps the original filename from metadata
       expect(leonardoImageService.uploadImage).toHaveBeenCalledWith(
         mockBlob,
-        "jpg",
+        "png",
         "character.jpg"
       );
       expect(result).toEqual({
@@ -222,7 +221,9 @@ describe("Leonardo Image Service", () => {
         .mockRejectedValue(new Error("Upload failed"));
 
       // Act
-      const result = await leonardoImageService.uploadCharacterImage(mockBlob);
+      const result = await leonardoImageService.uploadCharacterImage(
+        mockBlob as File
+      );
 
       // Assert
       expect(result).toEqual({
@@ -241,56 +242,14 @@ describe("Leonardo Image Service", () => {
         .mockResolvedValue("char-img-456");
 
       // Act
-      await leonardoImageService.uploadCharacterImage(mockBlob);
+      await leonardoImageService.uploadCharacterImage(mockBlob as File);
 
-      // Assert
+      // Assert - The service always uses "png" extension regardless of input
       expect(leonardoImageService.uploadImage).toHaveBeenCalledWith(
         mockBlob,
         "png",
-        expect.any(String)
+        "character.png"
       );
-    });
-  });
-
-  describe("getStyleReferenceId", () => {
-    test("should return the predefined style reference ID if available", async () => {
-      // Act
-      const styleId = await leonardoImageService.getStyleReferenceId();
-
-      // Assert
-      expect(styleId).toBe("style-ref-123"); // From mocked constants
-      expect(
-        jest.spyOn(leonardoImageService, "uploadImage")
-      ).not.toHaveBeenCalled();
-    });
-
-    test("should upload a new style reference if no IDs are available", async () => {
-      // Temporarily mock the constant with a different value
-      const originalModule = jest.requireMock("@/constants/image");
-      const originalStyleId = originalModule.STYLE_IMAGE_REFERENCE_ID;
-      originalModule.STYLE_IMAGE_REFERENCE_ID = "";
-
-      // Set environment variables
-      const originalAppUrl = process.env.NEXT_PUBLIC_APP_URL;
-      process.env.NEXT_PUBLIC_APP_URL = "https://bookapp.test";
-
-      // Mock uploadImage
-      jest
-        .spyOn(leonardoImageService, "uploadImage")
-        .mockResolvedValue("new-style-123");
-
-      try {
-        // Act
-        const styleId = await leonardoImageService.getStyleReferenceId();
-
-        // Assert
-        expect(leonardoImageService.uploadImage).toHaveBeenCalled();
-        expect(styleId).toBe("new-style-123");
-      } finally {
-        // Restore original values
-        originalModule.STYLE_IMAGE_REFERENCE_ID = originalStyleId;
-        process.env.NEXT_PUBLIC_APP_URL = originalAppUrl;
-      }
     });
   });
 
@@ -336,6 +295,7 @@ describe("Leonardo Image Service", () => {
     test("should generate an image with default options", async () => {
       // Arrange
       const prompt = "A dragon in a magical forest";
+      const characterImageId = "char-ref-123";
       const mockGenerationResponse = {
         object: {
           sdGenerationJob: {
@@ -350,19 +310,28 @@ describe("Leonardo Image Service", () => {
       );
 
       // Act
-      const result = await leonardoImageService.generateImage(prompt);
+      const result = await leonardoImageService.generateImage(
+        prompt,
+        characterImageId
+      );
 
-      // Assert
+      // Assert - Updated to match your new service implementation
       expect(mockLeonardoClient.image.createGeneration).toHaveBeenCalledWith({
         height: 1024,
         width: 768,
         modelId: DEFAULT_MODEL_ID,
         prompt,
-        numImages: 3,
+        numImages: 3, // From NUM_IMAGES constant
         public: false,
         alchemy: true,
-        seed: undefined,
-        controlnets: [], // No references provided
+        controlnets: [
+          {
+            initImageId: characterImageId,
+            initImageType: InitImageType.Uploaded,
+            preprocessorId: 133,
+            strengthType: StrengthType.Mid,
+          },
+        ],
       });
 
       expect(result).toEqual({
@@ -376,13 +345,7 @@ describe("Leonardo Image Service", () => {
     test("should include character reference when provided", async () => {
       // Arrange
       const prompt = "A wizard casting a spell";
-      const options: GenerationOptions = {
-        characterImageId: "char-ref-456",
-        characterStrength: "Mid",
-        width: 512,
-        height: 512,
-        numImages: 1,
-      };
+      const characterImageId = "char-ref-456";
 
       const mockGenerationResponse = {
         object: {
@@ -398,23 +361,25 @@ describe("Leonardo Image Service", () => {
       );
 
       // Act
-      const result = await leonardoImageService.generateImage(prompt, options);
+      const result = await leonardoImageService.generateImage(
+        prompt,
+        characterImageId
+      );
 
-      // Assert
+      // Assert - Updated to match your new service implementation
       expect(mockLeonardoClient.image.createGeneration).toHaveBeenCalledWith({
-        height: 512,
-        width: 512,
+        height: 1024,
+        width: 768,
         modelId: DEFAULT_MODEL_ID,
         prompt,
-        numImages: 1,
+        numImages: 3, // From NUM_IMAGES constant
         public: false,
         alchemy: true,
-        seed: undefined,
         controlnets: [
           {
-            initImageId: "char-ref-456",
+            initImageId: characterImageId,
             initImageType: InitImageType.Uploaded,
-            preprocessorId: 133, // Character Reference preprocessor ID
+            preprocessorId: 133,
             strengthType: StrengthType.Mid,
           },
         ],
@@ -431,12 +396,16 @@ describe("Leonardo Image Service", () => {
     test("should handle API errors gracefully", async () => {
       // Arrange
       const prompt = "A failed generation";
+      const characterImageId = "char-ref-789";
       mockLeonardoClient.image.createGeneration.mockRejectedValue(
         new Error("Generation failed: Invalid model ID")
       );
 
       // Act
-      const result = await leonardoImageService.generateImage(prompt);
+      const result = await leonardoImageService.generateImage(
+        prompt,
+        characterImageId
+      );
 
       // Assert
       expect(result).toEqual({
@@ -448,6 +417,7 @@ describe("Leonardo Image Service", () => {
     test("should handle missing generation ID in response", async () => {
       // Arrange
       const prompt = "A generation with missing ID";
+      const characterImageId = "char-ref-000";
       const mockGenerationResponse = {
         object: {
           sdGenerationJob: {
@@ -462,7 +432,10 @@ describe("Leonardo Image Service", () => {
       );
 
       // Act
-      const result = await leonardoImageService.generateImage(prompt);
+      const result = await leonardoImageService.generateImage(
+        prompt,
+        characterImageId
+      );
 
       // Assert
       expect(result).toEqual({

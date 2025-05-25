@@ -1,139 +1,193 @@
 /**
- * Terms of Use data for BookWizard
+ * Terms of Use data for TaleByYou
  * This file contains structured data for the Terms of Use page
  */
 
-export const termsLastUpdated = "May 16, 2025";
+import { siteConfig } from "@/config/site";
+
+export const termsLastUpdated = "May 22, 2025";
 
 // Main terms sections
 export const termsOfUseSections = [
   {
     id: "introduction",
     title: "Introduction",
-    content: `Welcome to BookWizard. These Terms of Use govern your use of the BookWizard website, services, and applications (collectively, the "Service"). 
-    
-By accessing or using our Service, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the Service.
+    content: `Welcome to ${siteConfig.name} ("we", "our", or "us"). These Terms of Use ("Terms") govern your access to and use of our website and services (collectively, the "Services") that allow you to create, customize, and purchase personalized children's books using AI-powered image generation.
 
-BookWizard provides a platform for creating personalized children's books through our website located at ${
-      process.env.NEXT_PUBLIC_SITE_URL || "https://bookwizard.com"
-    }.`,
+By accessing or using our Services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Services.`,
   },
   {
-    id: "user-accounts",
-    title: "User Accounts",
-    content: `You may create an account to access certain features of our Service. When you create an account, you must provide accurate and complete information. You are solely responsible for the activity that occurs on your account, and you must keep your account password secure.
+    id: "description-of-services",
+    title: "Description of Services",
+    content: `${siteConfig.name} provides an online platform that enables users to:
 
-You may also use our Service as a guest user for certain functionalities. Books created during guest sessions may be linked to your account if you choose to register at a later time.
+• Create personalized children's books using customizable templates
 
-You must notify BookWizard immediately of any breach of security or unauthorized use of your account. BookWizard will not be liable for any losses caused by any unauthorized use of your account.`,
+• Generate AI-powered illustrations and character images through Leonardo AI
+
+• Customize book content including text, characters, and dedications
+
+• Purchase digital eBooks and physical printed books
+
+• Access book creation tools and editing features
+
+Our Services are designed for creating children's books but are intended for use by adults (18 years or older).`,
   },
   {
-    id: "parental-consent",
-    title: "Parental Consent and Child Users",
-    content: `BookWizard is designed to be used by adults to create personalized books for children. By using our Service, you confirm that you are either:
+    id: "eligibility-and-account-registration",
+    title: "Eligibility and Account Registration",
+    content: `Age Requirements: You must be at least 18 years old to create an account. Parents/guardians are responsible for minors' use of our Services. Users under 18 must have parental or guardian consent.
 
-1. At least 18 years old and creating content for a child in your care, or
-2. A minor who has obtained parental consent to use our Service.
+Account Registration: You must provide accurate, current, and complete information. You are responsible for maintaining the security of your account credentials. You must notify us immediately of any unauthorized access. We reserve the right to suspend or terminate accounts that violate these Terms.
 
-Parents or legal guardians who allow minors to use our Service acknowledge that they are responsible for the minor's activity and compliance with these Terms. We recommend that parents supervise children's use of our Service.`,
+Guest Users: You may use certain features without creating an account. Guest sessions expire after 30 days of inactivity. Guest users have limited book creation allowances per session.`,
   },
   {
-    id: "content-ownership",
-    title: "Content Ownership and Intellectual Property",
-    content: `BookWizard Content: All content provided by BookWizard, including but not limited to book templates, illustrations, text, graphics, logos, and software, is the property of BookWizard or its content suppliers and is protected by international copyright, trademark, and other intellectual property laws.
+    id: "user-content-and-ai-generated-materials",
+    title: "User Content and AI-Generated Materials",
+    content: `Your Content Rights: You retain ownership of the original content you create, including text content, stories, customization inputs, character descriptions and personal details, and images you upload for character reference.
 
-User Content: You retain ownership of any personal information or personalized content you submit for book customization (such as names, character preferences, etc.). By submitting this content, you grant BookWizard a non-exclusive, royalty-free license to use, reproduce, and process this information solely for the purpose of providing our Service to you.
+AI-Generated Content Rights: Upon completion and payment, you receive full ownership and commercial rights to your personalized book, including all AI-generated illustrations created specifically for your book. You may publish, distribute, sell, or otherwise commercialize your completed books without attribution to ${siteConfig.name}.
 
-Personalized Books: When you create a personalized book through our Service, you own the specific customized version of that book. However, the underlying template, artwork style, and story structure remain the property of BookWizard.
+License to ${siteConfig.name}: By using our Services, you grant ${siteConfig.name} a non-exclusive, worldwide, royalty-free license to use your content to provide our Services, generate AI-powered images based on your inputs, create, produce, and deliver your personalized books, and use anonymized examples for promotional purposes (without personal information).
 
-You may not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of BookWizard's intellectual property, except as follows:
-
-1. Your computer may temporarily store copies in RAM incidental to accessing and viewing those materials.
-2. You may store files that are automatically cached by your web browser for display enhancement purposes.
-3. You may print or download one copy of a reasonable number of pages for your own personal, non-commercial use and not for further reproduction, publication, or distribution.`,
+Template Content: Book templates and base content remain our intellectual property. You receive a license to use template content solely for creating your personalized books.`,
   },
   {
-    id: "acceptable-use",
-    title: "Acceptable Use Policy",
-    content: `You agree not to use our Service:
+    id: "prohibited-uses-and-content",
+    title: "Prohibited Uses and Content",
+    content: `You agree not to create content that:
 
-1. In any way that violates any applicable federal, state, local, or international law or regulation.
-2. To create or request books containing inappropriate content for children, including but not limited to violent, sexual, discriminatory, or otherwise offensive material.
-3. To transmit any material that contains viruses, trojan horses, worms, or any other harmful or destructive code.
-4. To attempt to gain unauthorized access to any part of the Service, other accounts, or any other systems or networks connected to the Service.
-5. To interfere with any other user's use and enjoyment of the Service.
+• Is illegal, harmful, or violates any laws
 
-BookWizard reserves the right to review customization requests and may refuse to process those that violate these Terms or that we determine, in our sole discretion, to be inappropriate for a children's book platform.`,
+• Contains hate speech, discrimination, or harassment
+
+• Is sexually explicit or inappropriate for children's books
+
+• Infringes on third-party intellectual property rights
+
+• Includes personal information of others without consent
+
+• Promotes violence or illegal activities
+
+We reserve the right to review all content and refuse to process orders that violate our guidelines.`,
   },
   {
-    id: "payments-refunds",
-    title: "Payments, Pricing, and Refunds",
-    content: `Pricing: Prices for our products are clearly displayed on our website and are subject to change without notice. All prices are in USD unless otherwise specified.
+    id: "orders-payments-and-pricing",
+    title: "Orders, Payments, and Pricing",
+    content: `Order Process: Orders are subject to acceptance by ${siteConfig.name}. We reserve the right to refuse or cancel orders. Pricing and availability are subject to change. All payments are processed through PayPal's secure gateway.
 
-Payment: We accept payment via the methods listed on our website, which may include credit cards and PayPal. By providing payment information, you represent and warrant that you have the legal right to use the payment method you provide.
+Processing Times: AI image generation typically completes within minutes. If you experience any delays or issues with processing, please contact our support team. Physical books are printed and shipped through Lulu xPress.
 
-Taxes: Applicable sales tax may be added to your order based on your location and current tax rates.
-
-Refunds for Digital Products: Due to the personalized nature of our digital products (eBooks), all sales are final and non-refundable once the customization process is complete and the digital file has been delivered.
-
-Refunds for Physical Books: For physical books, we offer refunds in the following circumstances:
-1. The book has significant printing defects or quality issues.
-2. The book was damaged during shipping.
-3. The wrong book was shipped.
-
-To request a refund for a physical book, please contact our customer service within 14 days of receiving your order. Refunds do not include shipping costs unless the return is due to our error.`,
+Payment Terms: Payment must be received before order processing begins. All prices are in USD unless otherwise specified. You are responsible for all applicable taxes and fees.`,
   },
   {
-    id: "shipping-delivery",
-    title: "Shipping and Delivery",
-    content: `Physical Books: Production and shipping times for physical books are estimates only and are not guaranteed. Standard production time is typically 2-5 business days, with additional transit time depending on the shipping method selected.
+    id: "returns-refunds-and-cancellations",
+    title: "Returns, Refunds, and Cancellations",
+    content: `Personalized Products Exception: Due to the custom and personalized nature of our books, we do not accept returns or exchanges for change of mind. Each book is uniquely created based on your specifications.
 
-Shipping Methods: We offer various shipping methods with different estimated delivery timeframes and costs. The available shipping options and their associated costs will be presented during checkout.
+Refund Policy for Digital Products (eBooks): Refunds available within 7 days if technical issues prevent access. No refunds for change of mind after successful download.
 
-Shipping Issues: BookWizard is not responsible for delays caused by customs, postal services, or other circumstances beyond our control. If your order appears to be significantly delayed, please contact our customer service.
+Refund Policy for Physical Products: Defective items receive full refund or replacement within 30 days. Printing errors by our service receive free replacement. Customer error in customization receives no refund unless product is defective.
 
-Tracking: When available, tracking information will be provided via email once your book has been shipped.
+Cancellation Rights: You may cancel before AI generation begins (full refund). Once AI generation begins, orders cannot be cancelled. Full refund if we fail to deliver within 40 days.
 
-International Orders: For international orders, the recipient is responsible for any customs duties, taxes, or import fees that may be applied by the destination country. These are not included in our shipping fees.`,
+Refund Process: Contact customer service with order details and refunds will be processed within 5-10 business days through original payment method.`,
   },
   {
-    id: "disclaimers",
-    title: "Disclaimers and Limitation of Liability",
-    content: `Warranty Disclaimer: THE SERVICE AND ITS CONTENT ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT ANY WARRANTIES OF ANY KIND. BOOKWIZARD DISCLAIMS ALL WARRANTIES, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+    id: "ai-service-dependencies",
+    title: "AI Service Dependencies",
+    content: `We rely on Leonardo AI for image generation. Service interruptions or changes to these services may affect our ability to fulfill orders. We are not liable for delays caused by third-party AI service disruptions.
 
-Color and Appearance: BookWizard does not guarantee that the colors and appearance of your physical book will exactly match how they appear on your screen due to variations in printing processes and display settings.
-
-Service Interruptions: We do not guarantee that our Service will be uninterrupted, timely, secure, or error-free.
-
-Limitation of Liability: IN NO EVENT WILL BOOKWIZARD, ITS AFFILIATES, OR THEIR LICENSORS, SERVICE PROVIDERS, EMPLOYEES, AGENTS, OFFICERS, OR DIRECTORS BE LIABLE FOR DAMAGES OF ANY KIND ARISING FROM THE USE OF THE SERVICE, INCLUDING BUT NOT LIMITED TO DIRECT, INDIRECT, INCIDENTAL, PUNITIVE, AND CONSEQUENTIAL DAMAGES.`,
+AI Generation Limitations: AI may not perfectly interpret complex requests. Generated images are subject to AI system capabilities. AI-generated images may contain errors or inaccuracies (such as incorrect number of fingers, facial features, or other details). Some requests may be rejected by AI safety filters.`,
   },
   {
-    id: "changes-termination",
-    title: "Changes to Terms and Service Termination",
-    content: `Changes to Terms: BookWizard reserves the right to modify these Terms at any time. We will provide notice of significant changes by updating the date at the top of these Terms and by maintaining a current version of the Terms on our website. Your continued use of the Service following the posting of revised Terms means that you accept and agree to the changes.
+    id: "third-party-services",
+    title: "Third-Party Services",
+    content: `Our Services integrate with:
 
-Termination: We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason, including without limitation if you breach these Terms. Upon termination, your right to use the Service will immediately cease.
+• Clerk: Authentication and user management
 
-Survival: All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.`,
+• Leonardo AI: Image generation services
+
+• PayPal: Payment processing
+
+• Lulu xPress: Print-on-demand and shipping
+
+• Amazon Web Services (AWS): Cloud hosting and storage
+
+These services have their own terms and privacy policies that may apply to your use.`,
   },
   {
-    id: "governing-law",
+    id: "disclaimers-and-limitations-of-liability",
+    title: "Disclaimers and Limitations of Liability",
+    content: `Service Availability: Services are provided "as is" and "as available." We do not guarantee uninterrupted or error-free service and reserve the right to modify or discontinue services.
+
+AI Generation Disclaimers: We do not guarantee specific artistic outcomes from AI generation. AI-generated content quality depends on input quality and AI capabilities. Results may vary based on AI system performance and limitations.
+
+Limitation of Liability: TO THE MAXIMUM EXTENT PERMITTED BY LAW: Our total liability for any claim is limited to the amount you paid for the specific order. We are not liable for indirect, incidental, or consequential damages. We are not responsible for third-party service failures.`,
+  },
+  {
+    id: "intellectual-property",
+    title: "Intellectual Property",
+    content: `All intellectual property rights in our Services, including templates, website content, and software, are owned by ${siteConfig.name} or our licensors. You may not reproduce, distribute, or create derivative works from our proprietary content.`,
+  },
+  {
+    id: "indemnification",
+    title: "Indemnification",
+    content: `You agree to indemnify and hold harmless ${siteConfig.name} from any claims, damages, or expenses arising from:
+
+• Your use of our Services
+
+• Your violation of these Terms
+
+• Content you create or upload
+
+• Your violation of applicable laws`,
+  },
+  {
+    id: "termination",
+    title: "Termination",
+    content: `Termination by You: You may terminate your account at any time. Termination does not cancel pending orders, and outstanding payments remain due.
+
+Termination by Us: We may suspend or terminate your access if you violate these Terms, engage in fraudulent activities, or interfere with our Services.`,
+  },
+  {
+    id: "privacy",
+    title: "Privacy",
+    content: `Your privacy is important to us. Our collection, use, and protection of your personal information is governed by our Privacy Policy. Please review our Privacy Policy to understand our privacy practices.`,
+  },
+  {
+    id: "governing-law-and-dispute-resolution",
     title: "Governing Law and Dispute Resolution",
-    content: `These Terms shall be governed by and construed in accordance with the laws of the State of New York, without regard to its conflict of law provisions.
+    content: `Governing Law: These Terms are governed by applicable law, without regard to conflict of law principles.
 
-Any dispute arising out of or relating to these Terms or your use of the Service shall first be attempted to be resolved through informal negotiation. If the dispute cannot be resolved through negotiation, it shall be subject to binding arbitration in New York, New York.
+Dispute Resolution: Informal Resolution: We encourage contacting us first to resolve disputes informally at ${siteConfig.contactEmail}.
 
-Any legal suit, action, or proceeding arising out of, or related to, these Terms or the Service shall be instituted exclusively in the federal courts of the United States or the courts of the State of New York.`,
+Arbitration: If informal resolution fails, disputes will be resolved through binding arbitration, except for small claims court matters and intellectual property disputes.
+
+Class Action Waiver: You agree to resolve disputes individually and waive rights to class action lawsuits.`,
   },
   {
-    id: "contact-us",
-    title: "Contact Us",
-    content: `If you have any questions about these Terms, please contact us at:
+    id: "general-provisions",
+    title: "General Provisions",
+    content: `Entire Agreement: These Terms, together with our Privacy Policy, constitute the entire agreement between you and ${siteConfig.name}.
 
-Email: ${process.env.NEXT_PUBLIC_CONTACT_EMAIL || "support@bookwizard.com"}
+Modifications: We may modify these Terms at any time. Continued use of our Services after changes constitutes acceptance of the new Terms.
 
-BookWizard
-[Your Business Address]`,
+Severability: If any provision is found unenforceable, the remaining provisions will continue in full force.`,
+  },
+  {
+    id: "contact-information",
+    title: "Contact Information",
+    content: `For questions about these Terms or our Services:
+
+General Support: ${siteConfig.contactEmail}
+Legal Matters: legal@talebyyou.com
+
+Last Updated: ${termsLastUpdated}
+
+By using ${siteConfig.name}, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use.`,
   },
 ];
 
@@ -141,7 +195,7 @@ BookWizard
 export const relatedLinks = [
   {
     title: "Privacy Policy",
-    href: "/privacy-policy",
+    href: "/privacy",
     description: "Learn how we collect and use your information.",
   },
   {

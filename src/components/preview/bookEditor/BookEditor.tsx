@@ -16,6 +16,7 @@
 // import ImageEditor from "../editors/ImageEditor";
 // import { memo } from "react";
 // import { Button } from "@/components/ui/button";
+// import { debounce } from "lodash";
 
 // // Define PageFlip interface for proper typing
 // interface PageFlip {
@@ -135,45 +136,77 @@
 //     setCurrentlyEditing(null, null);
 //   }, [setCurrentlyEditing]);
 
-//   // Handle page changes - wrapped in useCallback
+//   // Handle page changes - defer state update during animation
 //   const handlePageChange = useCallback(
 //     (e: { data: number }) => {
-//       const newPage = e.data;
-//       setCurrentPage(newPage);
+//       // Get the current state of the page flip
+//       const flipState = bookRef.current?.pageFlip().getState?.() || "";
+
+//       // If the book is still flipping, defer the state update
+//       if (flipState === "flipping") {
+//         // Use requestAnimationFrame to defer the update until after the animation completes
+//         requestAnimationFrame(() => {
+//           // Add a small additional delay for smoother animation
+//           setTimeout(() => {
+//             setCurrentPage(e.data);
+//           }, 50);
+//         });
+//       } else {
+//         // If not flipping, update immediately
+//         setCurrentPage(e.data);
+//       }
 //     },
 //     [setCurrentPage]
 //   );
 
-//   // Navigation functions - wrapped in useCallback
-//   const nextPage = useCallback(() => {
-//     if (bookRef.current) {
-//       try {
-//         bookRef.current.pageFlip().flipNext();
-//       } catch (error) {
-//         console.error("Error flipping to next page:", error);
-//       }
-//     }
-//   }, []);
+//   // Navigation functions - wrapped in useCallback and debounced
+//   const nextPage = useMemo(
+//     () =>
+//       debounce(() => {
+//         if (bookRef.current) {
+//           try {
+//             bookRef.current.pageFlip().flipNext();
+//           } catch (error) {
+//             console.error("Error flipping to next page:", error);
+//           }
+//         }
+//       }, 100),
+//     [
+//       /* dependencies here */
+//     ]
+//   );
 
-//   const prevPage = useCallback(() => {
-//     if (bookRef.current) {
-//       try {
-//         bookRef.current.pageFlip().flipPrev();
-//       } catch (error) {
-//         console.error("Error flipping to previous page:", error);
-//       }
-//     }
-//   }, []);
+//   const prevPage = useMemo(
+//     () =>
+//       debounce(() => {
+//         if (bookRef.current) {
+//           try {
+//             bookRef.current.pageFlip().flipPrev();
+//           } catch (error) {
+//             console.error("Error flipping to previous page:", error);
+//           }
+//         }
+//       }, 100),
+//     [
+//       /* dependencies here */
+//     ]
+//   );
 
-//   const goToPage = useCallback((pageNumber: number) => {
-//     if (bookRef.current) {
-//       try {
-//         bookRef.current.pageFlip().flip(pageNumber);
-//       } catch (error) {
-//         console.error("Error flipping to page:", error);
-//       }
-//     }
-//   }, []);
+//   const goToPage = useMemo(
+//     () =>
+//       debounce((pageNumber: number) => {
+//         if (bookRef.current) {
+//           try {
+//             bookRef.current.pageFlip().flip(pageNumber);
+//           } catch (error) {
+//             console.error("Error flipping to page:", error);
+//           }
+//         }
+//       }, 100),
+//     [
+//       /* dependencies here */
+//     ]
+//   );
 
 //   // Memoize sorted pages to prevent unnecessary re-sorting on each render
 //   const sortedPages = useMemo(() => {
@@ -185,6 +218,46 @@
 //   const totalPages = useMemo(() => {
 //     return bookPreview?.pages.length ? bookPreview.pages.length + 2 : 2;
 //   }, [bookPreview?.pages.length]);
+
+//   // Preload images for adjacent pages
+//   useEffect(() => {
+//     if (!bookPreview?.pages) return;
+
+//     // Function to preload an image
+//     const preloadImage = (src: string) => {
+//       if (!src) return;
+//       const img = new Image();
+//       img.src = src;
+//     };
+
+//     // Determine current page in the book (accounting for cover)
+//     // Cover is at index 0, content pages start at index 1
+//     const currentContentIndex = currentPageIndex - 1;
+
+//     // Preload next and previous page images
+//     if (currentContentIndex >= 0 && currentContentIndex < sortedPages.length) {
+//       // Current page image
+//       const currentPage = sortedPages[currentContentIndex];
+//       if (currentPage?.imageUrl) preloadImage(currentPage.imageUrl);
+
+//       // Next page image
+//       if (currentContentIndex + 1 < sortedPages.length) {
+//         const nextPage = sortedPages[currentContentIndex + 1];
+//         if (nextPage?.imageUrl) preloadImage(nextPage.imageUrl);
+//       }
+
+//       // Previous page image
+//       if (currentContentIndex - 1 >= 0) {
+//         const prevPage = sortedPages[currentContentIndex - 1];
+//         if (prevPage?.imageUrl) preloadImage(prevPage.imageUrl);
+//       }
+//     }
+
+//     // Preload cover image if we're at or near it
+//     if (currentPageIndex <= 1 && bookPreview.coverImage) {
+//       preloadImage(bookPreview.coverImage);
+//     }
+//   }, [currentPageIndex, sortedPages, bookPreview]);
 
 //   // Determine if the user is editing a component - memoized calculations
 //   const editingStates = useMemo(() => {
@@ -408,15 +481,15 @@
 //           usePortrait={true}
 //           startPage={currentPageIndex}
 //           drawShadow={true}
-//           flippingTime={800}
+//           flippingTime={700} // Slightly faster animation for smoother experience
 //           useMouseEvents={false}
 //           autoSize={true}
 //           clickEventForward={false}
-//           style={{}} // Empty style object or your custom styles
-//           startZIndex={0} // Starting z-index for the pages
-//           swipeDistance={10} // How many pixels needed for a swipe to trigger page turn
-//           showPageCorners={true} // Whether to show page corners or not
-//           disableFlipByClick={true} // Setting to false enables clicking to flip pages
+//           style={{ perspective: "1000px" }} // Improved 3D rendering
+//           startZIndex={0}
+//           swipeDistance={10}
+//           showPageCorners={true}
+//           disableFlipByClick={true}
 //         >
 //           {/* Front cover - Memoized */}
 //           <MemoizedBookPageCover
@@ -519,12 +592,29 @@ const BookEditor: React.FC = () => {
   // Client-side rendering state to prevent hydration issues
   const [isClient, setIsClient] = useState(false);
 
+  // Screen size state for responsive navigation
+  const [isLargeScreen, setIsLargeScreen] = useState(true);
+
   // Reference to the flip book component
   const bookRef = useRef<PageFlip>(null);
 
-  // Set client-side rendering flag
+  // Set client-side rendering flag and detect screen size
   useEffect(() => {
     setIsClient(true);
+
+    // Function to check screen size
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth >= 768); // md breakpoint in Tailwind
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener for resize
+    window.addEventListener("resize", checkScreenSize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   /* Memoized Handlers */
@@ -622,21 +712,23 @@ const BookEditor: React.FC = () => {
     [setCurrentPage]
   );
 
-  // Navigation functions - wrapped in useCallback and debounced
+  // Navigation functions - responsive based on screen size
   const nextPage = useMemo(
     () =>
       debounce(() => {
         if (bookRef.current) {
           try {
-            bookRef.current.pageFlip().flipNext();
+            if (isLargeScreen) {
+              bookRef.current.pageFlip().flipNext();
+            } else {
+              bookRef.current.pageFlip().turnToNextPage();
+            }
           } catch (error) {
             console.error("Error flipping to next page:", error);
           }
         }
       }, 100),
-    [
-      /* dependencies here */
-    ]
+    [isLargeScreen]
   );
 
   const prevPage = useMemo(
@@ -644,15 +736,17 @@ const BookEditor: React.FC = () => {
       debounce(() => {
         if (bookRef.current) {
           try {
-            bookRef.current.pageFlip().flipPrev();
+            if (isLargeScreen) {
+              bookRef.current.pageFlip().flipPrev();
+            } else {
+              bookRef.current.pageFlip().turnToPrevPage();
+            }
           } catch (error) {
             console.error("Error flipping to previous page:", error);
           }
         }
       }, 100),
-    [
-      /* dependencies here */
-    ]
+    [isLargeScreen]
   );
 
   const goToPage = useMemo(
@@ -660,15 +754,17 @@ const BookEditor: React.FC = () => {
       debounce((pageNumber: number) => {
         if (bookRef.current) {
           try {
-            bookRef.current.pageFlip().flip(pageNumber);
+            if (isLargeScreen) {
+              bookRef.current.pageFlip().flip(pageNumber);
+            } else {
+              bookRef.current.pageFlip().turnToPage(pageNumber);
+            }
           } catch (error) {
             console.error("Error flipping to page:", error);
           }
         }
       }, 100),
-    [
-      /* dependencies here */
-    ]
+    [isLargeScreen]
   );
 
   // Memoize sorted pages to prevent unnecessary re-sorting on each render

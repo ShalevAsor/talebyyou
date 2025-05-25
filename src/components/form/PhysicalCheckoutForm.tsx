@@ -430,7 +430,6 @@ export function PhysicalCheckoutForm({
 
       if (validationResult.success) {
         const addressValidation = validationResult.data;
-        console.log("Address validation result:", addressValidation);
 
         // Check if there are warnings or suggested address
         if (addressValidation.hasWarnings && !addressValidation.isValid) {
@@ -441,7 +440,6 @@ export function PhysicalCheckoutForm({
         }
 
         // If the address is valid, proceed to the next step
-        console.log("Address is valid, proceeding with order", data);
         onSuccess(data);
       } else {
         // Handle validation error

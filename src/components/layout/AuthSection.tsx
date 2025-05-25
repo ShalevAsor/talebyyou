@@ -135,7 +135,6 @@ export const AuthSection: React.FC<AuthSectionProps> = memo(
             </SignedOut>
             <SignedIn>
               <UserButton
-                afterSignOutUrl="/"
                 appearance={{
                   elements: {
                     userButtonAvatarBox: isMobile ? "h-10 w-10" : "h-8 w-8",

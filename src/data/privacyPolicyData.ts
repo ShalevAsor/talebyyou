@@ -1,198 +1,213 @@
 /**
- * Privacy Policy data for BookWizard
+ * Privacy Policy data for TaleByYou
  * This file contains structured data for the Privacy Policy page
  */
 
-export const privacyPolicyLastUpdated = "May 16, 2025";
+import { siteConfig } from "@/config/site";
+
+export const privacyPolicyLastUpdated = "May 22, 2025";
 
 // Main privacy policy sections
 export const privacyPolicySections = [
   {
     id: "introduction",
     title: "Introduction",
-    content: `Welcome to BookWizard's Privacy Policy. 
+    content: `${siteConfig.name} ("we", "our", or "us") respects your privacy. This Privacy Policy explains how we collect, use, and protect your information when you use our website and services.
 
-At BookWizard, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services to create personalized children's books.
+Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access our website or use our services.
 
-Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access our website or use our services. By accessing our website or using our services, you consent to the collection, use, and disclosure of information in accordance with this Privacy Policy.
+By accessing our website or using our services, you consent to the collection, use, and disclosure of information in accordance with this Privacy Policy.
 
-We reserve the right to make changes to this Privacy Policy at any time and for any reason. We will alert you about any changes by updating the "Last Updated" date of this Privacy Policy. You are encouraged to periodically review this Privacy Policy to stay informed of updates.`,
+We reserve the right to make changes to this Privacy Policy at any time. We will alert you about any changes by updating the "Last Updated" date of this Privacy Policy.`,
   },
   {
     id: "information-we-collect",
     title: "Information We Collect",
-    content: `We collect information from you when you register on our site, place an order, or customize a book. The information we collect includes:
+    content: `Account Information: Name, email address, and authentication details (via Clerk)
 
-Personal Information:
-- Name and email address (for account creation and order processing)
-- Billing and shipping information (for physical book orders)
-- Payment information (processed securely through our payment providers)
+Order Information: Shipping address, phone number, payment details (processed by PayPal)
 
-Book Customization Information:
-- Character details (name, physical attributes, preferences)
-- Photos you upload for book customization (if this feature is used)
-- Book customization choices and preferences
+Book Content: Character details (name, age, appearance), text content, dedication messages, and images you upload
 
-Technical Information:
-- Device information (browser type, operating system, IP address)
-- Cookies and usage data
-- Referring websites and search terms
+Generated Content: AI-generated images created for your books (via Leonardo AI)
 
-Children's Information:
-We understand the sensitivity of children's information. We only collect information about children that is provided by parents or guardians for the purpose of creating personalized books. This may include a child's name, age, physical characteristics, and preferences. We never knowingly collect information directly from children under 13 years of age.`,
+Usage Data: Basic website usage, IP address, browser information`,
   },
   {
     id: "how-we-use-information",
     title: "How We Use Your Information",
-    content: `We use the information we collect for various purposes, including:
+    content: `We use your information to:
 
-Providing Our Services:
-- Creating and delivering customized books
-- Processing and fulfilling orders
-- Managing your account
-- Sending order confirmations and updates
+• Create and deliver personalized children's books
 
-Improving Our Services:
-- Analyzing usage patterns to enhance user experience
-- Developing new features and products
-- Troubleshooting issues
+• Process orders and handle shipping
 
-Communications:
-- Responding to your inquiries and support requests
-- Sending product updates and marketing communications (with your consent)
-- Providing information about products or services that may interest you
+• Generate custom images for your books
 
-Administrative Purposes:
-- Maintaining our website and services
-- Protecting against fraudulent or unauthorized activity
-- Complying with legal obligations`,
+• Send order confirmations and updates
+
+• Provide customer support
+
+• Improve our services`,
   },
   {
-    id: "information-sharing",
-    title: "How We Share Your Information",
-    content: `We may share your information with third parties in certain situations:
+    id: "how-we-share-information",
+    title: "How We Share Information",
+    content: `We share your information only with trusted service providers:
 
-Service Providers:
-- Payment processors (to process transactions)
-- Print-on-demand partners (to fulfill physical book orders)
-- Email service providers (to send communications)
-- Cloud storage providers (to store your data securely)
+• Clerk (user authentication)
 
-Legal Requirements:
-- To comply with applicable laws and regulations
-- To respond to lawful requests from public authorities
-- To protect our rights, privacy, safety, or property
+• Leonardo AI (image generation)
 
-Business Transfers:
-- In connection with a merger, acquisition, or sale of assets
+• PayPal (payment processing)
 
-We do not sell your personal information to third parties for marketing purposes.
+• Lulu xPress (book printing and shipping)
 
-When we share information with third-party service providers, we require them to use your information only for the purpose of providing services to us and to be consistent with this Privacy Policy.`,
+• AWS (secure data storage)
+
+We never sell your personal information to third parties.`,
   },
   {
     id: "data-security",
     title: "Data Security",
-    content: `We implement a variety of security measures to maintain the safety of your personal information:
+    content: `We use industry-standard security measures to protect your information, including encryption and secure storage. Character reference images are automatically deleted after your book is completed.
 
-- We use encryption to protect sensitive information transmitted online
-- We protect your information offline by keeping it on secure servers
-- Access to personal information is restricted to authorized personnel only
-- Regular security assessments and updates to our systems
-
-However, no method of electronic storage or internet transmission is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
-
-In the event of a data breach that affects your personal information, we will notify you in accordance with applicable laws.`,
+However, no method of electronic storage is 100% secure. While we strive to protect your personal information, we cannot guarantee its absolute security.`,
   },
   {
-    id: "cookies",
-    title: "Cookies and Tracking Technologies",
-    content: `We use cookies and similar tracking technologies to track activity on our website and hold certain information:
+    id: "data-retention",
+    title: "Data Retention",
+    content: `• Account data: Until you delete your account
 
-Types of Cookies We Use:
-- Essential cookies: necessary for the website to function properly
-- Preference cookies: remember your preferences and settings
-- Analytics cookies: help us understand how visitors interact with our website
-- Marketing cookies: used to deliver relevant advertisements
+• Order records: 7 years (for legal/tax purposes)
 
-You can control cookies through your browser settings. If you disable cookies, some features of our website may not function properly.
+• Book content: Until you request deletion
 
-We also use analytics services like Google Analytics to help us understand how users engage with our website. These services may use cookies and similar technologies to collect information about your use of our website.`,
+• Guest sessions: 30 days if no order is placed`,
+  },
+  {
+    id: "your-rights",
+    title: "Your Rights",
+    content: `You can:
+
+• Access, correct, or delete your personal information
+
+• Request a copy of your data
+
+• Withdraw consent for marketing communications
+
+• Delete your account and associated data
+
+Contact us at ${siteConfig.contactEmail} to exercise these rights.`,
   },
   {
     id: "children-privacy",
     title: "Children's Privacy",
-    content: `We are committed to protecting the privacy of children who use our services. Our service is designed for use by adults to create personalized books for children, not for direct use by children.
+    content: `Our service is for adults creating books for children. We don't knowingly collect information directly from children under 18.
 
-We do not knowingly collect personal information directly from children under the age of 13. If you are a parent or guardian and you believe your child has provided us with personal information, please contact us immediately. If we discover that a child under 13 has provided us with personal information without parental consent, we will promptly delete such information from our servers.
+Child information (name, age, characteristics) provided by parents/guardians is used solely for book personalization and treated with the utmost care.`,
+  },
+  {
+    id: "geographic-availability",
+    title: "Geographic Availability",
+    content: `Our services are currently available in the United States, Canada, United Kingdom, and Australia.
 
-Information about children (such as their name, age, or preferences) that is provided by parents or guardians for the purpose of book customization is treated with the utmost care and is only used for the specific purpose of creating the personalized book requested by the parent or guardian.`,
+Your information may be processed in the United States and other countries where our service providers operate. We ensure appropriate safeguards are in place for international transfers.`,
+  },
+  {
+    id: "cookies",
+    title: "Cookies",
+    content: `We use only essential cookies that are necessary for our website to function:
+
+• Authentication cookies: To keep you logged in and manage your session
+
+• Security cookies: To protect against fraud and unauthorized access
+
+We do not use tracking, analytics, or marketing cookies. Disabling cookies in your browser may prevent the website from working properly.`,
+  },
+  {
+    id: "california-privacy-rights",
+    title: "California Privacy Rights (CCPA)",
+    content: `California residents have additional rights including:
+
+• Right to know what personal information is collected and how it's used
+
+• Right to delete personal information (subject to legal exceptions)
+
+• Right to correct inaccurate information
+
+• Right to opt-out of data sales (we don't sell personal data)
+
+• Right to non-discrimination for exercising privacy rights
+
+Categories of information we collect: Identifiers, contact information, commercial information, internet activity, uploaded images, and preferences.
+
+To exercise your California rights: Email ${siteConfig.contactEmail} with "CCPA Request" in the subject line.`,
+  },
+  {
+    id: "european-privacy-rights",
+    title: "European Privacy Rights (GDPR)",
+    content: `For EU/EEA/UK residents, we process data based on:
+
+• Contract: To provide our book creation services
+
+• Consent: When you explicitly agree (marketing, optional features)
+
+• Legitimate Interests: For business operations, fraud prevention, and service improvement
+
+• Legal Obligation: To comply with applicable laws
+
+You have all rights listed in the "Your Rights" section, plus specific GDPR protections regarding automated decision-making and data portability.
+
+Contact our Data Protection Officer: legal@talebyyou.com`,
   },
   {
     id: "third-party-links",
     title: "Third-Party Links",
-    content: `Our website may contain links to third-party websites that are not operated by us. If you click on a third-party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit.
-
-We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services. Third-party websites may contain their own privacy policies and terms of service, and we encourage you to read these before using such websites.`,
+    content: `Our Services may contain links to third-party websites. We are not responsible for their privacy practices and encourage you to review their privacy policies.`,
   },
   {
-    id: "user-rights",
-    title: "Your Privacy Rights",
-    content: `Depending on your location, you may have certain rights regarding your personal information:
+    id: "marketing-communications",
+    title: "Marketing Communications",
+    content: `With your consent, we may send:
 
-- Access: You have the right to request copies of your personal information.
-- Rectification: You have the right to request that we correct inaccurate information about you.
-- Erasure: You have the right to request that we delete your personal information in certain circumstances.
-- Restriction: You have the right to request that we restrict the processing of your information in certain circumstances.
-- Data Portability: You have the right to request that we transfer your information to another organization or directly to you.
-- Objection: You have the right to object to our processing of your personal information.
+• Product updates and feature announcements
 
-If you would like to exercise any of these rights, please contact us using the information in the "Contact Us" section.
+• Special offers and promotional content
 
-For California Residents:
-Under the California Consumer Privacy Act (CCPA), California residents have specific rights regarding their personal information. Please see our California Privacy Notice for more information.
+• Educational content about book creation
 
-For EU/UK/EEA Residents:
-If you are located in the European Union, United Kingdom, or European Economic Area, you have rights under the General Data Protection Regulation (GDPR). Please see our GDPR Privacy Notice for more information.`,
+To opt out: Click unsubscribe links in emails, update your account preferences, or contact ${siteConfig.contactEmail}`,
   },
   {
-    id: "retention",
-    title: "Data Retention",
-    content: `We will retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.
+    id: "changes-to-policy",
+    title: "Changes to This Policy",
+    content: `We may update this Privacy Policy periodically. Material changes will be communicated through:
 
-For users who create an account, we will maintain your account information until you delete your account or request that we delete it. Book customization data will be retained for as long as your account is active to allow you to access and reorder your customized books.
+• Email notifications to registered users
 
-For guest users, data associated with your session will be retained for a limited period after your last activity, after which it will be automatically deleted if not associated with an account.
+• Prominent website notices
 
-We also retain log files for internal analysis purposes. These log files are generally retained for a shorter period of time, except when they are used for site safety and security, to improve website functionality, or we are legally obligated to retain them for longer time periods.`,
+• Updated effective date at the top of this policy
+
+We encourage you to review this policy regularly.`,
   },
   {
-    id: "international-transfers",
-    title: "International Data Transfers",
-    content: `Your information may be transferred to and maintained on computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction.
+    id: "contact-information",
+    title: "Contact Information",
+    content: `For privacy questions or to exercise your rights:
 
-If you are located outside the United States and choose to provide information to us, please note that we transfer the information, including personal information, to the United States and process it there.
+Email: ${siteConfig.contactEmail}
 
-When transferring data from the European Economic Area, United Kingdom, or Switzerland, we rely on appropriate safeguards such as Standard Contractual Clauses approved by the European Commission, or other valid transfer mechanisms.`,
-  },
-  {
-    id: "changes",
-    title: "Changes to This Privacy Policy",
-    content: `We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date at the top of this Privacy Policy.
+Data Protection Officer: legal@talebyyou.com
 
-For significant changes, we may also provide additional notice, such as sending you an email notification. We encourage you to review this Privacy Policy periodically for any changes.
+For specific requests:
 
-Your continued use of our website or services after any changes to this Privacy Policy constitutes your acceptance of such changes.`,
-  },
-  {
-    id: "contact-us",
-    title: "Contact Us",
-    content: `If you have any questions or concerns about this Privacy Policy, please contact us at:
+• GDPR requests: Include "GDPR Request" in subject line
 
-Email: ${process.env.NEXT_PUBLIC_CONTACT_EMAIL || "privacy@bookwizard.com"}
+• CCPA requests: Include "CCPA Request" in subject line
 
-BookWizard
-[Your Business Address]`,
+This Privacy Policy was last updated on ${privacyPolicyLastUpdated}.`,
   },
 ];
 

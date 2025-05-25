@@ -67,70 +67,68 @@ export default function CTASection() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ctaSchema) }}
       />
 
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-indigo-50 rounded-2xl overflow-hidden shadow-sm border border-indigo-100">
-          <div className="p-8 md:p-12 flex flex-col items-center text-center">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-              className="mb-8"
+      <div className="bg-indigo-50 rounded-2xl overflow-hidden shadow-sm border border-indigo-100">
+        <div className="p-8 md:p-12 flex flex-col items-center text-center">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="mb-8"
+          >
+            <h2
+              id="cta-heading"
+              className="text-3xl md:text-4xl font-bold text-indigo-800 mb-4"
             >
-              <h2
-                id="cta-heading"
-                className="text-3xl md:text-4xl font-bold text-indigo-800 mb-4"
-              >
-                Discover Magical Stories
-              </h2>
-              <p
-                id="cta-description"
-                className="text-lg text-indigo-600 max-w-2xl mx-auto"
-              >
-                {
-                  "Explore our collection of handpicked children's books for every age and interest"
-                }
-              </p>
-            </motion.div>
+              Discover Magical Stories
+            </h2>
+            <p
+              id="cta-description"
+              className="text-lg text-indigo-600 max-w-2xl mx-auto"
+            >
+              {
+                "Explore our collection of handpicked children's books for every age and interest"
+              }
+            </p>
+          </motion.div>
 
-            <div
-              className="flex flex-wrap justify-center gap-12 mb-10"
-              aria-label="Key features"
-            >
-              {features.map((feature) => (
-                <div key={feature.id} className="flex flex-col items-center">
-                  <div
-                    className="bg-white p-3 rounded-full shadow-sm border border-indigo-100 mb-3"
-                    aria-hidden="true" // Icon is decorative
-                  >
-                    {feature.icon}
-                  </div>
-                  <p className="font-medium text-indigo-800">{feature.label}</p>
-                </div>
-              ))}
-            </div>
-
-            <motion.div
-              initial="rest"
-              whileHover="hover"
-              whileTap="tap"
-              variants={buttonHover}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <Button
-                size="lg"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 text-lg rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-                asChild
-              >
-                <Link
-                  href="/library"
-                  aria-label="Explore our library of children's books"
+          <div
+            className="flex flex-wrap justify-center gap-12 mb-10"
+            aria-label="Key features"
+          >
+            {features.map((feature) => (
+              <div key={feature.id} className="flex flex-col items-center">
+                <div
+                  className="bg-white p-3 rounded-full shadow-sm border border-indigo-100 mb-3"
+                  aria-hidden="true" // Icon is decorative
                 >
-                  Explore Our Library
-                </Link>
-              </Button>
-            </motion.div>
+                  {feature.icon}
+                </div>
+                <p className="font-medium text-indigo-800">{feature.label}</p>
+              </div>
+            ))}
           </div>
+
+          <motion.div
+            initial="rest"
+            whileHover="hover"
+            whileTap="tap"
+            variants={buttonHover}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            <Button
+              size="lg"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-6 text-lg rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+              asChild
+            >
+              <Link
+                href="/library"
+                aria-label="Explore our library of children's books"
+              >
+                Explore Our Library
+              </Link>
+            </Button>
+          </motion.div>
         </div>
       </div>
     </section>

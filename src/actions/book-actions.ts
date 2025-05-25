@@ -33,8 +33,7 @@ import { checkGuestBookLimit } from "./guest-actions";
 export async function createPersonalizedBook(
   templateId: string,
   characterData: CharacterData,
-  characterImageReference?: string,
-  imageId?: string
+  characterImageReference?: string
 ): Promise<ActionResult<string>> {
   try {
     // Try to get the current user - will be null for anonymous users
@@ -122,7 +121,6 @@ export async function createPersonalizedBook(
           templateId: bookData.templateId,
           userId: userId, // This can be null for anonymous users
           characterImageReference: characterImageReference || null,
-          coverImage: imageId || null,
         },
       });
 

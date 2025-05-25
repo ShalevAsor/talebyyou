@@ -222,3 +222,146 @@ export async function getDownloadUrl(key: string): Promise<string | null> {
     return null;
   }
 }
+
+/**
+ * Uploads a template image to S3 and returns the URL
+ * @param file - File buffer or path to upload
+ * @param templateSlug - Slug of the template
+ * @param imageName - Name of the image (e.g., 'cover.jpg', 'page1.jpg')
+ * @param mimeType - MIME type of the image
+ * @returns URL of the uploaded image or null if upload fails
+ */
+export async function uploadTemplateImageToS3(
+  file: Buffer | string,
+  templateSlug: string,
+  imageName: string,
+  mimeType?: string // Make this optional
+): Promise<string | null> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    // Read file content based on input type
+    const fileContent = typeof file === "string" ? fs.readFileSync(file) : file;
+
+    // Auto-detect MIME type if not provided
+    let contentType = mimeType;
+    if (!contentType) {
+      const extension = imageName.toLowerCase().split(".").pop();
+      switch (extension) {
+        case "jpg":
+        case "jpeg":
+          contentType = "image/jpeg";
+          break;
+        case "png":
+          contentType = "image/png";
+          break;
+        case "webp":
+          contentType = "image/webp";
+          break;
+        default:
+          contentType = "image/jpeg";
+      }
+    }
+
+    // Create organized path in S3
+    const key = `templates/${templateSlug}/${imageName}`;
+
+    // Upload to S3
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+        Body: fileContent,
+        ContentType: contentType,
+      })
+    );
+
+    // Return the public URL
+    return `https://${BUCKET_NAME}.s3.${config.AWS.REGION}.amazonaws.com/${key}`;
+  } catch (error) {
+    console.error("Error uploading template image to S3:", error);
+    return null;
+  }
+}
+
+/**
+ * Gets a list of all images for a template
+ * @param templateSlug - Slug of the template
+ * @returns Array of image URLs
+ */
+export async function getTemplateImagesFromS3(
+  templateSlug: string
+): Promise<string[]> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    const listCommand = new ListObjectsV2Command({
+      Bucket: BUCKET_NAME,
+      Prefix: `templates/${templateSlug}/`,
+    });
+
+    const { Contents } = await s3Client.send(listCommand);
+
+    if (!Contents || Contents.length === 0) {
+      return [];
+    }
+
+    // Convert S3 keys to public URLs
+    return Contents.map(
+      (item) =>
+        `https://${BUCKET_NAME}.s3.${config.AWS.REGION}.amazonaws.com/${item.Key}`
+    );
+  } catch (error) {
+    console.error("Error listing template images:", error);
+    return [];
+  }
+}
+
+/**
+ * Deletes all images for a template
+ * @param templateSlug - Slug of the template
+ * @returns Boolean indicating success
+ */
+export async function deleteTemplateImagesFromS3(
+  templateSlug: string
+): Promise<boolean> {
+  try {
+    if (!BUCKET_NAME) {
+      throw new Error("S3 bucket name not configured");
+    }
+
+    // First list all objects with the template prefix
+    const listCommand = new ListObjectsV2Command({
+      Bucket: BUCKET_NAME,
+      Prefix: `templates/${templateSlug}/`,
+    });
+
+    const { Contents } = await s3Client.send(listCommand);
+
+    if (!Contents || Contents.length === 0) {
+      return true; // Nothing to delete
+    }
+
+    // Delete each object
+    for (const object of Contents) {
+      if (object.Key) {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: object.Key,
+          })
+        );
+        console.log(`Deleted template image: ${object.Key}`);
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting template images:", error);
+    return false;
+  }
+}

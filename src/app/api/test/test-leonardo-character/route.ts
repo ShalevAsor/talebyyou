@@ -4,7 +4,6 @@ import {
   InitImageType,
   StrengthType,
 } from "@leonardo-ai/sdk/sdk/models/shared";
-import { STYLE_IMAGE_REFERENCE_ID } from "@/constants/image";
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,14 +12,9 @@ export async function GET(req: NextRequest) {
     const leonardo = getLeonardoClient();
 
     // Define the character image URL - update to a URL that works
-    const characterImageUrl =
-      "https://edb4-2a00-a041-e191-3200-2cd6-d216-ecc5-aa34.ngrok-free.app/testImage4.png";
+    const characterImageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/testImage4.png`;
 
     console.log("Using character image:", characterImageUrl);
-    console.log(
-      "Using pre-generated style reference ID:",
-      STYLE_IMAGE_REFERENCE_ID
-    );
 
     // Step 1: Upload character image
     console.log("Getting presigned URL for character image upload...");
@@ -59,7 +53,7 @@ export async function GET(req: NextRequest) {
       width: 768,
       modelId: "2067ae52-33fd-4a82-bb92-c2c55e7d2786", // AlbedoBase XL model
       prompt:
-        "Whimsical storybook illustration of a small boy with a bright smile, exploring a magical garden filled with oversized flowers and friendly woodland creatures. ",
+        "Whimsical storybook illustration of a young 8 years old boy. By window looking outside, packing backpack with map and teddy bear, smiling, bright colors, soft lighting, child-friendly, detailed background, engaging composition",
       numImages: 3,
       public: false,
       alchemy: true, // Enable Alchemy for better quality
@@ -68,14 +62,8 @@ export async function GET(req: NextRequest) {
           initImageId: characterImageId,
           initImageType: InitImageType.Uploaded,
           preprocessorId: 133, // Character Reference Id
-          strengthType: StrengthType.High,
+          strengthType: StrengthType.Mid,
         },
-        // {
-        //   initImageId: styleReferenceImageId,
-        //   initImageType: InitImageType.Generated,
-        //   preprocessorId: 67, // Style Reference Id
-        //   strengthType: StrengthType.High,
-        // },
       ],
     });
 
@@ -199,5 +187,6 @@ async function uploadImageToLeonardo(
 
   // Extract the ID from the fields
   const imageId = parsedFields?.key?.split("/")?.pop()?.split(".")[0];
+  console.log("Image id in route test is:", imageId);
   return imageId!;
 }

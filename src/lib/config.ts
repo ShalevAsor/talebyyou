@@ -1,6 +1,8 @@
 const config = {
   NODE_ENV: process.env.NODE_ENV || "development",
   CLIENT_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  EMAIL_TEST_MODE: process.env.EMAIL_TEST_MODE || "development",
+  EMAIL_SUPPORT: process.env.EMAIL_SUPPORT || "support@yourbookstore.com",
   EMAIL_HOST: process.env.EMAIL_HOST,
   EMAIL_PORT: process.env.EMAIL_PORT || "587",
   EMAIL_USER: process.env.EMAIL_USER,
@@ -39,5 +41,3 @@ const config = {
 };
 
 export default config;
-
-// TODO: Add more configurations as needed + env.production

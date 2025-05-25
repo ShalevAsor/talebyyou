@@ -3,8 +3,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, Trash2 } from "lucide-react";
-import { Genre, BookTemplate } from "@/generated/prisma";
+import { Eye, Trash2, BookImage } from "lucide-react";
 import { PublishToggleButton } from "@/components/admin/template/PublishToggleButton";
 import AdminActionDialog from "@/components/admin/AdminActionDialog";
 import { useMutation } from "@tanstack/react-query";
@@ -14,14 +13,35 @@ import {
   toggleTemplatePublished,
 } from "@/actions/template-actions";
 import Link from "next/link";
-
-type TemplateWithGenres = BookTemplate & {
-  genres: Genre[];
-};
+import { BookTemplateFull } from "@/types/book";
 
 interface TemplateListProps {
-  initialTemplates: TemplateWithGenres[];
+  initialTemplates: BookTemplateFull[];
   onTemplateDeleted: (id: string) => void;
+}
+
+// Helper function to detect if template has real images or placeholders
+function getImageStatus(template: BookTemplateFull): "real" | "placeholder" {
+  // Check cover image
+  const coverHasRealImage =
+    template.coverImage &&
+    (template.coverImage.startsWith("https://") ||
+      !template.coverImage.includes("placeholder"));
+
+  // Check if most pages have real images
+  const pageImagesStatus = template.pages.map(
+    (page) =>
+      page.imageUrl &&
+      (page.imageUrl.startsWith("https://") ||
+        !page.imageUrl.includes("placeholder"))
+  );
+
+  const realImagesCount = pageImagesStatus.filter(Boolean).length;
+
+  // If cover and more than 50% of pages have real images, consider it as having real images
+  return coverHasRealImage && realImagesCount >= template.pages.length * 0.5
+    ? "real"
+    : "placeholder";
 }
 
 export function TemplateList({
@@ -29,7 +49,7 @@ export function TemplateList({
   onTemplateDeleted,
 }: TemplateListProps) {
   const [templates, setTemplates] =
-    useState<TemplateWithGenres[]>(initialTemplates);
+    useState<BookTemplateFull[]>(initialTemplates);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const togglePublishMutation = useMutation({
@@ -77,8 +97,12 @@ export function TemplateList({
     }
   };
 
-  const handleViewTemplate = (id: string) => {
-    window.open(`/library/template-preview/${id}`, "_blank");
+  const handleViewTemplate = (slug: string) => {
+    window.open(`/library/template-preview/${slug}`, "_blank");
+  };
+
+  const handleManageImages = (id: string, slug: string) => {
+    window.open(`/admin/templates/${slug}/images`, "_blank");
   };
 
   if (templates.length === 0) {
@@ -95,69 +119,100 @@ export function TemplateList({
   return (
     <div className="grid gap-4">
       <div className="grid grid-cols-12 font-medium text-sm p-2 border-b">
-        <div className="col-span-4">Title</div>
-        <div className="col-span-4">Genres</div>
+        <div className="col-span-3">Title</div>
+        <div className="col-span-3">Genres</div>
         <div className="col-span-2">Pages</div>
+        <div className="col-span-2">Status</div>
         <div className="col-span-2">Actions</div>
       </div>
 
-      {templates.map((template) => (
-        <div
-          key={template.id}
-          className="grid grid-cols-12 items-center p-2 border-b hover:bg-accent/10 rounded"
-        >
-          <div className="col-span-4 font-medium">
-            {template.title}
-            {!template.published && (
-              <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
-                Draft
-              </span>
-            )}
-          </div>
-          <div className="col-span-4">
-            <div className="flex flex-wrap gap-1">
-              {template.genres.map((genre) => (
-                <span
-                  key={genre.id}
-                  className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded"
-                >
-                  {genre.name}
+      {templates.map((template) => {
+        const imageStatus = getImageStatus(template);
+
+        return (
+          <div
+            key={template.id}
+            className="grid grid-cols-12 items-center p-2 border-b hover:bg-accent/10 rounded"
+          >
+            <div className="col-span-3 font-medium">
+              {template.title}
+              {!template.published && (
+                <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+                  Draft
                 </span>
-              ))}
+              )}
+            </div>
+            <div className="col-span-3">
+              <div className="flex flex-wrap gap-1">
+                {template.genres.map((genre) => (
+                  <span
+                    key={genre.id}
+                    className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded"
+                  >
+                    {genre.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="col-span-2">{template.pageCount} pages</div>
+            <div className="col-span-2">
+              <span
+                className={`text-xs px-2 py-0.5 rounded flex items-center gap-1 w-fit ${
+                  imageStatus === "real"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-orange-100 text-orange-800"
+                }`}
+              >
+                <BookImage className="h-3 w-3" />
+                {imageStatus === "real" ? "Real Images" : "Placeholder Images"}
+              </span>
+            </div>
+            <div className="col-span-2 flex space-x-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleViewTemplate(template.slug)}
+                title="View template preview"
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+
+              {imageStatus === "placeholder" && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleManageImages(template.id, template.slug)}
+                  title="Manage template images"
+                  className="text-orange-600 hover:text-orange-700"
+                >
+                  <BookImage className="h-4 w-4" />
+                </Button>
+              )}
+
+              <PublishToggleButton
+                publish={template.published}
+                isPending={togglePublishMutation.isPending}
+                onToggle={() => togglePublishMutation.mutate(template.id)}
+              />
+
+              <AdminActionDialog
+                title={`Delete Template: ${template.title}`}
+                description="This will permanently delete this template. If any books are using this template, they may be affected."
+                actionLabel="Delete Template"
+                triggerLabel=""
+                triggerIcon={<Trash2 className="h-4 w-4" />}
+                isLoading={deleteLoading}
+                onAction={() =>
+                  handleDeleteTemplate(template.id, template.title)
+                }
+                variant="default"
+                size="sm"
+                actionVariant="destructive"
+              />
             </div>
           </div>
-          <div className="col-span-2">{template.pageCount} pages</div>
-          <div className="col-span-2 flex space-x-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleViewTemplate(template.id)}
-              title="View template preview"
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
-
-            <PublishToggleButton
-              publish={template.published}
-              isPending={togglePublishMutation.isPending}
-              onToggle={() => togglePublishMutation.mutate(template.id)}
-            />
-
-            <AdminActionDialog
-              title={`Delete Template: ${template.title}`}
-              description="This will permanently delete this template. If any books are using this template, they may be affected."
-              actionLabel="Delete Template"
-              triggerLabel=""
-              triggerIcon={<Trash2 className="h-4 w-4" />}
-              isLoading={deleteLoading}
-              onAction={() => handleDeleteTemplate(template.id, template.title)}
-              variant="default"
-              size="sm"
-              actionVariant="destructive"
-            />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

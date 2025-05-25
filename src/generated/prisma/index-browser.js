@@ -183,11 +183,13 @@ exports.Prisma.CharacterScalarFieldEnum = {
 exports.Prisma.BookTemplateScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  slug: 'slug',
   description: 'description',
   pageCount: 'pageCount',
   published: 'published',
   coverImage: 'coverImage',
   coverPrompt: 'coverPrompt',
+  characterGender: 'characterGender',
   minAge: 'minAge',
   maxAge: 'maxAge',
   createdAt: 'createdAt',
