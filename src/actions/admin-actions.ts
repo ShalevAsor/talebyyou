@@ -10,6 +10,7 @@ import { luluPrintingService } from "@/services/printing/print-service";
 import prisma from "@/lib/prisma";
 import { WebhookResponse, WebhookTopic } from "@/types/print";
 import config from "@/lib/config";
+import { auth } from "@clerk/nextjs/server";
 
 /**
  * Setup or update the Lulu webhook subscription
@@ -301,5 +302,76 @@ export async function deleteLuluWebhookById(
         error instanceof Error ? error.message : String(error)
       }`
     );
+  }
+}
+
+/**
+ * Check if a user is an admin
+ */
+export async function isUserAdmin(
+  clerkId: string | null | undefined
+): Promise<boolean> {
+  if (!clerkId) return false;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+      select: { isAdmin: true },
+    });
+
+    return user?.isAdmin || false;
+  } catch (error) {
+    logger.error("Error checking admin status:", error);
+    return false;
+  }
+}
+
+/**
+ * Set admin status for a user (only admins can do this)
+ */
+export async function setUserAdminStatus(
+  targetUserEmail: string,
+  makeAdmin: boolean
+): Promise<ActionResult<boolean>> {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return createErrorResult("Authentication required");
+    }
+
+    // Check if the current user is admin
+    const currentUserIsAdmin = await isUserAdmin(userId);
+    if (!currentUserIsAdmin) {
+      return createErrorResult("Only admins can change admin status");
+    }
+
+    // Find the target user by email
+    const targetUser = await prisma.user.findUnique({
+      where: { email: targetUserEmail },
+    });
+
+    if (!targetUser) {
+      return createErrorResult("User not found with that email");
+    }
+
+    // Prevent admins from removing their own admin status
+    if (targetUser.clerkId === userId && !makeAdmin) {
+      return createErrorResult("You cannot remove your own admin access");
+    }
+
+    // Update the user's admin status
+    await prisma.user.update({
+      where: { id: targetUser.id },
+      data: { isAdmin: makeAdmin },
+    });
+
+    logger.info(
+      `User ${targetUserEmail} admin status changed to: ${makeAdmin}`
+    );
+    return createSuccessResult(true);
+  } catch (error) {
+    logger.error("Error setting admin status:", error);
+    return createErrorResult("Failed to update admin status");
   }
 }

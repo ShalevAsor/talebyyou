@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { Settings } from "lucide-react";
+import { useAdmin } from "@/hooks/useAdmin";
 
 export default function AdminLink() {
-  const { user, isLoaded } = useUser();
-
+  const { data: isAdmin = false, isFetched } = useAdmin();
   // Don't show anything while loading or if not admin
-  if (!isLoaded || user?.publicMetadata.role !== "store_admin") {
+  if (!isFetched || !isAdmin) {
     return null;
   }
 

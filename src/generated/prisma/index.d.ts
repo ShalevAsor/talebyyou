@@ -2212,6 +2212,7 @@ export namespace Prisma {
     id: string | null
     clerkId: string | null
     email: string | null
+    isAdmin: boolean | null
     firstName: string | null
     lastName: string | null
     createdAt: Date | null
@@ -2222,6 +2223,7 @@ export namespace Prisma {
     id: string | null
     clerkId: string | null
     email: string | null
+    isAdmin: boolean | null
     firstName: string | null
     lastName: string | null
     createdAt: Date | null
@@ -2232,6 +2234,7 @@ export namespace Prisma {
     id: number
     clerkId: number
     email: number
+    isAdmin: number
     firstName: number
     lastName: number
     createdAt: number
@@ -2244,6 +2247,7 @@ export namespace Prisma {
     id?: true
     clerkId?: true
     email?: true
+    isAdmin?: true
     firstName?: true
     lastName?: true
     createdAt?: true
@@ -2254,6 +2258,7 @@ export namespace Prisma {
     id?: true
     clerkId?: true
     email?: true
+    isAdmin?: true
     firstName?: true
     lastName?: true
     createdAt?: true
@@ -2264,6 +2269,7 @@ export namespace Prisma {
     id?: true
     clerkId?: true
     email?: true
+    isAdmin?: true
     firstName?: true
     lastName?: true
     createdAt?: true
@@ -2347,6 +2353,7 @@ export namespace Prisma {
     id: string
     clerkId: string
     email: string
+    isAdmin: boolean
     firstName: string | null
     lastName: string | null
     createdAt: Date
@@ -2374,6 +2381,7 @@ export namespace Prisma {
     id?: boolean
     clerkId?: boolean
     email?: boolean
+    isAdmin?: boolean
     firstName?: boolean
     lastName?: boolean
     createdAt?: boolean
@@ -2387,6 +2395,7 @@ export namespace Prisma {
     id?: boolean
     clerkId?: boolean
     email?: boolean
+    isAdmin?: boolean
     firstName?: boolean
     lastName?: boolean
     createdAt?: boolean
@@ -2397,6 +2406,7 @@ export namespace Prisma {
     id?: boolean
     clerkId?: boolean
     email?: boolean
+    isAdmin?: boolean
     firstName?: boolean
     lastName?: boolean
     createdAt?: boolean
@@ -2407,13 +2417,14 @@ export namespace Prisma {
     id?: boolean
     clerkId?: boolean
     email?: boolean
+    isAdmin?: boolean
     firstName?: boolean
     lastName?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clerkId" | "email" | "firstName" | "lastName" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clerkId" | "email" | "isAdmin" | "firstName" | "lastName" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     books?: boolean | User$booksArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
@@ -2432,6 +2443,7 @@ export namespace Prisma {
       id: string
       clerkId: string
       email: string
+      isAdmin: boolean
       firstName: string | null
       lastName: string | null
       createdAt: Date
@@ -2864,6 +2876,7 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'String'>
     readonly clerkId: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
+    readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly firstName: FieldRef<"User", 'String'>
     readonly lastName: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -16982,6 +16995,7 @@ export namespace Prisma {
     id: 'id',
     clerkId: 'clerkId',
     email: 'email',
+    isAdmin: 'isAdmin',
     firstName: 'firstName',
     lastName: 'lastName',
     createdAt: 'createdAt',
@@ -17264,6 +17278,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -17302,13 +17323,6 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -17462,6 +17476,7 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     clerkId?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
+    isAdmin?: BoolFilter<"User"> | boolean
     firstName?: StringNullableFilter<"User"> | string | null
     lastName?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -17474,6 +17489,7 @@ export namespace Prisma {
     id?: SortOrder
     clerkId?: SortOrder
     email?: SortOrder
+    isAdmin?: SortOrder
     firstName?: SortOrderInput | SortOrder
     lastName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -17489,6 +17505,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
+    isAdmin?: BoolFilter<"User"> | boolean
     firstName?: StringNullableFilter<"User"> | string | null
     lastName?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -17501,6 +17518,7 @@ export namespace Prisma {
     id?: SortOrder
     clerkId?: SortOrder
     email?: SortOrder
+    isAdmin?: SortOrder
     firstName?: SortOrderInput | SortOrder
     lastName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -17517,6 +17535,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     clerkId?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
+    isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     firstName?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -18723,6 +18742,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -18735,6 +18755,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -18747,6 +18768,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18759,6 +18781,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18771,6 +18794,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -18781,6 +18805,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18791,6 +18816,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20217,6 +20243,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -20272,6 +20303,7 @@ export namespace Prisma {
     id?: SortOrder
     clerkId?: SortOrder
     email?: SortOrder
+    isAdmin?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     createdAt?: SortOrder
@@ -20282,6 +20314,7 @@ export namespace Prisma {
     id?: SortOrder
     clerkId?: SortOrder
     email?: SortOrder
+    isAdmin?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     createdAt?: SortOrder
@@ -20292,6 +20325,7 @@ export namespace Prisma {
     id?: SortOrder
     clerkId?: SortOrder
     email?: SortOrder
+    isAdmin?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     createdAt?: SortOrder
@@ -20314,6 +20348,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -20676,11 +20718,6 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type TemplatePageContentListRelationFilter = {
     every?: TemplatePageContentWhereInput
     some?: TemplatePageContentWhereInput
@@ -20759,14 +20796,6 @@ export namespace Prisma {
     pageCount?: SortOrder
     minAge?: SortOrder
     maxAge?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type TemplatePageContentTemplateIdPageNumberCompoundUniqueInput = {
@@ -21509,6 +21538,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -21962,10 +21995,6 @@ export namespace Prisma {
     connect?: GenreWhereUniqueInput | GenreWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type TemplatePageContentUpdateManyWithoutTemplateNestedInput = {
     create?: XOR<TemplatePageContentCreateWithoutTemplateInput, TemplatePageContentUncheckedCreateWithoutTemplateInput> | TemplatePageContentCreateWithoutTemplateInput[] | TemplatePageContentUncheckedCreateWithoutTemplateInput[]
     connectOrCreate?: TemplatePageContentCreateOrConnectWithoutTemplateInput | TemplatePageContentCreateOrConnectWithoutTemplateInput[]
@@ -22285,6 +22314,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -22336,6 +22370,14 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -22460,19 +22502,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumPageTypeFilter<$PrismaModel = never> = {
@@ -23232,6 +23261,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -23243,6 +23273,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -23615,6 +23646,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23626,6 +23658,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24609,6 +24642,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -24620,6 +24654,7 @@ export namespace Prisma {
     id?: string
     clerkId: string
     email: string
+    isAdmin?: boolean
     firstName?: string | null
     lastName?: string | null
     createdAt?: Date | string
@@ -24807,6 +24842,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24818,6 +24854,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     clerkId?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

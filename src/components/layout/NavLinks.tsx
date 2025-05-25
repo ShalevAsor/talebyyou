@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
-import { memo, useState, useEffect } from "react";
+import { memo } from "react";
 import { navigationItems, adminNavigationItem } from "@/data/navData";
 import { NavLinksProps } from "@/types/navigation";
+import { useAdmin } from "@/hooks/useAdmin";
 
 /**
  * Renders navigation links that adapt to mobile/desktop layouts
@@ -15,20 +15,12 @@ import { NavLinksProps } from "@/types/navigation";
 export const NavLinks: React.FC<NavLinksProps> = memo(
   ({ isMobile = false, className }) => {
     const pathname = usePathname();
-    const { user, isLoaded } = useUser();
+    const { data: isAdmin = false } = useAdmin();
 
-    // State to hold the links after client-side hydration
-    const [navLinks, setNavLinks] = useState(navigationItems);
-
-    // Only update links after hydration is complete
-    useEffect(() => {
-      if (isLoaded) {
-        const isAdmin = user?.publicMetadata.role === "store_admin";
-        setNavLinks(
-          isAdmin ? [...navigationItems, adminNavigationItem] : navigationItems
-        );
-      }
-    }, [isLoaded, user]);
+    // Determine navigation links based on admin status
+    const navLinks = isAdmin
+      ? [...navigationItems, adminNavigationItem]
+      : navigationItems;
 
     return (
       <nav

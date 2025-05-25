@@ -9,8 +9,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { getTemplatesCount } from "@/actions/template-actions";
 import { getOrdersCount } from "@/actions/order-actions";
-import { getMaintenanceStatus } from "@/actions/maintenance-actions"; // ADD THIS
-import MaintenanceControl from "@/components/admin/MaintenanceControl"; // ADD THIS
+import { getMaintenanceStatus } from "@/actions/maintenance-actions";
+import MaintenanceControl from "@/components/admin/MaintenanceControl";
+import { AdminManagement } from "@/components/admin/AdminManagement"; // ADD THIS
 
 // This component handles data fetching
 async function DashboardContent() {
@@ -18,14 +19,14 @@ async function DashboardContent() {
   const usersResult = await getUsersCount();
   const templatesResult = await getTemplatesCount();
   const ordersResult = await getOrdersCount();
-  const maintenanceResult = await getMaintenanceStatus(); // ADD THIS
+  const maintenanceResult = await getMaintenanceStatus();
 
   // Handle errors
   if (
     !usersResult.success ||
     !templatesResult.success ||
     !ordersResult.success ||
-    !maintenanceResult.success // ADD THIS
+    !maintenanceResult.success
   ) {
     return (
       <Alert variant="destructive">
@@ -48,15 +49,17 @@ async function DashboardContent() {
 
   return (
     <div className="space-y-6">
-      {" "}
-      {/* ADD WRAPPER */}
       <DashboardMetrics
         usersCount={usersResult.data}
         templatesCount={templatesResult.data}
         ordersCount={ordersResult.data}
       />
-      {/* ADD MAINTENANCE CONTROL */}
-      <MaintenanceControl initialConfig={maintenanceResult.data.config} />
+
+      {/* Two column layout for controls */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <MaintenanceControl initialConfig={maintenanceResult.data.config} />
+        <AdminManagement /> {/* ADD THIS */}
+      </div>
     </div>
   );
 }
