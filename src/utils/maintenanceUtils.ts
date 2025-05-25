@@ -1,12 +1,10 @@
+import config from "@/lib/config";
 export async function isMaintenanceMode(): Promise<boolean> {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/maintenance`,
-      {
-        method: "GET",
-        cache: "no-store", // Don't cache the result
-      }
-    );
+    const response = await fetch(`${config.APP.CLIENT_URL}/api/maintenance`, {
+      method: "GET",
+      cache: "no-store", // Don't cache the result
+    });
 
     if (!response.ok) {
       return false; // Safe default
