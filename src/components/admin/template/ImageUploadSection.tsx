@@ -1,256 +1,7 @@
-// // src/components/admin/template/ImageUploadSection.tsx
-// "use client";
-
-// import { useState, useRef } from "react";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { Card } from "@/components/ui/card";
-// import { Loader2, Upload, Image as ImageIcon, AlertCircle } from "lucide-react";
-// import { updateTemplateImage } from "@/actions/template-actions";
-// import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// interface ImageUploadSectionProps {
-//   templateId: string;
-//   pageNumber: number; // 0 for cover, 1+ for pages
-//   title: string;
-//   currentImageUrl: string | null;
-//   imagePrompt: string;
-//   isUploading: boolean;
-//   onUploadStart: () => void;
-//   onUploadComplete: () => void;
-//   onUploadError: (error: string) => void;
-// }
-
-// export function ImageUploadSection({
-//   templateId,
-//   pageNumber,
-//   title,
-//   currentImageUrl,
-//   imagePrompt,
-//   isUploading,
-//   onUploadStart,
-//   onUploadComplete,
-//   onUploadError,
-// }: ImageUploadSectionProps) {
-//   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-//   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-//   const [validationError, setValidationError] = useState<string | null>(null);
-//   const fileInputRef = useRef<HTMLInputElement>(null);
-
-//   // Helper function to check if current image is placeholder
-//   const isPlaceholder =
-//     currentImageUrl &&
-//     (currentImageUrl.includes("placeholder") ||
-//       currentImageUrl.startsWith("/images/"));
-
-//   // File validation
-//   const validateFile = (file: File): string | null => {
-//     // Check file type
-//     if (!file.type.startsWith("image/")) {
-//       return "Please select an image file";
-//     }
-
-//     // Check file size (max 10MB)
-//     if (file.size > 10 * 1024 * 1024) {
-//       return "Image size must be less than 10MB";
-//     }
-
-//     // Check file format
-//     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-//     if (!allowedTypes.includes(file.type)) {
-//       return "Only JPEG, PNG, and WebP images are allowed";
-//     }
-
-//     return null;
-//   };
-
-//   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = event.target.files?.[0];
-//     if (!file) return;
-
-//     // Validate file
-//     const error = validateFile(file);
-//     if (error) {
-//       setValidationError(error);
-//       setSelectedFile(null);
-//       setPreviewUrl(null);
-//       return;
-//     }
-
-//     setValidationError(null);
-//     setSelectedFile(file);
-
-//     // Create preview URL
-//     const url = URL.createObjectURL(file);
-//     setPreviewUrl(url);
-//   };
-
-//   const handleUpload = async () => {
-//     if (!selectedFile) return;
-
-//     onUploadStart();
-
-//     try {
-//       // Convert file to buffer for the action
-//       const arrayBuffer = await selectedFile.arrayBuffer();
-//       const buffer = Buffer.from(arrayBuffer);
-
-//       // Call the server action
-//       const result = await updateTemplateImage(templateId, pageNumber, buffer);
-
-//       if (result.success) {
-//         onUploadComplete();
-//         // Clean up
-//         setSelectedFile(null);
-//         if (previewUrl) {
-//           URL.revokeObjectURL(previewUrl);
-//           setPreviewUrl(null);
-//         }
-//         if (fileInputRef.current) {
-//           fileInputRef.current.value = "";
-//         }
-//       } else {
-//         onUploadError(result.error || "Upload failed");
-//       }
-//     } catch (error) {
-//       console.error("Upload error:", error);
-//       onUploadError(error instanceof Error ? error.message : "Upload failed");
-//     }
-//   };
-
-//   const handleClearSelection = () => {
-//     setSelectedFile(null);
-//     setValidationError(null);
-//     if (previewUrl) {
-//       URL.revokeObjectURL(previewUrl);
-//       setPreviewUrl(null);
-//     }
-//     if (fileInputRef.current) {
-//       fileInputRef.current.value = "";
-//     }
-//   };
-
-//   return (
-//     <div className="space-y-4">
-//       {/* Current Image Display */}
-//       <div className="space-y-2">
-//         <Label className="text-sm font-medium">Current Image</Label>
-//         <Card className="p-4">
-//           <div className="flex items-center space-x-4">
-//             <div className="relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-//               {currentImageUrl ? (
-//                 <img
-//                   src={currentImageUrl}
-//                   alt={`${title} preview`}
-//                   className="w-full h-full object-cover"
-//                 />
-//               ) : (
-//                 <div className="w-full h-full flex items-center justify-center">
-//                   <ImageIcon className="h-8 w-8 text-gray-400" />
-//                 </div>
-//               )}
-//               {isPlaceholder && (
-//                 <div className="absolute inset-0 bg-orange-500 bg-opacity-20 flex items-center justify-center">
-//                   <span className="text-xs text-orange-800 font-medium bg-orange-200 px-1 rounded">
-//                     Placeholder
-//                   </span>
-//                 </div>
-//               )}
-//             </div>
-//             <div className="flex-1 min-w-0">
-//               <p className="text-sm font-medium truncate">
-//                 {isPlaceholder ? "Placeholder Image" : "Custom Image"}
-//               </p>
-//               <p className="text-xs text-muted-foreground mt-1">
-//                 <strong>Prompt:</strong> {imagePrompt}
-//               </p>
-//             </div>
-//           </div>
-//         </Card>
-//       </div>
-
-//       {/* File Selection */}
-//       <div className="space-y-2">
-//         <Label htmlFor={`file-${pageNumber}`} className="text-sm font-medium">
-//           {isPlaceholder ? "Upload New Image" : "Replace Image"}
-//         </Label>
-//         <Input
-//           ref={fileInputRef}
-//           id={`file-${pageNumber}`}
-//           type="file"
-//           accept="image/*"
-//           onChange={handleFileSelect}
-//           disabled={isUploading}
-//           className="cursor-pointer"
-//         />
-//         {validationError && (
-//           <Alert variant="destructive">
-//             <AlertCircle className="h-4 w-4" />
-//             <AlertDescription>{validationError}</AlertDescription>
-//           </Alert>
-//         )}
-//       </div>
-
-//       {/* Preview Selected File */}
-//       {selectedFile && previewUrl && !validationError && (
-//         <div className="space-y-2">
-//           <Label className="text-sm font-medium">Preview</Label>
-//           <Card className="p-4">
-//             <div className="flex items-center space-x-4">
-//               <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-//                 <img
-//                   src={previewUrl}
-//                   alt="Preview"
-//                   className="w-full h-full object-cover"
-//                 />
-//               </div>
-//               <div className="flex-1">
-//                 <p className="text-sm font-medium">{selectedFile.name}</p>
-//                 <p className="text-xs text-muted-foreground">
-//                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-//                 </p>
-//               </div>
-//             </div>
-//           </Card>
-//         </div>
-//       )}
-
-//       {/* Action Buttons */}
-//       <div className="flex space-x-2">
-//         {selectedFile && !validationError && (
-//           <>
-//             <Button onClick={handleUpload} disabled={isUploading} size="sm">
-//               {isUploading ? (
-//                 <>
-//                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-//                   Uploading...
-//                 </>
-//               ) : (
-//                 <>
-//                   <Upload className="h-4 w-4 mr-2" />
-//                   Upload Image
-//                 </>
-//               )}
-//             </Button>
-//             <Button
-//               variant="outline"
-//               onClick={handleClearSelection}
-//               disabled={isUploading}
-//               size="sm"
-//             >
-//               Clear
-//             </Button>
-//           </>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-// src/components/admin/template/ImageUploadSection.tsx
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -411,10 +162,14 @@ export function ImageUploadSection({
           <div className="flex items-center space-x-4">
             <div className="relative w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
               {currentImageUrl ? (
-                <img
+                <Image
                   src={currentImageUrl}
                   alt={`${title} preview`}
-                  className="w-full h-full object-cover"
+                  width={96}
+                  height={96}
+                  className="object-cover"
+                  sizes="96px"
+                  priority={false}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -470,10 +225,14 @@ export function ImageUploadSection({
           <Card className="p-4">
             <div className="flex items-center space-x-4">
               <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                <img
+                <Image
                   src={previewUrl}
                   alt="Preview"
-                  className="w-full h-full object-cover"
+                  width={96}
+                  height={96}
+                  className="object-cover"
+                  sizes="96px"
+                  priority={false}
                 />
               </div>
               <div className="flex-1">

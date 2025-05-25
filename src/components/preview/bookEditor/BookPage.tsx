@@ -21,8 +21,7 @@ export interface BookPageProps {
 const BookPage = React.forwardRef<HTMLDivElement, BookPageProps>(
   ({ pageNumber, type, textContent, imageUrl, pageId }, ref) => {
     // Get edit mode state and actions from the store
-    const { isEditMode, setCurrentlyEditing, book, currentPageIndex } =
-      useBookPreviewStore();
+    const { isEditMode, setCurrentlyEditing, book } = useBookPreviewStore();
     const bookStatus = book?.status;
     const isReadyForPrint = bookStatus === BookStatus.READY_FOR_PRINTING;
 
