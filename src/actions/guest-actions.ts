@@ -14,7 +14,7 @@ import { BookFull, BookStatus } from "@/types/book";
 import { serializeBooks } from "@/utils/serializers";
 import { BOOK_CREATION_LIMIT } from "@/constants/bookConstants";
 import { SESSION_COOKIE_NAME, SESSION_DURATION_DAYS } from "@/constants/user";
-
+import config from "@/lib/config";
 
 /**
  * Gets or creates a guest session
@@ -77,7 +77,7 @@ export async function getOrCreateGuestSession(): Promise<
       expires: expiresAt,
       path: "/",
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: config.APP.NODE_ENV === "production",
       httpOnly: true,
     });
 

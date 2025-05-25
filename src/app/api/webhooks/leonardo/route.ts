@@ -314,6 +314,7 @@ import {
   processFailedGeneration,
 } from "@/actions/image-actions";
 import { revalidatePath } from "next/cache";
+import config from "@/lib/config";
 
 // Leonardo.ai IP addresses
 const LEONARDO_IPS = [
@@ -385,7 +386,7 @@ interface LeonardoWebhookData {
   };
 }
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = config.APP.NODE_ENV === "production";
 
 export async function POST(req: NextRequest) {
   const startTime = Date.now();
@@ -440,7 +441,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Check authentication
     const authHeader = req.headers.get("authorization");
-    const webhookSecret = process.env.LEONARDO_WEBHOOK_SECRET;
+    const webhookSecret = config.IMAGE_GENERATION.LEONARDO.WEBHOOK_SECRET;
 
     logger.info(
       {

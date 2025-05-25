@@ -1293,6 +1293,7 @@ import { logger } from "@/lib/logger";
 import { fetchImageAsBuffer } from "@/utils/imageUtils";
 import { BookPrint } from "@/types/book";
 import { CoverDimensions, PrintPdfGenerationResult } from "@/types/print";
+import config from "@/lib/config";
 
 // ==================== FONT CONFIGURATION ====================
 
@@ -2655,7 +2656,7 @@ export async function generateCoverPdf(
     }
 
     // Add debugging logs for development without visual elements
-    if (process.env.NODE_ENV === "development") {
+    if (config.APP.NODE_ENV === "development") {
       logger.info(`Cover PDF dimensions: ${documentWidth} x ${documentHeight}`);
       logger.info(
         `Back cover width: ${backCoverWidth}, Front cover width: ${frontCoverWidth}`

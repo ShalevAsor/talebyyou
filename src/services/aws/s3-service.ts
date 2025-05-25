@@ -85,16 +85,16 @@ export async function deleteFileFromS3(s3Key: string): Promise<boolean> {
   try {
     // Initialize S3 client
     const s3Client = new S3Client({
-      region: process.env.AWS_REGION || "us-east-1",
+      region: config.AWS.REGION,
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+        accessKeyId: config.AWS.ACCESS_KEY_ID,
+        secretAccessKey: config.AWS.SECRET_ACCESS_KEY,
       },
     });
 
     // Create delete command
     const deleteCommand = new DeleteObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME || "",
+      Bucket: config.AWS.S3_BUCKET_NAME || "",
       Key: s3Key,
     });
 

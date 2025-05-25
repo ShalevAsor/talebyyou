@@ -391,6 +391,7 @@ import {
   getWelcomeEmailTemplate,
 } from "./email-templates";
 import { ProductType } from "@/generated/prisma";
+import { EmailType } from "@/types/email";
 
 /**
  * Interface for email options
@@ -401,6 +402,7 @@ interface EmailOptions {
   html: string;
   text?: string;
   replyTo?: string;
+  emailType?: EmailType; // New: specify which alias to use
 }
 
 /**
@@ -408,18 +410,47 @@ interface EmailOptions {
  */
 class EmailService {
   private transporter: Transporter | null = null;
-  private fromEmail: string;
-  private supportEmail: string;
   private initialized: Promise<void> | null = null;
 
   /**
    * Creates an instance of the EmailService
    */
-  constructor() {
-    this.fromEmail = config.EMAIL_FROM;
-    this.supportEmail = config.EMAIL_SUPPORT;
-  }
+  constructor() {}
 
+  /**
+   * Get the appropriate "from" email based on email type
+   */
+  private getFromEmail(emailType: EmailType): string {
+    switch (emailType) {
+      case EmailType.AUTOMATED:
+        return config.EMAIL.FROM; // noreply@talebyyou.com
+      case EmailType.SUPPORT:
+        return config.EMAIL.SUPPORT; // support@talebyyou.com
+      case EmailType.ORDER:
+        return config.EMAIL.ORDER; // orders@talebyyou.com
+      case EmailType.INFO:
+        return config.EMAIL.INFO; // info@talebyyou.com
+      default:
+        return config.EMAIL.FROM; // Default to noreply
+    }
+  }
+  /**
+   * Get the appropriate "reply-to" email based on email type
+   */
+  private getReplyToEmail(emailType: EmailType): string {
+    switch (emailType) {
+      case EmailType.AUTOMATED:
+        return config.EMAIL.SUPPORT; // Replies go to support
+      case EmailType.SUPPORT:
+        return config.EMAIL.SUPPORT; // Replies stay with support
+      case EmailType.ORDER:
+        return config.EMAIL.ORDER; // Order-related replies
+      case EmailType.INFO:
+        return config.EMAIL.INFO; // Info-related replies
+      default:
+        return config.EMAIL.SUPPORT; // Default to support
+    }
+  }
   /**
    * Get or create initialization promise
    */
@@ -434,7 +465,7 @@ class EmailService {
    * Initialize the email service
    */
   private async initialize(): Promise<void> {
-    const testMode = config.EMAIL_TEST_MODE || "development";
+    const testMode = config.EMAIL.TEST_MODE || "development";
 
     // Initialize the transporter based on the test mode
     switch (testMode) {
@@ -471,7 +502,6 @@ class EmailService {
         },
       });
       logger.info("📧 Development email transporter set up with Ethereal");
-      logger.info(`📧 Ethereal email credentials: ${testAccount.user}`);
     } catch (error) {
       logger.error("Failed to set up development email transporter:", error);
       throw new Error("Failed to set up email service for development");
@@ -482,7 +512,7 @@ class EmailService {
    * Set up Gmail transporter for testing
    */
   private setupGmailTransporter(): void {
-    if (!config.EMAIL_USER || !config.EMAIL_PASSWORD) {
+    if (!config.EMAIL.USER || !config.EMAIL.PASSWORD) {
       throw new Error(
         "Gmail credentials not provided. Please set EMAIL_USER and EMAIL_PASSWORD."
       );
@@ -493,66 +523,57 @@ class EmailService {
       port: 587,
       secure: false,
       auth: {
-        user: config.EMAIL_USER,
-        pass: config.EMAIL_PASSWORD,
+        user: config.EMAIL.USER,
+        pass: config.EMAIL.PASSWORD,
       },
     });
     logger.info("📧 Gmail test mode activated");
-    logger.info(`📧 Using Gmail account: ${config.EMAIL_USER}`);
+    logger.info(`📧 Using Gmail account: ${config.EMAIL.USER}`);
   }
 
   /**
    * Set up email transporter for production environment
    */
   private setupProductionTransporter(): void {
-    if (!config.EMAIL_HOST || !config.EMAIL_USER || !config.EMAIL_PASSWORD) {
+    if (!config.EMAIL.HOST || !config.EMAIL.USER || !config.EMAIL.PASSWORD) {
       throw new Error(
         "Production email configuration incomplete. Please check your environment variables."
       );
     }
 
     this.transporter = nodemailer.createTransport({
-      host: config.EMAIL_HOST,
-      port: parseInt(config.EMAIL_PORT || "587"),
-      secure: config.EMAIL_SECURE === "true",
+      host: config.EMAIL.HOST,
+      port: parseInt(config.EMAIL.PORT || "587"),
+      secure: config.EMAIL.SECURE,
       auth: {
-        user: config.EMAIL_USER,
-        pass: config.EMAIL_PASSWORD,
+        user: config.EMAIL.USER,
+        pass: config.EMAIL.PASSWORD,
       },
       // Add this for better debugging if needed
-      logger: process.env.NODE_ENV !== "production",
-      debug: process.env.NODE_ENV !== "production",
+      logger: config.APP.NODE_ENV !== "production",
+      debug: config.APP.NODE_ENV !== "production",
     });
     logger.info("📧 Production email transporter set up");
   }
 
   /**
    * Send a welcome email to a new TaleByYou user
-   * @param to Recipient email address
-   * @param name Recipient's name
-   * @returns Promise resolving to the nodemailer info object
+   * Uses: noreply@talebyyou.com (automated)
    */
   async sendWelcomeEmail(to: string, name: string): Promise<SentMessageInfo> {
-    // Wait for initialization to complete before sending
     await this.getInitializePromise();
     const html = getWelcomeEmailTemplate(name);
     return this.sendEmail({
       to,
       subject: "Welcome to TaleByYou!",
       html,
-      replyTo: this.supportEmail,
+      emailType: EmailType.AUTOMATED, // 🎯 Uses noreply@talebyyou.com
     });
   }
 
   /**
    * Send an order confirmation email
-   * @param to Recipient email address
-   * @param orderNumber The human-readable order number
-   * @param productType The type of product ordered
-   * @param bookTitle The title of the book
-   * @param price The price of the product
-   * @param fullName Recipient's full name
-   * @returns Promise resolving to the nodemailer info object
+   * Uses: orders@talebyyou.com (order-related)
    */
   async sendOrderConfirmationEmail(
     to: string,
@@ -562,7 +583,6 @@ class EmailService {
     price: number,
     fullName?: string
   ): Promise<SentMessageInfo> {
-    // Wait for initialization to complete before sending
     await this.getInitializePromise();
     const html = getOrderConfirmationEmailTemplate(
       orderNumber,
@@ -575,18 +595,13 @@ class EmailService {
       to,
       subject: `Order Confirmation #${orderNumber}`,
       html,
-      replyTo: this.supportEmail,
+      emailType: EmailType.ORDER, // 🎯 Uses orders@talebyyou.com
     });
   }
 
   /**
    * Send a book completion email with download link
-   * @param to Recipient email address
-   * @param fullName Recipient's full name
-   * @param bookTitle The title of the completed book
-   * @param productType The type of product ordered
-   * @param downloadLink The download link for the ebook
-   * @returns Promise resolving to the nodemailer info object
+   * Uses: support@talebyyou.com (customers can reply with questions)
    */
   async sendBookCompletionEmail(
     to: string,
@@ -595,7 +610,6 @@ class EmailService {
     productType: ProductType,
     downloadLink: string
   ): Promise<SentMessageInfo> {
-    // Wait for initialization to complete before sending
     await this.getInitializePromise();
     const html = getBookCompletionEmailTemplate(
       fullName,
@@ -611,21 +625,13 @@ class EmailService {
       to,
       subject,
       html,
-      replyTo: this.supportEmail,
+      emailType: EmailType.SUPPORT, // 🎯 Uses support@talebyyou.com (can reply)
     });
   }
 
   /**
    * Send a shipping confirmation email when a physical book is shipped
-   * @param to Recipient email address
-   * @param fullName Recipient's full name
-   * @param orderNumber The human-readable order number
-   * @param bookTitle The title of the shipped book
-   * @param trackingNumber The shipping tracking number
-   * @param trackingUrl The URL to track the shipment
-   * @param carrierName The name of the shipping carrier
-   * @param estimatedDelivery The estimated delivery date
-   * @returns Promise resolving to the nodemailer info object
+   * Uses: orders@talebyyou.com (order-related)
    */
   async sendShippingConfirmationEmail(
     to: string,
@@ -637,7 +643,6 @@ class EmailService {
     carrierName: string,
     estimatedDelivery: string
   ): Promise<SentMessageInfo> {
-    // Wait for initialization to complete before sending
     await this.getInitializePromise();
     const html = getShippingConfirmationEmailTemplate(
       fullName,
@@ -652,19 +657,13 @@ class EmailService {
       to,
       subject: `Your Book "${bookTitle}" Has Shipped!`,
       html,
-      replyTo: this.supportEmail,
+      emailType: EmailType.ORDER, // 🎯 Uses orders@talebyyou.com
     });
   }
 
   /**
    * Send a contact form submission email to the support team
-   * @param name Sender's name
-   * @param email Sender's email address
-   * @param category The category of the inquiry
-   * @param subject The subject of the message
-   * @param message The message content
-   * @param orderNumber Optional order number for order-related inquiries
-   * @returns Promise resolving to the nodemailer info object
+   * Uses: info@talebyyou.com (general inquiries)
    */
   async sendContactFormEmail(
     name: string,
@@ -674,7 +673,6 @@ class EmailService {
     message: string,
     orderNumber?: string
   ): Promise<SentMessageInfo> {
-    // Wait for initialization to complete before sending
     await this.getInitializePromise();
 
     // Create HTML for the contact form email
@@ -687,18 +685,28 @@ class EmailService {
       orderNumber
     );
 
-    // Send email to the support team (yourself)
+    // Determine email type based on category
+    const emailType =
+      orderNumber || category.includes("order")
+        ? EmailType.ORDER // Order-related inquiries
+        : EmailType.INFO; // General inquiries
+
+    // Send email to the appropriate address
     return this.sendEmail({
-      to: this.supportEmail, // FIXED: Now goes to support email
+      to:
+        emailType === EmailType.ORDER
+          ? config.EMAIL.ORDER
+          : config.EMAIL.SUPPORT,
       subject: `Contact Form: ${subject}`,
       html,
       replyTo: email, // Customer's email for easy reply
+      emailType: emailType, // 🎯 Uses orders@ or support@ based on type
     });
   }
 
   /**
    * Generic method to send an email
-   * @param options Email options (to, subject, html)
+   * @param options Email options (to, subject, html, emailType)
    * @returns Promise resolving to the nodemailer info object
    */
   private async sendEmail(options: EmailOptions): Promise<SentMessageInfo> {
@@ -708,20 +716,31 @@ class EmailService {
         throw new Error("Email transporter not initialized");
       }
 
-      const { to, subject, html, text, replyTo } = options;
+      const {
+        to,
+        subject,
+        html,
+        text,
+        replyTo,
+        emailType = EmailType.AUTOMATED,
+      } = options;
+
+      // Get the appropriate from and reply-to emails
+      const fromEmail = this.getFromEmail(emailType);
+      const replyToEmail = replyTo || this.getReplyToEmail(emailType);
 
       const mailOptions: SendMailOptions = {
-        from: `"TaleByYou" <${this.fromEmail}>`,
+        from: `"TaleByYou" <${fromEmail}>`, // 🎯 Dynamic based on email type
         to,
         subject,
         html,
         text: text || "",
-        replyTo: replyTo || this.supportEmail,
+        replyTo: replyToEmail,
       };
 
       const info = await this.transporter.sendMail(mailOptions);
 
-      if (process.env.NODE_ENV === "development") {
+      if (config.APP.NODE_ENV === "development") {
         // Log Ethereal URL for development
         const previewUrl = nodemailer.getTestMessageUrl(info);
         if (previewUrl) {
@@ -729,7 +748,7 @@ class EmailService {
         }
       }
 
-      logger.info(`📧 Email sent to ${to}: ${subject}`);
+      logger.info(`📧 Email sent from ${fromEmail} to ${to}: ${subject}`);
       return info;
     } catch (error) {
       logger.error("Failed to send email:", error);

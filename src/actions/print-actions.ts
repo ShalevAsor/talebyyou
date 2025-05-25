@@ -945,9 +945,7 @@ export async function sendBookForPrinting(
     // Create a request object for the print job
     const printJobRequest: CreatePrintJobRequest = {
       contact_email:
-        config.LULU[
-          process.env.NODE_ENV === "production" ? "PRODUCTION" : "SANDBOX"
-        ].CONTACT_EMAIL,
+        config.PRINTING.LULU.CONTACT_EMAIL,
       external_id: order.id,
       line_items: [printItem],
       production_delay: PRODUCTION_DELAYED, // production delay in minutes - 2 hours by default

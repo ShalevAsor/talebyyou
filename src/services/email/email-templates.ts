@@ -326,7 +326,7 @@
 //   `;
 // };
 import { ProductType } from "@/generated/prisma";
-
+import config from "@/lib/config";
 /**
  * Generate a welcome email template for TaleByYou customers
  * @param userName The user's name
@@ -349,7 +349,7 @@ export const getWelcomeEmailTemplate = (userName: string): string => {
       <p>We add new tale templates every week or two, so check back often to see what's new!</p>
       <div style="text-align: center; margin: 30px 0;">
         <a href="${
-          process.env.NEXT_PUBLIC_APP_URL
+          config.APP.CLIENT_URL
         }/library" style="background-color: #4F46E5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
           Explore Our Tale Library
         </a>
@@ -402,7 +402,7 @@ export const getOrderConfirmationEmailTemplate = (
       
       <div style="text-align: center; margin: 30px 0;">
         <a href="${
-          process.env.NEXT_PUBLIC_APP_URL
+          config.APP.CLIENT_URL
         }/my-books" style="background-color: #4F46E5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
           View My Tales
         </a>
@@ -461,7 +461,7 @@ export const getBookCompletionEmailTemplate = (
         </a>
         <br>
         <a href="${
-          process.env.NEXT_PUBLIC_APP_URL
+          config.APP.CLIENT_URL
         }/my-books" style="background-color: white; color: #4F46E5; border: 1px solid #4F46E5; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
           View in My Tales
         </a>
@@ -579,7 +579,7 @@ export const getShippingConfirmationEmailTemplate = (
       <div style="text-align: center; margin: 30px 0;">
         ${trackingButton}
         <a href="${
-          process.env.NEXT_PUBLIC_APP_URL
+          config.APP.CLIENT_URL
         }/my-books" style="background-color: white; color: #4F46E5; border: 1px solid #4F46E5; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
           View Order Details
         </a>

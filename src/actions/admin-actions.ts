@@ -39,7 +39,7 @@ export async function setupLuluWebhook(): Promise<
         );
 
         // Update the webhook if needed (e.g., if the URL has changed)
-        const webhookUrl = `${config.CLIENT_URL}/api/webhooks/lulu`;
+        const webhookUrl = `${config.APP.CLIENT_URL}/api/webhooks/lulu`;
 
         if (existingWebhook.url !== webhookUrl || !existingWebhook.is_active) {
           logger.info("Updating existing webhook with new configuration");

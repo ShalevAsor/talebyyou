@@ -14,10 +14,7 @@ import { processWebhook } from "@/actions/webhook-actions";
 function verifyHmacSignature(rawBody: string, signature: string): boolean {
   try {
     // Get the Lulu webhook secret from config
-    const webhookSecret =
-      process.env.NODE_ENV === "production"
-        ? config.LULU.PRODUCTION.CLIENT_SECRET
-        : config.LULU.SANDBOX.CLIENT_SECRET;
+    const webhookSecret = config.PRINTING.LULU.CLIENT_SECRET;
 
     if (!webhookSecret) {
       logger.error("Webhook secret not found in configuration");
@@ -67,7 +64,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Verify the HMAC signature
     const isSignatureValid = verifyHmacSignature(rawBody, hmacSignature);
-    if (!isSignatureValid && process.env.NODE_ENV === "production") {
+    if (!isSignatureValid && config.APP.NODE_ENV === "production") {
       logger.warn("Invalid HMAC signature in webhook request");
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }

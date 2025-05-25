@@ -37,15 +37,10 @@ export class LuluPrintingService {
   private accessToken: string | null = null;
   private tokenExpiry: Date | null = null;
 
-  constructor(useSandbox = config.NODE_ENV !== "production") {
-    // Load the appropriate credentials based on environment
-    const luluConfig = useSandbox
-      ? config.LULU.SANDBOX
-      : config.LULU.PRODUCTION;
-
-    this.baseUrl = luluConfig.API_URL;
-    this.clientKey = luluConfig.CLIENT_KEY;
-    this.clientSecret = luluConfig.CLIENT_SECRET;
+  constructor(useSandbox = config.APP.NODE_ENV !== "production") {
+    this.baseUrl = config.PRINTING.LULU.API_URL;
+    this.clientKey = config.PRINTING.LULU.CLIENT_KEY;
+    this.clientSecret = config.PRINTING.LULU.CLIENT_SECRET;
 
     // Generate the base64Auth correctly instead of using the stored one
     // This ensures the proper format of clientKey:clientSecret
@@ -579,7 +574,7 @@ export class LuluPrintingService {
 
       const webhookRequest: CreateWebhookRequest = {
         topics: ["PRINT_JOB_STATUS_CHANGED"],
-        url: `${config.CLIENT_URL}/api/webhooks/lulu`,
+        url: `${config.APP.CLIENT_URL}/api/webhooks/lulu`,
       };
 
       const response = await this.makeAuthenticatedRequest<WebhookResponse>(
