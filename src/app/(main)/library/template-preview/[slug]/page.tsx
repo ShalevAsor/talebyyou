@@ -16,7 +16,6 @@ import TemplateDetails from "@/components/templates/template-preview/TemplateDet
 import CustomizationOptions from "@/components/templates/template-preview/CustomizationOptions";
 import CallToAction from "@/components/templates/template-preview/CTA";
 import { Loader2 } from "lucide-react";
-import { template } from "lodash";
 
 // Dynamic import for the heavy BookTemplatePreview component
 const BookTemplatePreview = dynamic(
