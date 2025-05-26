@@ -36,19 +36,30 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ["pdfkit"],
   images: {
-    // Removed deprecated "domains" property
     remotePatterns: [
-      // Your S3 bucket - specific template path
+      // OLD S3 bucket - keep for existing images
       {
         protocol: "https",
         hostname: "shalev-book-store-bucket.s3.us-east-1.amazonaws.com",
         port: "",
         pathname: "/templates/**",
       },
-      // Your S3 bucket - general access
       {
         protocol: "https",
         hostname: "shalev-book-store-bucket.s3.us-east-1.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+      // NEW S3 bucket - add these patterns
+      {
+        protocol: "https",
+        hostname: "tale-by-you.s3.us-east-1.amazonaws.com",
+        port: "",
+        pathname: "/templates/**",
+      },
+      {
+        protocol: "https",
+        hostname: "tale-by-you.s3.us-east-1.amazonaws.com",
         port: "",
         pathname: "/**",
       },
@@ -59,14 +70,20 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
-      // Your domain (replace with actual domain)
+      // Your domain
       {
         protocol: "https",
-        hostname: "your-domain.com",
+        hostname: "talebyyou.com",
         port: "",
         pathname: "/**",
       },
-      // Wildcard S3 pattern for any S3 buckets in us-east-1
+      {
+        protocol: "https",
+        hostname: "www.talebyyou.com",
+        port: "",
+        pathname: "/**",
+      },
+      // Wildcard S3 pattern for any S3 buckets in us-east-1 (fallback)
       {
         protocol: "https",
         hostname: "*.s3.us-east-1.amazonaws.com",
