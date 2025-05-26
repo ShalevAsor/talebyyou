@@ -1,4 +1,3 @@
-// // src/components/admin/template/TemplateImageManager.tsx
 // "use client";
 
 // import { useState } from "react";
@@ -8,6 +7,7 @@
 // import { ChevronLeft, Upload, Check, AlertCircle } from "lucide-react";
 // import { BookTemplateFull } from "@/types/book";
 // import { ImageUploadSection } from "./ImageUploadSection";
+// import { S3ImageSelector } from "./S3ImageSelector";
 // import { toast } from "react-toastify";
 
 // interface TemplateImageManagerProps {
@@ -70,6 +70,11 @@
 //         pageNumber === 0 ? "cover" : `page ${pageNumber}`
 //       } image: ${error}`
 //     );
+//   };
+
+//   const handleImageSelected = () => {
+//     // Refresh the page to show updated images
+//     router.refresh();
 //   };
 
 //   return (
@@ -142,7 +147,7 @@
 //             )}
 //           </CardTitle>
 //         </CardHeader>
-//         <CardContent>
+//         <CardContent className="space-y-4">
 //           <ImageUploadSection
 //             templateId={template.id}
 //             pageNumber={0}
@@ -154,6 +159,19 @@
 //             onUploadComplete={() => handleImageUploadComplete(0)}
 //             onUploadError={(error) => handleImageUploadError(0, error)}
 //           />
+
+//           {/* S3 Image Selector for Cover */}
+//           <div className="pt-2 border-t">
+//             <p className="text-sm text-muted-foreground mb-2">
+//               Or select an existing image from S3:
+//             </p>
+//             <S3ImageSelector
+//               templateSlug={template.slug}
+//               target="cover"
+//               targetLabel="Cover"
+//               onImageSelected={handleImageSelected}
+//             />
+//           </div>
 //         </CardContent>
 //       </Card>
 
@@ -170,13 +188,14 @@
 //             {template.pages
 //               .sort((a, b) => a.pageNumber - b.pageNumber)
 //               .map((page) => (
-//                 <div key={page.id} className="space-y-2">
+//                 <div key={page.id} className="space-y-4">
 //                   <div className="flex items-center justify-between">
 //                     <h3 className="font-medium">Page {page.pageNumber}</h3>
 //                     {!isPlaceholderImage(page.imageUrl) && (
 //                       <Check className="h-4 w-4 text-green-600" />
 //                     )}
 //                   </div>
+
 //                   <ImageUploadSection
 //                     templateId={template.id}
 //                     pageNumber={page.pageNumber}
@@ -194,6 +213,19 @@
 //                       handleImageUploadError(page.pageNumber, error)
 //                     }
 //                   />
+
+//                   {/* S3 Image Selector for Each Page */}
+//                   <div className="pt-2 border-t">
+//                     <p className="text-sm text-muted-foreground mb-2">
+//                       Or select existing image:
+//                     </p>
+//                     <S3ImageSelector
+//                       templateSlug={template.slug}
+//                       target={page.id}
+//                       targetLabel={`Page ${page.pageNumber}`}
+//                       onImageSelected={handleImageSelected}
+//                     />
+//                   </div>
 //                 </div>
 //               ))}
 //           </div>
@@ -297,6 +329,9 @@ export function TemplateImageManager({ template }: TemplateImageManagerProps) {
         pageNumber === 0 ? "cover" : `page ${pageNumber}`
       } uploaded successfully!`
     );
+
+    // **FIX: Refresh the page data to show updated image**
+    router.refresh();
   };
 
   const handleImageUploadError = (pageNumber: number, error: string) => {

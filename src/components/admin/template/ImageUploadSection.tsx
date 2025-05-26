@@ -17,7 +17,7 @@ interface ImageUploadSectionProps {
   imagePrompt: string;
   isUploading: boolean;
   onUploadStart: () => void;
-  onUploadComplete: () => void;
+  onUploadComplete: (newImageUrl?: string) => void; // Updated to pass new URL
   onUploadError: (error: string) => void;
 }
 
@@ -91,54 +91,6 @@ export function ImageUploadSection({
     setPreviewUrl(url);
   };
 
-  // const handleUpload = async () => {
-  //   if (!selectedFile) return;
-
-  //   onUploadStart();
-
-  //   try {
-  //     // Step 1: Upload to temp location via API route
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
-
-  //     const uploadResponse = await fetch("/api/upload-temp", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!uploadResponse.ok) {
-  //       const error = await uploadResponse.json();
-  //       throw new Error(error.error || "Upload failed");
-  //     }
-
-  //     const { tempFilePath } = await uploadResponse.json();
-
-  //     // Step 2: Process the temp file via Server Action (only sending file path)
-  //     const result = await updateTemplateImageFromPath(
-  //       templateId,
-  //       pageNumber,
-  //       tempFilePath
-  //     );
-
-  //     if (result.success) {
-  //       onUploadComplete();
-  //       // Clean up
-  //       setSelectedFile(null);
-  //       if (previewUrl) {
-  //         URL.revokeObjectURL(previewUrl);
-  //         setPreviewUrl(null);
-  //       }
-  //       if (fileInputRef.current) {
-  //         fileInputRef.current.value = "";
-  //       }
-  //     } else {
-  //       onUploadError(result.error || "Upload failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("Upload error:", error);
-  //     onUploadError(error instanceof Error ? error.message : "Upload failed");
-  //   }
-  // };
   const handleUpload = async () => {
     if (!selectedFile) return;
 
@@ -185,7 +137,9 @@ export function ImageUploadSection({
       console.log("Upload result:", result);
 
       if (result.success) {
-        onUploadComplete();
+        // Pass the new image URL to the parent component
+        onUploadComplete(result.imageUrl);
+
         // Clean up
         setSelectedFile(null);
         if (previewUrl) {
