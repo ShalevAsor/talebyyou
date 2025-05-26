@@ -11,6 +11,12 @@ import { migrateGuestSessionToUser } from "@/actions/guest-actions";
 
 export async function POST(req: Request) {
   try {
+    console.log("=== WEBHOOK ENV DEBUG ===");
+    console.log("CLERK_SECRET_KEY:", !!process.env.CLERK_SECRET_KEY);
+    console.log(
+      "CLERK_WEBHOOK_SIGNING_SECRET:",
+      !!process.env.CLERK_WEBHOOK_SIGNING_SECRET
+    );
     // Verify the webhook using Clerk's helper
     const evt = await verifyWebhook(req);
 
