@@ -774,3 +774,164 @@ export async function getTemplateS3Images(
     );
   }
 }
+
+// Add this new function to your template-actions.ts
+
+export async function seedBookTemplatesBatch(
+  startIndex: number = 0,
+  batchSize: number = 4 // Process 4 templates at a time (3 batches total)
+): Promise<
+  ActionResult<{ processed: number; total: number; hasMore: boolean }>
+> {
+  try {
+    let created = 0;
+    let updated = 0;
+
+    // Get the batch of templates to process
+    const templatesSlice = defaultTemplates.slice(
+      startIndex,
+      startIndex + batchSize
+    );
+
+    if (templatesSlice.length === 0) {
+      return createSuccessResult(
+        {
+          processed: startIndex,
+          total: defaultTemplates.length,
+          hasMore: false,
+        },
+        "No more templates to process"
+      );
+    }
+
+    console.log(
+      `Processing batch: ${startIndex + 1}-${
+        startIndex + templatesSlice.length
+      } of ${defaultTemplates.length}`
+    );
+
+    // Process each template in the batch
+    for (const template of templatesSlice) {
+      console.log(`Processing template: "${template.title}"`);
+
+      const baseSlug = generateSlug(template.title);
+      console.log(`Generated baseSlug: "${baseSlug}"`);
+
+      // First ensure all genres exist
+      const genrePromises = template.genres.map(async (genreName) => {
+        return await prisma.genre.upsert({
+          where: { name: genreName },
+          update: { name: genreName },
+          create: { name: genreName },
+        });
+      });
+
+      const genres = await Promise.all(genrePromises);
+
+      // Get existing template if any
+      const existingTemplate = await prisma.bookTemplate.findUnique({
+        where: { title: template.title },
+      });
+
+      // Ensure slug is unique
+      const slug = await ensureUniqueSlug(baseSlug, existingTemplate?.id);
+      console.log(`Final slug: "${slug}"`);
+
+      // Delete existing template pages if updating
+      if (existingTemplate) {
+        await prisma.templatePageContent.deleteMany({
+          where: { templateId: existingTemplate.id },
+        });
+      }
+
+      // Upsert the book template
+      const bookTemplate = await prisma.bookTemplate.upsert({
+        where: {
+          title: template.title,
+        },
+        update: {
+          description: template.description,
+          pageCount: template.pageCount,
+          coverPrompt: template.coverPrompt,
+          published: template.published,
+          characterGender: template.characterGender,
+          coverImage: template.coverImage,
+          minAge: template.minAge,
+          maxAge: template.maxAge,
+          slug,
+          genres: {
+            set: [],
+            connect: genres.map((genre) => ({ id: genre.id })),
+          },
+        },
+        create: {
+          title: template.title,
+          slug,
+          description: template.description,
+          pageCount: template.pageCount,
+          coverPrompt: template.coverPrompt,
+          published: template.published,
+          characterGender: template.characterGender,
+          coverImage: template.coverImage,
+          minAge: template.minAge,
+          maxAge: template.maxAge,
+          genres: {
+            connect: genres.map((genre) => ({ id: genre.id })),
+          },
+        },
+        include: {
+          genres: true,
+        },
+      });
+
+      // Create template pages
+      if (template.pages && template.pages.length > 0) {
+        const pagePromises = template.pages.map(async (page) => {
+          return await prisma.templatePageContent.create({
+            data: {
+              pageNumber: page.pageNumber,
+              content: page.content,
+              imagePrompt: page.imagePrompt,
+              imageUrl: page.imageUrl,
+              templateId: bookTemplate.id,
+            },
+          });
+        });
+
+        await Promise.all(pagePromises);
+      }
+
+      // Track if we created or updated
+      if (existingTemplate) {
+        updated++;
+      } else {
+        created++;
+      }
+
+      console.log(`Created/Updated template with slug: "${bookTemplate.slug}"`);
+    }
+
+    // Revalidate paths
+    revalidatePath("/library");
+    revalidatePath("/admin/templates");
+
+    const hasMore = startIndex + batchSize < defaultTemplates.length;
+    const processed = startIndex + templatesSlice.length;
+
+    return createSuccessResult(
+      {
+        processed,
+        total: defaultTemplates.length,
+        hasMore,
+      },
+      `Batch completed: ${created} created, ${updated} updated`
+    );
+  } catch (error) {
+    console.error("Error in batch seeding:", error);
+    return createErrorResult(
+      `Failed to seed batch: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
