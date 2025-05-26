@@ -150,7 +150,7 @@ export default async function BestSellers() {
 
   // Try with explicit parameters
   const templatesResult = await getAllBookTemplates({
-    limit: 7,
+    limit: 3,
     publishedOnly: true, // Explicitly set this
   });
 
