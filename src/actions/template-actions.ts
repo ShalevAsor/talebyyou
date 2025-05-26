@@ -651,6 +651,79 @@ export async function updateTemplateImageFromPath(
   }
 }
 
+export async function updateTemplateImageFromBuffer(
+  templateId: string,
+  pageNumber: number,
+  buffer: Buffer,
+  fileName: string,
+  mimeType: string
+): Promise<ActionResult<string>> {
+  try {
+    // Get the template to get the slug
+    const template = await prisma.bookTemplate.findUnique({
+      where: { id: templateId },
+      select: { slug: true },
+    });
+
+    if (!template || !template.slug) {
+      return createErrorResult("Template not found or has no slug");
+    }
+
+    // Determine image name based on page number
+    const imageName = pageNumber === 0 ? "cover.jpg" : `page${pageNumber}.jpg`;
+
+    // Upload image to S3 using buffer directly - no temp file needed
+    const imageUrl = await uploadTemplateImageToS3(
+      buffer, // Pass the buffer directly
+      template.slug,
+      imageName,
+      mimeType
+    );
+
+    if (!imageUrl) {
+      return createErrorResult("Failed to upload image to S3");
+    }
+
+    // Update the image URL in the database
+    if (pageNumber === 0) {
+      // Update cover image
+      await prisma.bookTemplate.update({
+        where: { id: templateId },
+        data: { coverImage: imageUrl },
+      });
+    } else {
+      // Update page image
+      const updateResult = await prisma.templatePageContent.updateMany({
+        where: {
+          templateId,
+          pageNumber,
+        },
+        data: { imageUrl },
+      });
+
+      if (updateResult.count === 0) {
+        return createErrorResult(
+          `No page found with number ${pageNumber} for this template`
+        );
+      }
+    }
+
+    // Revalidate paths
+    revalidatePath("/library");
+    revalidatePath("/admin/templates");
+    revalidatePath(`/library/template-preview/${template.slug}`);
+
+    return createSuccessResult(imageUrl, "Image updated successfully");
+  } catch (error) {
+    console.error("Error updating template image:", error);
+    return createErrorResult(
+      `Failed to update image: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
+
 /**
  * Updates a template image URL in the database
  * @param templateIdOrSlug - The template ID or slug
