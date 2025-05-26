@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Loader2, Upload, Image as ImageIcon, AlertCircle } from "lucide-react";
-import { updateTemplateImageFromBuffer } from "@/actions/template-actions";
+import { updateTemplateImageFromPath } from "@/actions/template-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ImageUploadSectionProps {
@@ -92,71 +92,33 @@ export function ImageUploadSection({
     setPreviewUrl(url);
   };
 
-  // const handleUpload = async () => {
-  //   if (!selectedFile) return;
-
-  //   onUploadStart();
-
-  //   try {
-  //     // Step 1: Upload to temp location via API route
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
-
-  //     const uploadResponse = await fetch("/api/upload-temp", {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!uploadResponse.ok) {
-  //       const error = await uploadResponse.json();
-  //       throw new Error(error.error || "Upload failed");
-  //     }
-
-  //     const { tempFilePath } = await uploadResponse.json();
-
-  //     // Step 2: Process the temp file via Server Action (only sending file path)
-  //     const result = await updateTemplateImageFromPath(
-  //       templateId,
-  //       pageNumber,
-  //       tempFilePath
-  //     );
-
-  //     if (result.success) {
-  //       onUploadComplete();
-  //       // Clean up
-  //       setSelectedFile(null);
-  //       if (previewUrl) {
-  //         URL.revokeObjectURL(previewUrl);
-  //         setPreviewUrl(null);
-  //       }
-  //       if (fileInputRef.current) {
-  //         fileInputRef.current.value = "";
-  //       }
-  //     } else {
-  //       onUploadError(result.error || "Upload failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("Upload error:", error);
-  //     onUploadError(error instanceof Error ? error.message : "Upload failed");
-  //   }
-  // };
   const handleUpload = async () => {
     if (!selectedFile) return;
 
     onUploadStart();
 
     try {
-      // Convert file to buffer directly
-      const arrayBuffer = await selectedFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+      // Step 1: Upload to temp location via API route
+      const formData = new FormData();
+      formData.append("file", selectedFile);
 
-      // Call server action with buffer instead of file path
-      const result = await updateTemplateImageFromBuffer(
+      const uploadResponse = await fetch("/api/upload-temp", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const error = await uploadResponse.json();
+        throw new Error(error.error || "Upload failed");
+      }
+
+      const { tempFilePath } = await uploadResponse.json();
+
+      // Step 2: Process the temp file via Server Action (only sending file path)
+      const result = await updateTemplateImageFromPath(
         templateId,
         pageNumber,
-        buffer,
-        selectedFile.name,
-        selectedFile.type
+        tempFilePath
       );
 
       if (result.success) {
@@ -178,6 +140,7 @@ export function ImageUploadSection({
       onUploadError(error instanceof Error ? error.message : "Upload failed");
     }
   };
+
   const handleClearSelection = () => {
     setSelectedFile(null);
     setValidationError(null);

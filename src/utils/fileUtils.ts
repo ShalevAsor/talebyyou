@@ -2,12 +2,20 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-const TEMP_UPLOAD_DIR = path.join(process.cwd(), "temp-uploads");
+// Use /tmp for Vercel, temp-uploads for local development
+const TEMP_UPLOAD_DIR = process.env.VERCEL
+  ? "/tmp"
+  : path.join(process.cwd(), "temp-uploads");
 
 /**
  * Ensures the temp upload directory exists
  */
 export function ensureTempUploadDir(): void {
+  // Skip directory creation on Vercel since /tmp always exists
+  if (process.env.VERCEL) {
+    return;
+  }
+
   if (!fs.existsSync(TEMP_UPLOAD_DIR)) {
     fs.mkdirSync(TEMP_UPLOAD_DIR, { recursive: true });
   }
