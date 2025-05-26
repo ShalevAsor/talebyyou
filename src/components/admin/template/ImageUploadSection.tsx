@@ -146,18 +146,44 @@ export function ImageUploadSection({
     onUploadStart();
 
     try {
-      // Convert file to buffer directly - no temp file needed
-      const arrayBuffer = await selectedFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      // Call server action with buffer instead of file path
-      const result = await updateTemplateImageFromBuffer(
-        templateId,
-        pageNumber,
-        buffer,
+      console.log(
+        "Starting upload for file:",
         selectedFile.name,
-        selectedFile.type
+        "Size:",
+        selectedFile.size
       );
+
+      // Create FormData for the API route
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("templateId", templateId);
+      formData.append("pageNumber", pageNumber.toString());
+
+      // Call the API route instead of server action
+      const response = await fetch("/api/admin/upload-template-image", {
+        method: "POST",
+        body: formData,
+        // Don't set Content-Type header - let browser set it with boundary for multipart
+      });
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        // Handle different error statuses
+        if (response.status === 413) {
+          throw new Error(
+            "File too large. Please reduce image size and try again."
+          );
+        }
+
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.error || `HTTP ${response.status}: ${response.statusText}`
+        );
+      }
+
+      const result = await response.json();
+      console.log("Upload result:", result);
 
       if (result.success) {
         onUploadComplete();
@@ -176,17 +202,6 @@ export function ImageUploadSection({
     } catch (error) {
       console.error("Upload error:", error);
       onUploadError(error instanceof Error ? error.message : "Upload failed");
-    }
-  };
-  const handleClearSelection = () => {
-    setSelectedFile(null);
-    setValidationError(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 
