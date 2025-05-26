@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, Trash2, BookImage } from "lucide-react";
+import { Eye, Trash2, BookImage, Edit } from "lucide-react";
 import { PublishToggleButton } from "@/components/admin/template/PublishToggleButton";
 import AdminActionDialog from "@/components/admin/AdminActionDialog";
 import { useMutation } from "@tanstack/react-query";
@@ -177,17 +177,28 @@ export function TemplateList({
                 <Eye className="h-4 w-4" />
               </Button>
 
-              {imageStatus === "placeholder" && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleManageImages(template.id, template.slug)}
-                  title="Manage template images"
-                  className="text-orange-600 hover:text-orange-700"
-                >
+              {/* FIXED: Always show Manage Images button, but with different styling */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleManageImages(template.id, template.slug)}
+                title={
+                  imageStatus === "real"
+                    ? "Edit template images"
+                    : "Upload template images"
+                }
+                className={
+                  imageStatus === "real"
+                    ? "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    : "text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                }
+              >
+                {imageStatus === "real" ? (
+                  <Edit className="h-4 w-4" />
+                ) : (
                   <BookImage className="h-4 w-4" />
-                </Button>
-              )}
+                )}
+              </Button>
 
               <PublishToggleButton
                 publish={template.published}
