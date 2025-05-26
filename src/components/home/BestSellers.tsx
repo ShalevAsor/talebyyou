@@ -150,9 +150,8 @@ export default async function BestSellers() {
 
   // Try with explicit parameters
   const templatesResult = await getAllBookTemplates({
-    limit: 3,
+    limit: 7,
     publishedOnly: true, // Explicitly set this
-    orderBy: "newest",
   });
 
   console.log("🏠 BestSellers: Result:", {
