@@ -482,7 +482,7 @@ export async function toggleTemplatePublished(
     // Find the current template
     const template = await prisma.bookTemplate.findUnique({
       where: { id: templateId },
-      select: { id: true, published: true, title: true },
+      select: { id: true, published: true, title: true, slug: true },
     });
 
     // Check if template exists
@@ -517,6 +517,8 @@ export async function toggleTemplatePublished(
     // Revalidate relevant paths to update the UI
     revalidatePath("/admin/templates");
     revalidatePath("/library");
+    revalidatePath(`/library/template-preview/${template.slug}`);
+    revalidatePath("/");
 
     return createSuccessResult({
       id: updatedTemplate.id,
