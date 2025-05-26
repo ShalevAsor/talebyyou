@@ -231,73 +231,11 @@ export async function getDownloadUrl(key: string): Promise<string | null> {
  * @param mimeType - MIME type of the image
  * @returns URL of the uploaded image or null if upload fails
  */
-// export async function uploadTemplateImageToS3(
-//   file: Buffer | string,
-//   templateSlug: string,
-//   imageName: string,
-//   mimeType?: string // Make this optional
-// ): Promise<string | null> {
-//   try {
-//     if (!BUCKET_NAME) {
-//       throw new Error("S3 bucket name not configured");
-//     }
-
-//     // Read file content based on input type
-//     const fileContent = typeof file === "string" ? fs.readFileSync(file) : file;
-
-//     // Auto-detect MIME type if not provided
-//     let contentType = mimeType;
-//     if (!contentType) {
-//       const extension = imageName.toLowerCase().split(".").pop();
-//       switch (extension) {
-//         case "jpg":
-//         case "jpeg":
-//           contentType = "image/jpeg";
-//           break;
-//         case "png":
-//           contentType = "image/png";
-//           break;
-//         case "webp":
-//           contentType = "image/webp";
-//           break;
-//         default:
-//           contentType = "image/jpeg";
-//       }
-//     }
-
-//     // Create organized path in S3
-//     const key = `templates/${templateSlug}/${imageName}`;
-
-//     // Upload to S3
-//     await s3Client.send(
-//       new PutObjectCommand({
-//         Bucket: BUCKET_NAME,
-//         Key: key,
-//         Body: fileContent,
-//         ContentType: contentType,
-//       })
-//     );
-
-//     // Return the public URL
-//     return `https://${BUCKET_NAME}.s3.${config.AWS.REGION}.amazonaws.com/${key}`;
-//   } catch (error) {
-//     console.error("Error uploading template image to S3:", error);
-//     return null;
-//   }
-// }
-/**
- * Uploads a template image to S3 and returns the URL
- * @param file - File buffer or path to upload
- * @param templateSlug - Slug of the template
- * @param imageName - Name of the image (e.g., 'cover.jpg', 'page1.jpg')
- * @param mimeType - MIME type of the image
- * @returns URL of the uploaded image or null if upload fails
- */
 export async function uploadTemplateImageToS3(
   file: Buffer | string,
   templateSlug: string,
   imageName: string,
-  mimeType?: string
+  mimeType?: string // Make this optional
 ): Promise<string | null> {
   try {
     if (!BUCKET_NAME) {
@@ -305,30 +243,7 @@ export async function uploadTemplateImageToS3(
     }
 
     // Read file content based on input type
-    let fileContent: Buffer;
-
-    if (typeof file === "string") {
-      // File path provided - check if file exists first
-      if (!fs.existsSync(file)) {
-        console.error(`File not found at path: ${file}`);
-        throw new Error(`File not found: ${file}`);
-      }
-
-      try {
-        fileContent = fs.readFileSync(file);
-        console.log(`Successfully read file from: ${file}`);
-
-        // Clean up temp file after reading
-        fs.unlinkSync(file);
-        console.log(`Cleaned up temp file: ${file}`);
-      } catch (readError) {
-        console.error(`Error reading file ${file}:`, readError);
-        throw new Error(`Failed to read file: ${file}`);
-      }
-    } else {
-      // Buffer provided
-      fileContent = file;
-    }
+    const fileContent = typeof file === "string" ? fs.readFileSync(file) : file;
 
     // Auto-detect MIME type if not provided
     let contentType = mimeType;
@@ -370,6 +285,7 @@ export async function uploadTemplateImageToS3(
     return null;
   }
 }
+
 /**
  * Gets a list of all images for a template
  * @param templateSlug - Slug of the template

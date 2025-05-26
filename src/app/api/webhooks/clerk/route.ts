@@ -372,7 +372,7 @@ export async function POST(req: Request) {
       case "session.created": {
         if (evt.type === "session.created") {
           // Type narrowing for TypeScript
-          const { id: clerkId } = evt.data;
+          const { user_id: clerkId } = evt.data;
 
           // Make sure clerkId is defined
           if (!clerkId) {
