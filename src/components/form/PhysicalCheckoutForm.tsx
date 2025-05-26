@@ -312,7 +312,7 @@ import {
   physicalOrderSchema,
   PhysicalOrderFormData,
 } from "@/schemas/checkout-schema";
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import {
   AddressValidationResult,
   SuggestedAddress,

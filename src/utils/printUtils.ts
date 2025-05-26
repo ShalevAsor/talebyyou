@@ -1,4 +1,4 @@
-import { PrintJobStatus } from "@/generated/prisma";
+import { PrintJobStatus } from "@prisma/client";
 
 export function mapLuluStatusToPrintJobStatus(
   luluStatus: string

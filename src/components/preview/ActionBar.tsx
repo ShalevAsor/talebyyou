@@ -8,7 +8,7 @@ import {
   FiDownload,
 } from "react-icons/fi";
 import useBookPreviewStore from "@/store/useBookPreviewStore";
-import { BookStatus, ProductType } from "@/generated/prisma";
+import { BookStatus, ProductType } from "@prisma/client";
 import ActionDialog from "../common/ActionDialog";
 
 interface ActionBarProps {

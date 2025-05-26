@@ -7,7 +7,7 @@ import {
   createSuccessResult,
   createErrorResult,
 } from "@/types/actions";
-import { OrderStatus } from "@/generated/prisma";
+import { OrderStatus } from "@prisma/client";
 import { paypal } from "@/services/payment/paypal-service";
 import { revalidatePath } from "next/cache";
 import { generateRemainingPageImages } from "./image-actions";

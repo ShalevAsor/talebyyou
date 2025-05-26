@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X } from "lucide-react";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import { BookTemplateCreateData } from "@/types/book";
 
 interface GenreSelectorProps {

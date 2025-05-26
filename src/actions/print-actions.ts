@@ -42,7 +42,7 @@ import {
   PrintJobStatus,
   Prisma,
   ProductType,
-} from "@/generated/prisma";
+} from "@prisma/client";
 import config from "@/lib/config";
 import { revalidatePath } from "next/cache";
 import { mapLuluStatusToPrintJobStatus } from "@/utils/printUtils";

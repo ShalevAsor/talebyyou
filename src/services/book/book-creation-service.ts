@@ -174,7 +174,7 @@ import {
   BookTemplateFull,
   PageType,
 } from "@/types/book";
-import { BookStatus } from "@/generated/prisma";
+import { BookStatus } from "@prisma/client";
 import { CharacterData } from "@/schemas/character-schema";
 import { IMAGE_STYLE, IMAGE_STYLE_PROMPT } from "@/constants/prompts";
 import { logger } from "@/lib/logger";

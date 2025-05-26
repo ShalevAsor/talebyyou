@@ -5,7 +5,7 @@ import useBookPreviewStore from "@/store/useBookPreviewStore";
 import { Pencil, Image as ImageIcon } from "lucide-react";
 import { TbPencilHeart } from "react-icons/tb";
 import { TooltipButton } from "@/components/common/TooltipButton";
-import { BookStatus } from "@/generated/prisma";
+import { BookStatus } from "@prisma/client";
 
 interface BookPageCoverProps {
   children: React.ReactNode;

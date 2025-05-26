@@ -5,7 +5,7 @@ import {
   Book,
   Order,
   PrintJob,
-} from "@/generated/prisma";
+} from "@prisma/client";
 
 // =====================
 // TOKEN AND AUTHENTICATION

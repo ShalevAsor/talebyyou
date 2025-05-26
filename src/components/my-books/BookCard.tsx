@@ -572,7 +572,7 @@ import {
   OrderStatus,
   PageType,
   ProductType,
-} from "@/generated/prisma";
+} from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { useImageGenerationStatus } from "@/hooks/useImageGenerationStatus";
 import { Loader2 } from "lucide-react";

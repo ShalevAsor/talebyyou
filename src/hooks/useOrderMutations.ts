@@ -6,7 +6,7 @@ import {
   updateOrderWithShipping,
 } from "@/actions/order-actions";
 import { CheckoutFormData } from "@/schemas/checkout-schema";
-import { ShippingLevel } from "@/generated/prisma";
+import { ShippingLevel } from "@prisma/client";
 import { toast } from "react-toastify";
 
 interface UseOrderMutationOptions {

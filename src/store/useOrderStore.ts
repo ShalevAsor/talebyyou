@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ProductType, OrderStep } from "@/types/order";
 import { CheckoutFormData } from "@/schemas/checkout-schema";
-import { ShippingLevel } from "@/generated/prisma";
+import { ShippingLevel } from "@prisma/client";
 
 interface OrderState {
   // Current active order

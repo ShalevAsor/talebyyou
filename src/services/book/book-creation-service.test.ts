@@ -90,7 +90,7 @@
 // src/services/book/__tests__/book-creation-service.test.ts
 
 import { createBookFromTemplate } from "./book-creation-service";
-import { BookStatus } from "@/generated/prisma";
+import { BookStatus } from "@prisma/client";
 import { BookTemplateFull, PageType } from "@/types/book";
 import { BOOK_DEFAULT_PAGES } from "@/constants/bookConstants";
 import { CharacterData } from "@/schemas/character-schema";
@@ -116,6 +116,8 @@ describe("Book Creation Service", () => {
     description: "A fun adventure book",
     pageCount: pageCount,
     published: true,
+    characterGender: "boy",
+    slug: "adventure-book",
     coverImage: "https://example.com/cover.jpg",
     coverPrompt: "A child named [CHILD_NAME] going on an adventure",
     minAge: 3,

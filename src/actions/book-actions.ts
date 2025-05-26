@@ -7,7 +7,7 @@ import {
   createErrorResult,
 } from "@/types/actions";
 import prisma from "@/lib/prisma";
-import { BookStatus, ProductType } from "@/generated/prisma";
+import { BookStatus, ProductType } from "@prisma/client";
 import { getCurrentUser } from "./user-actions";
 import { logger } from "@/lib/logger";
 import { BookFull } from "@/types/book";

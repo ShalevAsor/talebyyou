@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import { CheckCircle } from "lucide-react";
 
 interface WhatHappensNextProps {

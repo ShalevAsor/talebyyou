@@ -1,6 +1,6 @@
 "use server";
 
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import { getEmailService } from "@/services/email/email-service";
 import {
   ActionResult,

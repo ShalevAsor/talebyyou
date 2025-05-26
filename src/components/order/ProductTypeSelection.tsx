@@ -147,7 +147,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BOOK_PRICES } from "@/constants/bookConstants";
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import { useOrderStore } from "@/store/useOrderStore";
 import { getTotalPrice } from "@/utils/orderUtils";
 import { Book, Download, Check, Star, Zap } from "lucide-react";

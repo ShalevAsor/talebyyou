@@ -52,7 +52,7 @@ import { getBookById } from "@/actions/book-actions";
 import { BookFull } from "@/types/book";
 import { useEffect, useCallback } from "react";
 import { useImageGenerationStatus } from "./useImageGenerationStatus";
-import { GenerationStatus } from "@/generated/prisma";
+import { GenerationStatus } from "@prisma/client";
 
 /**
  * Hook to fetch and manage book data

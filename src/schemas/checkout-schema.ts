@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProductType, ShippingLevel } from "@/generated/prisma";
+import { ProductType, ShippingLevel } from "@prisma/client";
 
 // Add phone number validation regex
 const PHONE_REGEX = /^\+?[0-9]{10,15}$/; // Basic international phone format

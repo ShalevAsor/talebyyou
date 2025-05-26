@@ -4,7 +4,7 @@
 import { PrintJobStatusChangedPayload } from "@/types/print";
 import { logger } from "@/lib/logger";
 import prisma from "@/lib/prisma";
-import { PrintJobStatus, OrderStatus, Prisma } from "@/generated/prisma";
+import { PrintJobStatus, OrderStatus, Prisma } from "@prisma/client";
 import {
   ActionResult,
   createSuccessResult,

@@ -112,7 +112,7 @@ import {
   digitalOrderSchema,
   DigitalOrderFormData,
 } from "@/schemas/checkout-schema";
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 
 interface DigitalCheckoutFormProps {
   isGuest: boolean;

@@ -325,7 +325,7 @@
 //     </div>
 //   `;
 // };
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import config from "@/lib/config";
 /**
  * Generate a welcome email template for TaleByYou customers

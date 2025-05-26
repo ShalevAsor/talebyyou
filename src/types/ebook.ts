@@ -1,6 +1,6 @@
 // types/ebook.ts
 
-import { Book, Character, Order, Page } from "@/generated/prisma";
+import { Book, Character, Order, Page } from "@prisma/client";
 
 /**
  * Supported ebook file types

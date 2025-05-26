@@ -4,7 +4,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { BookTemplateGrid } from "@/components/templates/BookTemplateGrid";
 import { ErrorAlert } from "@/components/common";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import { getGenres } from "@/actions/genre-actions";
 import { getAllBookTemplates } from "@/actions/template-actions";
 import ErrorBoundary from "@/components/error/ErrorBoundary";

@@ -1,6 +1,6 @@
 // src/actions/__tests__/payment-actions.test.ts
 import { createPayPalOrder, capturePayPalOrder } from "../payment-actions";
-import { OrderStatus, ProductType } from "@/generated/prisma";
+import { OrderStatus, ProductType } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 // Mock entire payment-actions module

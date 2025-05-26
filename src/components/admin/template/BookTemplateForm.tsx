@@ -18,7 +18,7 @@ import {
   BookTemplateCreateData,
   BookTemplatePageCreateData,
 } from "@/types/book";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import { z } from "zod";
 import { GenreSelector } from "./GenreSelector";
 import { generateSlug } from "@/utils/slugUtils";

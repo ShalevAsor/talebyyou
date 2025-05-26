@@ -5,7 +5,7 @@ import {
   Prisma,
   ProductType,
   ShippingLevel,
-} from "@/generated/prisma";
+} from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { logger } from "@/lib/logger";
 import { getCurrentUser } from "./user-actions";

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BookTemplateForm from "@/components/admin/template/BookTemplateForm";
 import { DefaultTemplateSelector } from "@/components/admin/template/DefaultTemplateSelector";
 import AdminActionDialog from "@/components/admin/AdminActionDialog";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import { BookTemplateCreateData } from "@/types/book";
 
 interface CreateTemplateContentProps {

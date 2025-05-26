@@ -169,7 +169,7 @@
 import React, { memo, useMemo } from "react";
 import Image from "next/image";
 import { BookFull } from "@/types/book";
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import {
   CheckoutFormData,
   PhysicalOrderFormData,

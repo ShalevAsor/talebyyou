@@ -6,7 +6,7 @@ import {
   ProductType,
   PrintJob,
   ImageGeneration,
-} from "@/generated/prisma";
+} from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 /***

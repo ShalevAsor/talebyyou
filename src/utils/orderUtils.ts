@@ -1,6 +1,6 @@
 import { BOOK_PRICES } from "@/constants/bookConstants";
 import { calculateApiCreditCost, LEONARDO_TIER } from "@/constants/image";
-import { ImageGeneration, OrderStatus, ProductType } from "@/generated/prisma";
+import { ImageGeneration, OrderStatus, ProductType } from "@prisma/client";
 import { PhysicalOrderFormData } from "@/schemas/checkout-schema";
 import { OrderFull } from "@/types/order";
 import { ShippingAddress } from "@/types/print";

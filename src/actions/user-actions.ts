@@ -10,7 +10,7 @@ import {
 
 import { auth } from "@clerk/nextjs/server";
 import { sendWelcomeEmail } from "./email-actions";
-import { BookStatus, User } from "@/generated/prisma";
+import { BookStatus, User } from "@prisma/client";
 import { BookLimitResult } from "@/types/book";
 import { BOOK_CREATION_LIMIT } from "@/constants/bookConstants";
 /**

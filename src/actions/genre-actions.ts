@@ -1,5 +1,5 @@
 "use server";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import {
   ActionResult,

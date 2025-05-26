@@ -3,7 +3,7 @@ import {
   ImageGeneration,
   ImageType,
   GenerationStatus,
-} from "@/generated/prisma";
+} from "@prisma/client";
 
 /**
  * Optional parameters for image generation

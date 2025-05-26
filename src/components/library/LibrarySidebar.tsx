@@ -1,7 +1,7 @@
 import React from "react";
 import { GenreFilter } from "../templates/GenreFilter";
 import { Loading } from "@/components/common";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import { FiFilter } from "react-icons/fi";
 
 interface LibrarySidebarProps {

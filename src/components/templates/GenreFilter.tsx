@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import { FiCheck, FiX } from "react-icons/fi";
 
 interface GenreFilterProps {

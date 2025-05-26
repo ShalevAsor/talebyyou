@@ -9,7 +9,7 @@ import BookEditor from "@/components/preview/bookEditor/BookEditor";
 import { useImageGenerationStatus } from "@/hooks/useImageGenerationStatus";
 import { ActionBar } from "./ActionBar";
 import ImageLoader from "./ImageLoader";
-import { BookStatus, GenerationStatus } from "@/generated/prisma";
+import { BookStatus, GenerationStatus } from "@prisma/client";
 import { useBookUpdateMutation } from "@/hooks/useBookUpdateMutation";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";

@@ -1,7 +1,7 @@
 // components/home/BestSellers.tsx
 import { getAllBookTemplates } from "@/actions/template-actions";
 import { BookTemplateCard } from "@/components/templates/BookTemplateCard";
-import { BookTemplate } from "@/generated/prisma";
+import { BookTemplate } from "@prisma/client";
 
 // Generate structured data for product listings (for SEO)
 function generateBooksStructuredData(templates: BookTemplate[]) {

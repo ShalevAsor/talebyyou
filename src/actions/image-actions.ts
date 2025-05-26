@@ -12,7 +12,7 @@ import {
   ImageGenerationFull,
   ImageMetadata,
 } from "@/types/image";
-import { GenerationStatus, ImageType, PageType } from "@/generated/prisma";
+import { GenerationStatus, ImageType, PageType } from "@prisma/client";
 import { leonardoImageService } from "@/services/image/image-generation-service";
 
 /**

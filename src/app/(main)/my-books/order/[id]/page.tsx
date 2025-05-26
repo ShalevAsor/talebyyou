@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/actions/user-actions";
 import { ErrorAlert } from "@/components/common";
 import { OrderContent } from "@/components/order/OrderContent";
 import { redirect } from "next/navigation";
-import { BookStatus } from "@/generated/prisma";
+import { BookStatus } from "@prisma/client";
 import PageHeader from "@/components/layout/PageHeader";
 import { FiArrowLeft } from "react-icons/fi";
 import { PAYPAL_CLIENT_ID } from "@/constants/payment";

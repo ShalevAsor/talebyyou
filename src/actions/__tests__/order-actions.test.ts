@@ -8,7 +8,7 @@ import {
   updateOrder,
   updateOrderWithShipping,
 } from "../order-actions";
-import { OrderStatus, ProductType, ShippingLevel } from "@/generated/prisma";
+import { OrderStatus, ProductType, ShippingLevel } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 // Mock dependencies

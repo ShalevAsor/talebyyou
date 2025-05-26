@@ -390,7 +390,7 @@ import {
   getShippingConfirmationEmailTemplate,
   getWelcomeEmailTemplate,
 } from "./email-templates";
-import { ProductType } from "@/generated/prisma";
+import { ProductType } from "@prisma/client";
 import { EmailType } from "@/types/email";
 
 /**

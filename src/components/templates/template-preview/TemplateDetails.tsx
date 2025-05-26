@@ -1,4 +1,4 @@
-import { Genre } from "@/generated/prisma";
+import { Genre } from "@prisma/client";
 import React from "react";
 
 interface TemplateDetailsProps {

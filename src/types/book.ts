@@ -12,7 +12,7 @@ import {
   TemplatePageContent,
   Order,
   PrintJob,
-} from "@/generated/prisma";
+} from "@prisma/client";
 
 /***
  * Full types with relations

@@ -127,7 +127,7 @@ import Image from "next/image";
 import React, { useMemo, memo } from "react";
 import clsx from "clsx";
 import { PageType } from "@/types/book";
-import { Page } from "@/generated/prisma";
+import { Page } from "@prisma/client";
 
 interface PageThumbnailsProps {
   pages: Page[];
