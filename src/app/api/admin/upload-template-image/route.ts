@@ -21,19 +21,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("Starting template image upload...");
-
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const templateId = formData.get("templateId") as string;
     const pageNumber = parseInt(formData.get("pageNumber") as string);
-
-    console.log("Received data:", {
-      fileName: file?.name,
-      fileSize: file?.size,
-      templateId,
-      pageNumber,
-    });
 
     if (!file || !templateId || isNaN(pageNumber)) {
       return NextResponse.json(
@@ -71,8 +62,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Template found:", template.slug);
-
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -98,8 +87,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    console.log("S3 upload successful:", imageUrl);
 
     // Update the image URL in the database
     if (pageNumber === 0) {

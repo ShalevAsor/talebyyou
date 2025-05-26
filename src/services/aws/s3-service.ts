@@ -231,16 +231,23 @@ export async function getDownloadUrl(key: string): Promise<string | null> {
  * @param mimeType - MIME type of the image
  * @returns URL of the uploaded image or null if upload fails
  */
+// Update your uploadTemplateImageToS3 function in s3-service.ts:
+
 export async function uploadTemplateImageToS3(
   file: Buffer | string,
   templateSlug: string,
   imageName: string,
-  mimeType?: string // Make this optional
+  mimeType?: string
 ): Promise<string | null> {
   try {
     if (!BUCKET_NAME) {
       throw new Error("S3 bucket name not configured");
     }
+
+    console.log("=== S3 Upload Debug Info ===");
+    console.log("Bucket Name:", BUCKET_NAME);
+    console.log("Template Slug:", templateSlug);
+    console.log("Image Name:", imageName);
 
     // Read file content based on input type
     const fileContent = typeof file === "string" ? fs.readFileSync(file) : file;
@@ -267,21 +274,47 @@ export async function uploadTemplateImageToS3(
 
     // Create organized path in S3
     const key = `templates/${templateSlug}/${imageName}`;
+    console.log("S3 Key:", key);
 
-    // Upload to S3
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: key,
-        Body: fileContent,
-        ContentType: contentType,
-      })
-    );
+    // Check if file already exists and delete it first (optional - S3 will overwrite anyway)
+    try {
+      await s3Client.send(
+        new GetObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: key,
+        })
+      );
+      console.log("Found existing file, will overwrite");
+    } catch (error) {
+      console.log("No existing file found, uploading new", error);
+    }
 
-    // Return the public URL
-    return `https://${BUCKET_NAME}.s3.${config.AWS.REGION}.amazonaws.com/${key}`;
+    // Upload to S3 with explicit overwrite
+    const putCommand = new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      Body: fileContent,
+      ContentType: contentType,
+      // Force overwrite with metadata
+      Metadata: {
+        "uploaded-at": new Date().toISOString(),
+        "original-name": imageName,
+      },
+      // Add cache control to prevent browser caching issues
+      CacheControl: "no-cache, must-revalidate",
+    });
+
+    await s3Client.send(putCommand);
+    console.log("✅ Successfully uploaded to S3");
+
+    // Return the public URL with cache busting
+    const timestamp = Date.now();
+    const publicUrl = `https://${BUCKET_NAME}.s3.${config.AWS.REGION}.amazonaws.com/${key}?t=${timestamp}`;
+    console.log("Generated URL:", publicUrl);
+
+    return publicUrl;
   } catch (error) {
-    console.error("Error uploading template image to S3:", error);
+    console.error("❌ Error uploading template image to S3:", error);
     return null;
   }
 }
