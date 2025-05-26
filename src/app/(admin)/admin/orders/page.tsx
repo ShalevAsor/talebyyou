@@ -4,7 +4,8 @@ import { Loader2 } from "lucide-react";
 import { OrdersContent } from "@/components/admin/orders/OrdersContent";
 import { getAllOrders } from "@/actions/order-actions";
 import { Card, CardContent } from "@/components/ui/card";
-
+// Force this page to be dynamic (not statically generated)
+export const dynamic = "force-dynamic";
 // Loading component
 function OrdersLoading() {
   return (

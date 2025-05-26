@@ -11,7 +11,8 @@ import PageHeader from "@/components/layout/PageHeader";
 import { checkUserBookLimit } from "@/actions/user-actions";
 import { createMetadata, siteConfig } from "@/config/site";
 import { logger } from "@/lib/logger";
-
+// Force this page to be dynamic (not statically generated)
+export const dynamic = "force-dynamic";
 /**
  * Metadata generator for the My Books page
  */
