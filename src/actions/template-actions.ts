@@ -651,6 +651,79 @@ export async function updateTemplateImageFromPath(
   }
 }
 
+export async function updateTemplateImageFromBuffer(
+  templateId: string,
+  pageNumber: number,
+  buffer: Buffer,
+  fileName: string,
+  mimeType: string
+): Promise<ActionResult<string>> {
+  try {
+    // Get the template to get the slug
+    const template = await prisma.bookTemplate.findUnique({
+      where: { id: templateId },
+      select: { slug: true },
+    });
+
+    if (!template || !template.slug) {
+      return createErrorResult("Template not found or has no slug");
+    }
+
+    // Determine image name based on page number
+    const imageName = pageNumber === 0 ? "cover.jpg" : `page${pageNumber}.jpg`;
+
+    // Upload image to S3 using buffer directly
+    const imageUrl = await uploadTemplateImageToS3(
+      buffer, // Pass the buffer directly
+      template.slug,
+      imageName,
+      mimeType
+    );
+
+    if (!imageUrl) {
+      return createErrorResult("Failed to upload image to S3");
+    }
+
+    // Update the image URL in the database
+    if (pageNumber === 0) {
+      // Update cover image
+      await prisma.bookTemplate.update({
+        where: { id: templateId },
+        data: { coverImage: imageUrl },
+      });
+    } else {
+      // Update page image
+      const updateResult = await prisma.templatePageContent.updateMany({
+        where: {
+          templateId,
+          pageNumber,
+        },
+        data: { imageUrl },
+      });
+
+      if (updateResult.count === 0) {
+        return createErrorResult(
+          `No page found with number ${pageNumber} for this template`
+        );
+      }
+    }
+
+    // Revalidate paths
+    revalidatePath("/library");
+    revalidatePath("/admin/templates");
+    revalidatePath(`/library/template-preview/${template.slug}`);
+
+    return createSuccessResult(imageUrl, "Image updated successfully");
+  } catch (error) {
+    console.error("Error updating template image:", error);
+    return createErrorResult(
+      `Failed to update image: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
+
 /**
  * Updates a template image URL in the database
  * @param templateIdOrSlug - The template ID or slug
@@ -771,167 +844,6 @@ export async function getTemplateS3Images(
     console.error("Error fetching S3 images:", error);
     return createErrorResult(
       error instanceof Error ? error.message : "Failed to fetch S3 images"
-    );
-  }
-}
-
-// Add this new function to your template-actions.ts
-
-export async function seedBookTemplatesBatch(
-  startIndex: number = 0,
-  batchSize: number = 4 // Process 4 templates at a time (3 batches total)
-): Promise<
-  ActionResult<{ processed: number; total: number; hasMore: boolean }>
-> {
-  try {
-    let created = 0;
-    let updated = 0;
-
-    // Get the batch of templates to process
-    const templatesSlice = defaultTemplates.slice(
-      startIndex,
-      startIndex + batchSize
-    );
-
-    if (templatesSlice.length === 0) {
-      return createSuccessResult(
-        {
-          processed: startIndex,
-          total: defaultTemplates.length,
-          hasMore: false,
-        },
-        "No more templates to process"
-      );
-    }
-
-    console.log(
-      `Processing batch: ${startIndex + 1}-${
-        startIndex + templatesSlice.length
-      } of ${defaultTemplates.length}`
-    );
-
-    // Process each template in the batch
-    for (const template of templatesSlice) {
-      console.log(`Processing template: "${template.title}"`);
-
-      const baseSlug = generateSlug(template.title);
-      console.log(`Generated baseSlug: "${baseSlug}"`);
-
-      // First ensure all genres exist
-      const genrePromises = template.genres.map(async (genreName) => {
-        return await prisma.genre.upsert({
-          where: { name: genreName },
-          update: { name: genreName },
-          create: { name: genreName },
-        });
-      });
-
-      const genres = await Promise.all(genrePromises);
-
-      // Get existing template if any
-      const existingTemplate = await prisma.bookTemplate.findUnique({
-        where: { title: template.title },
-      });
-
-      // Ensure slug is unique
-      const slug = await ensureUniqueSlug(baseSlug, existingTemplate?.id);
-      console.log(`Final slug: "${slug}"`);
-
-      // Delete existing template pages if updating
-      if (existingTemplate) {
-        await prisma.templatePageContent.deleteMany({
-          where: { templateId: existingTemplate.id },
-        });
-      }
-
-      // Upsert the book template
-      const bookTemplate = await prisma.bookTemplate.upsert({
-        where: {
-          title: template.title,
-        },
-        update: {
-          description: template.description,
-          pageCount: template.pageCount,
-          coverPrompt: template.coverPrompt,
-          published: template.published,
-          characterGender: template.characterGender,
-          coverImage: template.coverImage,
-          minAge: template.minAge,
-          maxAge: template.maxAge,
-          slug,
-          genres: {
-            set: [],
-            connect: genres.map((genre) => ({ id: genre.id })),
-          },
-        },
-        create: {
-          title: template.title,
-          slug,
-          description: template.description,
-          pageCount: template.pageCount,
-          coverPrompt: template.coverPrompt,
-          published: template.published,
-          characterGender: template.characterGender,
-          coverImage: template.coverImage,
-          minAge: template.minAge,
-          maxAge: template.maxAge,
-          genres: {
-            connect: genres.map((genre) => ({ id: genre.id })),
-          },
-        },
-        include: {
-          genres: true,
-        },
-      });
-
-      // Create template pages
-      if (template.pages && template.pages.length > 0) {
-        const pagePromises = template.pages.map(async (page) => {
-          return await prisma.templatePageContent.create({
-            data: {
-              pageNumber: page.pageNumber,
-              content: page.content,
-              imagePrompt: page.imagePrompt,
-              imageUrl: page.imageUrl,
-              templateId: bookTemplate.id,
-            },
-          });
-        });
-
-        await Promise.all(pagePromises);
-      }
-
-      // Track if we created or updated
-      if (existingTemplate) {
-        updated++;
-      } else {
-        created++;
-      }
-
-      console.log(`Created/Updated template with slug: "${bookTemplate.slug}"`);
-    }
-
-    // Revalidate paths
-    revalidatePath("/library");
-    revalidatePath("/admin/templates");
-
-    const hasMore = startIndex + batchSize < defaultTemplates.length;
-    const processed = startIndex + templatesSlice.length;
-
-    return createSuccessResult(
-      {
-        processed,
-        total: defaultTemplates.length,
-        hasMore,
-      },
-      `Batch completed: ${created} created, ${updated} updated`
-    );
-  } catch (error) {
-    console.error("Error in batch seeding:", error);
-    return createErrorResult(
-      `Failed to seed batch: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
     );
   }
 }
