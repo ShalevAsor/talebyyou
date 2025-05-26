@@ -6,7 +6,7 @@ import {
   createSuccessResult,
   createErrorResult,
 } from "@/types/actions";
-import { Genre, Prisma } from "@/generated/prisma/client";
+import { Genre, Prisma } from "@prisma/client";
 import { defaultTemplates } from "@/data/default-templates";
 import { BookTemplateCreateData, BookTemplateFull } from "@/types/book";
 import { revalidatePath } from "next/cache";
