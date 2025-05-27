@@ -87,6 +87,7 @@ export async function toggleMaintenanceMode(
     });
 
     revalidatePath("/admin");
+    revalidatePath("/maintenance"); // 🎯 Also revalidate maintenance page
     return createSuccessResult({ enabled });
   } catch (error) {
     console.error("Failed to toggle maintenance mode:", error);
@@ -104,7 +105,7 @@ export async function updateMaintenanceSettings({
   estimatedDowntime?: string;
 }): Promise<ActionResult<{ updated: boolean }>> {
   try {
-    // Create base updates array with proper typing
+    // 🎯 Always include all settings, including downtime (even if empty)
     const updates: Array<{
       key: string;
       value: string;
@@ -120,16 +121,12 @@ export async function updateMaintenanceSettings({
         value: message,
         description: "Message shown on maintenance page",
       },
-    ];
-
-    // Add downtime if provided
-    if (estimatedDowntime) {
-      updates.push({
+      {
         key: MAINTENANCE_KEYS.DOWNTIME,
-        value: estimatedDowntime,
+        value: estimatedDowntime || "", // 🎯 Store empty string if no downtime
         description: "Estimated downtime for maintenance",
-      });
-    }
+      },
+    ];
 
     // Use Promise.all for efficient parallel updates
     await Promise.all(
@@ -146,6 +143,7 @@ export async function updateMaintenanceSettings({
     );
 
     revalidatePath("/admin");
+    revalidatePath("/maintenance"); // 🎯 Also revalidate maintenance page
     return createSuccessResult({ updated: true });
   } catch (error) {
     console.error("Failed to update maintenance settings:", error);

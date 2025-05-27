@@ -1,7 +1,7 @@
 import { getMaintenanceStatus } from "@/actions/maintenance-actions";
 import { Wrench, Clock } from "lucide-react";
 import RefreshButton from "@/components/common/RefreshButton";
-import AdminLink from "@/components/common/AdminLink"; // ADD THIS
+import AdminLink from "@/components/common/AdminLink";
 
 export default async function MaintenancePage() {
   const result = await getMaintenanceStatus();
@@ -16,6 +16,10 @@ export default async function MaintenancePage() {
         estimatedDowntime: null,
       };
 
+  // 🎯 Check if downtime exists and is not empty
+  const hasDowntime =
+    config.estimatedDowntime && config.estimatedDowntime.trim() !== "";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
@@ -29,7 +33,8 @@ export default async function MaintenancePage() {
           <p className="text-gray-600">{config.maintenanceMessage}</p>
         </div>
 
-        {config.estimatedDowntime && (
+        {/* 🎯 Only show downtime section if it exists and is not empty */}
+        {hasDowntime && (
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-center justify-center mb-2">
               <Clock className="w-4 h-4 text-blue-600 mr-2" />
@@ -44,7 +49,6 @@ export default async function MaintenancePage() {
 
         <div className="mt-4">
           <p className="text-xs text-gray-500">Thank you for your patience</p>
-          {/* ADD ADMIN LINK */}
           <AdminLink />
         </div>
       </div>
