@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
     revalidatePath("/library");
     revalidatePath("/admin/templates");
     revalidatePath(`/library/template-preview/${template.slug}`);
-
+    revalidatePath("/");
     console.log("Image upload completed successfully");
 
     return NextResponse.json({

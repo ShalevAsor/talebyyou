@@ -508,17 +508,18 @@ export const defaultTemplates: BookTemplateCreateData[] = [
       {
         pageNumber: 2,
         content:
-          "Behind the rose bushes, [CHILD_NAME] found a tiny orange kitten with big green eyes. The little kitten was mewing softly and looked scared and lonely. 'Don't worry, little one,' [CHILD_NAME] said gently, carefully picking up the kitten. 'I'll help you find your family.' The kitten purred and snuggled into [HIS_HER] warm hands.",
+          "Behind the rose bushes, [CHILD_NAME] found a tiny kitten with big green eyes. The little kitten was mewing softly and looked scared and lonely. 'Don't worry, little one,' [CHILD_NAME] said gently, carefully picking up the kitten. 'I'll help you find your family.' The kitten purred and snuggled into [HIS_HER] warm hands.",
         imagePrompt:
-          "Kneeling behind rose bushes holding tiny orange kitten with green eyes, kitten purring in gentle hands, caring expression",
+          "Kneeling behind red rose bushes holding tiny orange kitten with green eyes, kitten purring in gentle hands, caring expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
+
       {
         pageNumber: 3,
         content:
-          "[CHILD_NAME] walked around the neighborhood, asking everyone [HE_SHE] met if they had lost a kitten. Mrs. Johnson from next door helped [HIM_HER] put up 'Found Kitten' signs on telephone poles. 'You're such a helpful [BOY_GIRL],' she said with a smile. Just before dinnertime, a worried girl ran up to them. 'That's my kitten, Ginger!' she cried happily.",
+          "[CHILD_NAME] walked around the neighborhood with the little orange kitten, asking everyone [HE_SHE] met if they had lost a pet. Mrs. Johnson from next door helped [HIM_HER] make a 'Found Kitten' poster with bright colors and clear letters. They hung the poster on the community bulletin board at the park. The orange kitten purred softly and rubbed against [CHILD_NAME]'s leg, as if saying thank you for the help.",
         imagePrompt:
-          "Putting up found kitten signs on telephone pole with elderly neighbor, holding orange kitten, young girl running toward them excitedly",
+          "Standing and looking at wooden bulletin board with bright colorful 'Found Kitten' poster attached, small orange kitten sitting at the bottom of the post rubbing against it, at the Park",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {

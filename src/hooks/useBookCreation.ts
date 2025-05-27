@@ -159,6 +159,7 @@ import { logger } from "@/lib/logger";
 import { toast } from "react-toastify";
 import { addBookToGuestSession } from "@/actions/guest-actions";
 import { useAuth } from "@clerk/nextjs";
+import { getStageSpecificError } from "@/utils/errorUtils";
 
 /**
  * Custom hook to manage the book creation process with React Query
@@ -265,9 +266,11 @@ export function useBookCreation(templateId: string) {
     },
     onError: (error) => {
       setCreationStage(null);
-      toast.error(
-        "Something went wrong while creating your book. Please try again in a moment."
-      );
+      // Get user-friendly error message based on stage
+      const userMessage = getStageSpecificError(error, creationStage);
+
+      // Show user-friendly toast message
+      toast.error(userMessage);
       logger.error({ error }, "Book creation failed");
     },
   });
@@ -275,12 +278,9 @@ export function useBookCreation(templateId: string) {
   return {
     createBook: createBookMutation.mutate,
     isCreating: createBookMutation.isPending,
-    error:
-      createBookMutation.error instanceof Error
-        ? createBookMutation.error.message
-        : createBookMutation.error
-        ? String(createBookMutation.error)
-        : null,
+    error: createBookMutation.error
+      ? getStageSpecificError(createBookMutation.error, creationStage)
+      : null,
     creationStage,
     resetCreation: () => {
       createBookMutation.reset();

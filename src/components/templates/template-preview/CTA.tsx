@@ -4,11 +4,11 @@ import Link from "next/link";
 import { FiEdit3 } from "react-icons/fi";
 
 interface CallToActionProps {
-  templateId: string;
+  templateSlug: string;
 }
 
 const CallToAction: React.FC<CallToActionProps> = React.memo(
-  ({ templateId }) => {
+  ({ templateSlug }) => {
     return (
       <section
         aria-labelledby="cta-heading"
@@ -34,7 +34,7 @@ const CallToAction: React.FC<CallToActionProps> = React.memo(
             aria-label="Begin customizing this book template"
           >
             <Link
-              href={`/library/customize/${templateId}`}
+              href={`/library/customize/${templateSlug}`}
               aria-describedby="cta-description"
             >
               <FiEdit3 className="mr-2 h-4 w-4" aria-hidden="true" />

@@ -45,7 +45,19 @@ const BookCustomizeClient: React.FC<BookCustomizeClientProps> = React.memo(
         {/* Error alerts */}
         {error && (
           <div role="alert" aria-live="assertive" className="mb-4">
-            <ErrorAlert message={error} />
+            <ErrorAlert
+              message={error}
+              subMessage={
+                creationStage === "uploading"
+                  ? "Try using a smaller photo or check your internet connection."
+                  : creationStage === "creating"
+                  ? "Please wait a moment and try creating your book again."
+                  : creationStage === "generating"
+                  ? "Your book was created successfully - you can try generating images again from the preview page."
+                  : undefined
+              }
+              showSupportMessage={true}
+            />
           </div>
         )}
 

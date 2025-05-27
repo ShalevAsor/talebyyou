@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const leonardo = getLeonardoClient();
 
     // Define the character image URL - update to a URL that works
-    const characterImageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/testImage4.png`;
+    const characterImageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/images/boy2.png`;
 
     console.log("Using character image:", characterImageUrl);
 
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
       width: 768,
       modelId: "2067ae52-33fd-4a82-bb92-c2c55e7d2786", // AlbedoBase XL model
       prompt:
-        "Whimsical storybook illustration of a young 8 years old boy. By window looking outside, packing backpack with map and teddy bear, smiling, bright colors, soft lighting, child-friendly, detailed background, engaging composition",
+        "Whimsical storybook illustration of a young 6 years old boy, Kneeling behind red rose bushes holding tiny orange kitten with green eyes, kitten purring in gentle hands, caring expression,bright colors, soft lighting, child-friendly, detailed background, engaging composition",
       numImages: 3,
       public: false,
       alchemy: true, // Enable Alchemy for better quality

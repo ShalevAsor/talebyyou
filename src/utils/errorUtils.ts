@@ -281,3 +281,167 @@ export function isShippingOptionUnavailableError(error: unknown): boolean {
 
   return false;
 }
+
+// Add these functions to the end of your existing errorUtils.ts file:
+
+/**
+ * Convert technical error messages to user-friendly ones for book creation
+ */
+export function getUserFriendlyErrorMessage(error: unknown): string {
+  const errorMessage =
+    typeof error === "string"
+      ? error
+      : error instanceof Error
+      ? error.message
+      : String(error);
+
+  // Common API error patterns
+  const errorPatterns = [
+    {
+      pattern: /400|bad request/i,
+      message:
+        "There was a problem with your request. Please check your information and try again.",
+    },
+    {
+      pattern: /401|unauthorized/i,
+      message: "Please sign in to continue creating your book.",
+    },
+    {
+      pattern: /403|forbidden/i,
+      message:
+        "You don't have permission to perform this action. Please try signing in again.",
+    },
+    {
+      pattern: /404|not found/i,
+      message:
+        "The book template you're trying to use couldn't be found. Please try selecting a different template.",
+    },
+    {
+      pattern: /413|payload too large|file too large/i,
+      message:
+        "Your photo is too large. Please choose a smaller image (under 10MB) and try again.",
+    },
+    {
+      pattern: /429|too many requests|rate limit/i,
+      message:
+        "You're creating books too quickly. Please wait a moment and try again.",
+    },
+    {
+      pattern: /500|internal server error|server error/i,
+      message:
+        "We're experiencing technical difficulties. Please try again in a few minutes.",
+    },
+    {
+      pattern: /502|503|504|gateway|service unavailable/i,
+      message:
+        "Our service is temporarily unavailable. Please try again in a few minutes.",
+    },
+    {
+      pattern: /network error|connection error|fetch failed/i,
+      message:
+        "There's a connection problem. Please check your internet and try again.",
+    },
+    {
+      pattern: /timeout|timed out/i,
+      message:
+        "The request took too long. Please try again with a smaller photo or better internet connection.",
+    },
+
+    // Specific book creation errors
+    {
+      pattern: /failed to upload character image/i,
+      message:
+        "We couldn't upload your photo. Please make sure it's a valid image file (JPG, PNG, WebP) and try again.",
+    },
+    {
+      pattern: /failed to create book/i,
+      message:
+        "We couldn't create your book right now. Please try again in a moment.",
+    },
+    {
+      pattern: /failed to generate.*image/i,
+      message:
+        "We're having trouble creating the illustrations for your book. Don't worry - you can try again or contact support.",
+    },
+    {
+      pattern: /content moderated|content flagged/i,
+      message:
+        "Your photo couldn't be processed due to our safety guidelines. Please try a different photo.",
+    },
+    {
+      pattern: /invalid file type|unsupported format/i,
+      message: "Please upload a valid photo file (JPG, PNG, or WebP format).",
+    },
+    {
+      pattern: /book limit|maximum books/i,
+      message:
+        "You've reached your book creation limit. Please complete an order for your existing books to create more.",
+    },
+    {
+      pattern: /template.*not found/i,
+      message:
+        "This book template is no longer available. Please choose a different template from our library.",
+    },
+    {
+      pattern: /leonardo.*api|image generation.*failed/i,
+      message:
+        "We're having trouble creating the artwork for your book. Please try again in a few minutes.",
+    },
+    {
+      pattern: /prisma|database/i,
+      message:
+        "We're experiencing database issues. Please try again in a moment.",
+    },
+
+    // Character/form validation errors
+    {
+      pattern: /name.*required|invalid name/i,
+      message: "Please enter a valid name for your character.",
+    },
+    {
+      pattern: /age.*required|invalid age/i,
+      message: "Please select a valid age for your character.",
+    },
+    {
+      pattern: /image.*required/i,
+      message: "Please upload a photo of your character to continue.",
+    },
+    {
+      pattern: /email.*invalid/i,
+      message: "Please enter a valid email address.",
+    },
+  ];
+
+  // Check each pattern
+  for (const { pattern, message } of errorPatterns) {
+    if (pattern.test(errorMessage)) {
+      return message;
+    }
+  }
+
+  // Default user-friendly message for unknown errors
+  return "Something went wrong. Please try again, and if the problem continues, contact our support team.";
+}
+
+/**
+ * Get user-friendly error with suggestions based on creation stage
+ */
+export function getStageSpecificError(
+  error: unknown,
+  stage: string | null
+): string {
+  const baseMessage = getUserFriendlyErrorMessage(error);
+
+  const stageSuggestions = {
+    uploading: "Try using a smaller photo or check your internet connection.",
+    creating: "Please wait a moment and try creating your book again.",
+    generating:
+      "The artwork generation is having issues. Your book was created successfully - you can try generating images again from the preview page.",
+  };
+
+  const suggestion = stage
+    ? stageSuggestions[stage as keyof typeof stageSuggestions]
+    : null;
+
+  return suggestion ? `${baseMessage} ${suggestion}` : baseMessage;
+}

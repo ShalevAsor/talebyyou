@@ -775,6 +775,7 @@ export async function updateTemplateImageUrl(
       revalidatePath("/library");
       revalidatePath("/admin/templates");
       revalidatePath(`/library/template-preview/${template.slug}`);
+      revalidatePath("/");
 
       return createSuccessResult({
         message: "Cover image updated successfully",

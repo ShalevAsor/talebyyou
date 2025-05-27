@@ -213,7 +213,7 @@ export default async function BookPreviewPage({
 
             <CustomizationOptions />
 
-            <CallToAction templateId={processedTemplate.id} />
+            <CallToAction templateSlug={processedTemplate.slug} />
           </div>
         </section>
       </>
