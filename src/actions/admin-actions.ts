@@ -6,7 +6,7 @@ import {
   createErrorResult,
 } from "@/types/actions";
 import { logger } from "@/lib/logger";
-import { luluPrintingService } from "@/services/printing/print-service";
+import { getLuluPrintingService } from "@/services/printing/print-service"; // 🎯 Updated import
 import prisma from "@/lib/prisma";
 import { WebhookResponse, WebhookTopic } from "@/types/print";
 import config from "@/lib/config";
@@ -34,6 +34,8 @@ export async function setupLuluWebhook(): Promise<
 
       try {
         // Try to get the existing webhook to see if it's still valid
+        const luluPrintingService = getLuluPrintingService();
+
         const existingWebhook = await luluPrintingService.getWebhook(
           existingConfig.value
         );
@@ -61,11 +63,15 @@ export async function setupLuluWebhook(): Promise<
         logger.warn(
           `Could not retrieve existing webhook: ${error}. Creating a new one.`
         );
+        const luluPrintingService = getLuluPrintingService();
+
         webhookResponse = await luluPrintingService.subscribeToWebhooks();
       }
     } else {
       // No existing webhook ID, create a new one
       logger.info("No existing webhook found, creating a new one");
+      const luluPrintingService = getLuluPrintingService();
+
       webhookResponse = await luluPrintingService.subscribeToWebhooks();
     }
 
@@ -113,6 +119,8 @@ export async function getLuluWebhookStatus(): Promise<
 
     // Get the webhook status from Lulu
     try {
+      const luluPrintingService = getLuluPrintingService();
+
       const webhook = await luluPrintingService.getWebhook(
         existingConfig.value
       );
@@ -161,6 +169,8 @@ export async function testLuluWebhook(
     }
 
     // Test the webhook
+    const luluPrintingService = getLuluPrintingService();
+
     const success = await luluPrintingService.testWebhook(
       existingConfig.value,
       topic
@@ -197,6 +207,8 @@ export async function deleteLuluWebhook(): Promise<ActionResult<boolean>> {
 
     // Delete the webhook from Lulu
     try {
+      const luluPrintingService = getLuluPrintingService();
+
       await luluPrintingService.deleteWebhook(existingConfig.value);
       logger.info(`Webhook ${existingConfig.value} deleted successfully`);
     } catch (error) {
@@ -231,6 +243,8 @@ export async function getAllLuluWebhooks(): Promise<
     logger.info("Getting all Lulu webhook subscriptions");
 
     // Fetch all webhooks from Lulu
+    const luluPrintingService = getLuluPrintingService();
+
     const webhooks = await luluPrintingService.getWebhooks();
 
     logger.info(`Retrieved ${webhooks.length} Lulu webhook subscriptions`);
@@ -265,6 +279,8 @@ export async function deleteLuluWebhookById(
 
     // Delete the webhook from Lulu
     try {
+      const luluPrintingService = getLuluPrintingService();
+
       await luluPrintingService.deleteWebhook(webhookId);
       logger.info(`Webhook ${webhookId} deleted successfully`);
 

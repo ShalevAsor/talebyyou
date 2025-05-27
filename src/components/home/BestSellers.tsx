@@ -146,18 +146,10 @@ function generateBooksStructuredData(templates: BookTemplate[]) {
 }
 
 export default async function BestSellers() {
-  console.log("🏠 BestSellers: Starting to fetch templates...");
-
   // Try with explicit parameters
   const templatesResult = await getAllBookTemplates({
     limit: 3,
     publishedOnly: true, // Explicitly set this
-  });
-
-  console.log("🏠 BestSellers: Result:", {
-    success: templatesResult.success,
-    error: !templatesResult.success ? templatesResult.error : null,
-    dataLength: templatesResult.success ? templatesResult.data?.length : 0,
   });
 
   if (!templatesResult.success) {
@@ -183,7 +175,6 @@ export default async function BestSellers() {
   const templates = templatesResult.data;
 
   if (templates.length === 0) {
-    console.log("⚠️ No templates found for home page");
     return (
       <section className="bg-white py-4 md:py-8">
         <div className="container px-4 md:px-6">
@@ -200,15 +191,6 @@ export default async function BestSellers() {
       </section>
     );
   }
-
-  console.log(
-    "✅ Found templates:",
-    templates.map((t) => ({
-      title: t.title,
-      published: t.published,
-      id: t.id,
-    }))
-  );
 
   // Generate structured data for SEO
   const structuredData = generateBooksStructuredData(templates);

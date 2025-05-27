@@ -22,7 +22,7 @@ import {
 } from "@/types/print";
 import { logger } from "@/lib/logger";
 import { PRODUCTION_DELAYED, SKU } from "@/constants/printing";
-import { luluPrintingService } from "@/services/printing/print-service";
+import { getLuluPrintingService } from "@/services/printing/print-service"; // 🎯 Updated import
 import prisma from "@/lib/prisma";
 import {
   extractErrorMessage,
@@ -86,6 +86,7 @@ export async function validateShippingAddress(
 
     try {
       // Call the print job cost calculation endpoint
+      const luluPrintingService = getLuluPrintingService();
       const response = await luluPrintingService.calculatePrintJobCost(
         costRequest
       );
@@ -212,6 +213,7 @@ export async function getShippingOptions(
       shipping_address: shippingAddress,
     };
     // 3. Call the print service to get shipping options
+    const luluPrintingService = getLuluPrintingService();
     const shippingResult = await luluPrintingService.getShippingOptions(
       request
     );
@@ -271,6 +273,7 @@ export async function calculatePrintJobCost(
     };
 
     // Call the print job cost calculation endpoint
+    const luluPrintingService = getLuluPrintingService();
     const response = await luluPrintingService.calculatePrintJobCost(
       costRequest
     );
@@ -333,6 +336,7 @@ export async function prepareBookForPrinting(
     logger.info(
       `Calculating cover dimensions for ${interiorResult.pageCount} pages`
     );
+    const luluPrintingService = getLuluPrintingService();
     const coverDimensions = await luluPrintingService.calculateCoverDimensions(
       SKU,
       interiorResult.pageCount
@@ -398,6 +402,7 @@ export async function validateBookPdfs(
 
     // 1. Submit interior PDF for validation
     logger.info(`Submitting interior PDF for validation: ${interiorUrl}`);
+    const luluPrintingService = getLuluPrintingService();
     const interiorValidation = await luluPrintingService.validateInteriorPdf(
       interiorUrl,
       SKU
@@ -944,8 +949,7 @@ export async function sendBookForPrinting(
     };
     // Create a request object for the print job
     const printJobRequest: CreatePrintJobRequest = {
-      contact_email:
-        config.PRINTING.LULU.CONTACT_EMAIL,
+      contact_email: config.PRINTING.LULU.CONTACT_EMAIL,
       external_id: order.id,
       line_items: [printItem],
       production_delay: PRODUCTION_DELAYED, // production delay in minutes - 2 hours by default
@@ -954,6 +958,7 @@ export async function sendBookForPrinting(
     };
     try {
       // Create the print job with Lulu
+      const luluPrintingService = getLuluPrintingService();
       const printJobResponse = await luluPrintingService.createPrintJob(
         printJobRequest
       );
@@ -1063,6 +1068,7 @@ export async function cancelPrintJob(
     }
 
     // 2. Cancel the print job with Lulu
+    const luluPrintingService = getLuluPrintingService();
     const cancelResult = await luluPrintingService.cancelPrintJob(
       printJob.luluPrintJobId
     );
@@ -1129,6 +1135,7 @@ export async function refreshPrintJobStatus(
     }
 
     // 2. Get the latest status from Lulu
+    const luluPrintingService = getLuluPrintingService();
     const luluPrintJob = await luluPrintingService.getPrintJob(
       printJob.luluPrintJobId
     );
