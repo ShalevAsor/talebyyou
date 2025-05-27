@@ -1036,9 +1036,9 @@ export const defaultTemplates: BookTemplateCreateData[] = [
       {
         pageNumber: 8,
         content:
-          "As [CHILD_NAME] continued exploring, [HE_SHE] found a fallen tree that had become a bridge across a small gully. [HE_SHE] carefully walked across it, feeling like a tightrope walker in the circus. On the other side, [CHILD_NAME] discovered mushrooms growing in interesting shapes and colors. 'The forest is full of natural sculptures!' [HE_SHE] said, admiring the mushroom garden.",
+          "As [CHILD_NAME] continued exploring, [HE_SHE] found a fallen tree that had become a bridge across a small gully. [HE_SHE] carefully walked across it, feeling like a tightrope walker in the circus. On the other side, [CHILD_NAME] discovered beautiful wildflowers growing in a sunny patch and interesting rock formations. 'The forest is full of natural sculptures!' [HE_SHE] said, admiring the colorful flower garden and smooth river stones.",
         imagePrompt:
-          "Carefully walking across fallen tree log bridge over small gully, arms out for balance, discovering colorful mushrooms on other side",
+          "Carefully walking across fallen tree log bridge over small gully, arms out for balance, discovering colorful wildflowers and interesting rocks on other side",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
