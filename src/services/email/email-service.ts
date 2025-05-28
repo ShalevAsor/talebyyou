@@ -385,6 +385,8 @@ import { logger } from "@/lib/logger";
 import config from "@/lib/config";
 import {
   getBookCompletionEmailTemplate,
+  getContactConfirmationTemplate,
+  getContactFormEmailTemplate,
   getCustomerConfirmationEmailTemplate,
   getOrderConfirmationEmailTemplate,
   getShippingConfirmationEmailTemplate,
@@ -820,58 +822,37 @@ class EmailService {
   ): Promise<SentMessageInfo> {
     await this.getInitializePromise();
 
-    // Create ONE clean email that looks professional for customer
-    // BUT includes admin info at the bottom
-    const cleanHtml = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <title>${subject}</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        
-        <!-- CUSTOMER SEES THIS PART (professional) -->
-        <div style="padding: 30px;">
-          <h2 style="color: #4f46e5;">Hi ${name},</h2>
-          
-          <p>Thank you for contacting TaleByYou!</p>
-          
-          <div style="background: #f8f9fa; padding: 20px; border-left: 4px solid #4f46e5; margin: 20px 0;">
-            <strong>Your message:</strong><br>
-            "${message}"
-          </div>
-          
-          <p>We've received your inquiry and will get back to you within 24 hours.</p>
-          
-          <p>Best regards,<br>
-          <strong>The TaleByYou Support Team</strong></p>
-        </div>
-  
-        <!-- ADMIN INFO (at bottom - customer won't focus on this) -->
-        <div style="border-top: 2px solid #eee; padding: 15px; background: #f5f5f5; font-size: 12px; color: #666;">
-          <strong>Admin Details:</strong> ${email} | ${category}${
-      orderNumber ? ` | Order: ${orderNumber}` : ""
-    } | ${new Date().toLocaleString()}
-        </div>
-      </body>
-      </html>
-    `;
-
     try {
-      // Send TO customer, BCC to yourself
-      const result = await this.sendEmail({
-        to: email, // TO: Customer gets the email
-        bcc: config.EMAIL.USER, // BCC: You get a hidden copy
-        subject: subject, // Clean subject
-        html: cleanHtml,
-        emailType: EmailType.SUPPORT, // From support@talebyyou.com
+      // Email 1: Send form details to admin (using your existing template)
+      const adminHtml = getContactFormEmailTemplate(
+        name,
+        email,
+        category,
+        subject,
+        message,
+        orderNumber
+      );
+
+      await this.sendEmail({
+        to: config.EMAIL.USER,
+        subject: `[ADMIN] Contact Form: ${subject}`,
+        html: adminHtml,
+        emailType: EmailType.AUTOMATED,
       });
 
-      console.log("✅ Contact form email sent to customer with admin BCC");
+      // Email 2: Send clean confirmation to customer + BCC to admin
+      const customerHtml = getContactConfirmationTemplate(name, subject);
+
+      const result = await this.sendEmail({
+        to: email,
+        bcc: config.EMAIL.USER,
+        subject: subject,
+        html: customerHtml,
+        emailType: EmailType.SUPPORT,
+      });
+
       return result;
     } catch (error) {
-      console.log("❌ Contact form email failed:", error);
       throw error;
     }
   }

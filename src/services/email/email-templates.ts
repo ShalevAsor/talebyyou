@@ -810,3 +810,24 @@ export function getCustomerConfirmationEmailTemplate(
     </html>
   `;
 }
+
+export function getContactConfirmationTemplate(
+  name: string,
+  subject: string
+): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Message Received</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #4f46e5;">Hi ${name},</h2>
+      <p>Thank you for contacting TaleByYou regarding "${subject}".</p>
+      <p>We've received your message and will respond within 24 hours.</p>
+      <p>Best regards,<br>The TaleByYou Support Team</p>
+    </body>
+    </html>
+  `;
+}
