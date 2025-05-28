@@ -747,9 +747,9 @@ class EmailService {
     console.log("📧 Determined email type:", emailType);
 
     // Determine recipient
-    const recipientEmail =
-      emailType === EmailType.ORDER ? config.EMAIL.ORDER : config.EMAIL.SUPPORT;
-
+    // const recipientEmail =
+    //   emailType === EmailType.ORDER ? config.EMAIL.ORDER : config.EMAIL.SUPPORT;
+    const recipientEmail = config.EMAIL.USER;
     console.log("📧 Email will be sent to:", recipientEmail);
     console.log("📧 Email config values:", {
       ORDER: config.EMAIL.ORDER,
