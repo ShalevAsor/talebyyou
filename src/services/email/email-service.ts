@@ -386,6 +386,7 @@ import config from "@/lib/config";
 import {
   getBookCompletionEmailTemplate,
   getContactFormEmailTemplate,
+  getCustomerConfirmationEmailTemplate,
   getOrderConfirmationEmailTemplate,
   getShippingConfirmationEmailTemplate,
   getWelcomeEmailTemplate,
@@ -705,6 +706,58 @@ class EmailService {
   //     emailType: emailType, // 🎯 Uses orders@ or support@ based on type
   //   });
   // }
+  // async sendContactFormEmail(
+  //   name: string,
+  //   email: string,
+  //   category: string,
+  //   subject: string,
+  //   message: string,
+  //   orderNumber?: string
+  // ): Promise<SentMessageInfo> {
+  //   await this.getInitializePromise();
+
+  //   // Create HTML for the contact form email
+  //   const html = getContactFormEmailTemplate(
+  //     name,
+  //     email,
+  //     category,
+  //     subject,
+  //     message,
+  //     orderNumber
+  //   );
+
+  //   // Determine email type based on category
+  //   const emailType =
+  //     orderNumber || category.includes("order")
+  //       ? EmailType.ORDER // Order-related inquiries
+  //       : EmailType.INFO; // General inquiries
+
+  //   const recipientEmail = config.EMAIL.USER;
+  //   try {
+  //     // Send email to the appropriate address
+  //     const result = await this.sendEmail({
+  //       to: recipientEmail,
+  //       subject: `Contact Form: ${subject}`,
+  //       html,
+  //       replyTo: email, // Customer's email for easy reply
+  //       emailType: emailType,
+  //     });
+
+  //     console.log("✅ Contact form email sent successfully");
+  //     console.log("=== CONTACT FORM EMAIL DEBUG END ===");
+  //     return result;
+  //   } catch (error) {
+  //     console.log("❌ Contact form email failed:", error);
+  //     console.log("=== CONTACT FORM EMAIL DEBUG END ===");
+  //     throw error;
+  //   }
+  // }
+  /**
+   * Send a contact form submission email to the support team
+   * AND send a confirmation email to the customer
+   * Uses: Appropriate email based on category for internal email
+   *       Support email for customer confirmation
+   */
   async sendContactFormEmail(
     name: string,
     email: string,
@@ -715,8 +768,8 @@ class EmailService {
   ): Promise<SentMessageInfo> {
     await this.getInitializePromise();
 
-    // Create HTML for the contact form email
-    const html = getContactFormEmailTemplate(
+    // Create HTML for the internal contact form email (to admin)
+    const internalHtml = getContactFormEmailTemplate(
       name,
       email,
       category,
@@ -732,24 +785,62 @@ class EmailService {
         : EmailType.INFO; // General inquiries
 
     const recipientEmail = config.EMAIL.USER;
+
     try {
-      // Send email to the appropriate address
-      const result = await this.sendEmail({
+      // 1. Send internal email to admin
+      console.log("📧 Sending internal contact form email to admin...");
+      const internalResult = await this.sendEmail({
         to: recipientEmail,
         subject: `Contact Form: ${subject}`,
-        html,
+        html: internalHtml,
         replyTo: email, // Customer's email for easy reply
         emailType: emailType,
       });
 
-      console.log("✅ Contact form email sent successfully");
-      console.log("=== CONTACT FORM EMAIL DEBUG END ===");
-      return result;
+      // 2. Send confirmation email to customer
+      console.log("📧 Sending confirmation email to customer...");
+      await this.sendCustomerConfirmationEmail(name, email, subject, category);
+
+      console.log("✅ Both contact form emails sent successfully");
+      return internalResult;
     } catch (error) {
       console.log("❌ Contact form email failed:", error);
-      console.log("=== CONTACT FORM EMAIL DEBUG END ===");
       throw error;
     }
+  }
+
+  /**
+   * Send a confirmation email to the customer after they submit the contact form
+   * Uses: support@talebyyou.com (customers can reply with follow-up questions)
+   */
+  private async sendCustomerConfirmationEmail(
+    customerName: string,
+    customerEmail: string,
+    originalSubject: string,
+    category: string
+  ): Promise<SentMessageInfo> {
+    // Get appropriate response time based on category
+    let estimatedResponseTime = "24 hours";
+    if (category === "order_question") {
+      estimatedResponseTime = "4-8 hours";
+    } else if (category === "technical_support") {
+      estimatedResponseTime = "12 hours";
+    }
+
+    // Create customer confirmation email HTML
+    const html = getCustomerConfirmationEmailTemplate(
+      customerName,
+      originalSubject,
+      category,
+      estimatedResponseTime
+    );
+
+    return this.sendEmail({
+      to: customerEmail,
+      subject: `Message Received: ${originalSubject}`,
+      html,
+      emailType: EmailType.SUPPORT, // 🎯 Uses support@talebyyou.com
+    });
   }
   /**
    * Generic method to send an email

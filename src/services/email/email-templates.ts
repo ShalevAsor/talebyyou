@@ -655,3 +655,158 @@ export const getContactFormEmailTemplate = (
     </div>
   `;
 };
+
+/**
+ * Customer confirmation email template - sent when customer submits contact form
+ * @param customerName The customer's name
+ * @param originalSubject The subject of their original message
+ * @param category The category of their inquiry
+ * @param estimatedResponseTime Optional custom response time
+ * @returns HTML string for the customer confirmation email
+ */
+export function getCustomerConfirmationEmailTemplate(
+  customerName: string,
+  originalSubject: string,
+  category: string,
+  estimatedResponseTime: string = "24 hours"
+): string {
+  // Customize message based on category
+  let categoryMessage = "";
+  switch (category) {
+    case "order_question":
+      categoryMessage =
+        "Our orders team will review your inquiry and provide you with an update on your order status.";
+      break;
+    case "technical_support":
+      categoryMessage =
+        "Our technical support team will help resolve your issue as quickly as possible.";
+      break;
+    case "general_inquiry":
+      categoryMessage =
+        "Our customer service team will provide you with the information you need.";
+      break;
+    case "feedback":
+      categoryMessage =
+        "Thank you for your feedback! We truly value your input and will use it to improve our service.";
+      break;
+    default:
+      categoryMessage =
+        "Our team will review your message and provide you with a detailed response.";
+  }
+
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Message Received - TaleByYou</title>
+      <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 40px 30px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 28px; font-weight: 600; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 18px; color: #1f2937; margin-bottom: 20px; }
+        .message-box { background-color: #f8fafc; border-left: 4px solid #4f46e5; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0; }
+        .subject-line { font-weight: 600; color: #374151; margin-bottom: 10px; }
+        .category-info { background-color: #e0f2fe; padding: 15px; border-radius: 8px; margin: 25px 0; }
+        .response-time { background-color: #dcfce7; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 25px 0; }
+        .cta-section { text-align: center; margin: 30px 0; }
+        .cta-button { display: inline-block; background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 500; }
+        .cta-button:hover { background-color: #4338ca; }
+        .footer { background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb; }
+        .footer-text { color: #6b7280; font-size: 14px; line-height: 1.5; margin: 0; }
+        .social-links { margin: 20px 0; }
+        .social-links a { color: #4f46e5; text-decoration: none; margin: 0 10px; }
+        @media (max-width: 600px) {
+          .header, .content, .footer { padding: 20px; }
+          .header h1 { font-size: 24px; }
+          .greeting { font-size: 16px; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <!-- Header -->
+        <div class="header">
+          <h1>Message Received!</h1>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+          <div class="greeting">
+            Hi ${customerName},
+          </div>
+
+          <p style="color: #374151; line-height: 1.6; margin-bottom: 20px;">
+            Thank you for contacting TaleByYou! We've successfully received your message and wanted to confirm that it's now in our queue.
+          </p>
+
+          <div class="message-box">
+            <div class="subject-line">
+              📋 Your inquiry: "${originalSubject}"
+            </div>
+            <p style="margin: 0; color: #6b7280; font-size: 14px;">
+              Reference ID: CF-${Date.now().toString().slice(-6)}
+            </p>
+          </div>
+
+          <div class="category-info">
+            <p style="margin: 0; color: #0c4a6e; font-weight: 500;">
+              💡 ${categoryMessage}
+            </p>
+          </div>
+
+          <div class="response-time">
+            <p style="margin: 0; color: #166534; font-weight: 500;">
+              ⏰ Expected response time: Within ${estimatedResponseTime}
+            </p>
+          </div>
+
+          <p style="color: #374151; line-height: 1.6;">
+            In the meantime, feel free to browse our <a href="${
+              process.env.NEXT_PUBLIC_APP_URL || "https://talebyyou.com"
+            }/library" style="color: #4f46e5; text-decoration: none;">book templates</a> or check out our <a href="${
+    process.env.NEXT_PUBLIC_APP_URL || "https://talebyyou.com"
+  }/about" style="color: #4f46e5; text-decoration: none;">frequently asked questions</a>.
+          </p>
+
+          <div class="cta-section">
+            <a href="${
+              process.env.NEXT_PUBLIC_APP_URL || "https://talebyyou.com"
+            }/my-books" class="cta-button">
+              View My Books
+            </a>
+          </div>
+
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.5; margin-top: 30px;">
+            <strong>Need immediate assistance?</strong><br>
+            Simply reply to this email and we'll prioritize your message.
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+          <div class="social-links">
+            <a href="mailto:support@talebyyou.com">📧 Email Support</a>
+            <a href="${
+              process.env.NEXT_PUBLIC_APP_URL || "https://talebyyou.com"
+            }/contact">💬 Contact Us</a>
+          </div>
+          
+          <p class="footer-text">
+            Best regards,<br>
+            <strong>The TaleByYou Team</strong>
+          </p>
+          
+          <p class="footer-text" style="margin-top: 20px;">
+            © ${new Date().getFullYear()} TaleByYou. All rights reserved.<br>
+            You're receiving this because you contacted us through our website.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
