@@ -360,7 +360,8 @@ describe("Payment Actions", () => {
         ProductType.BOOK,
         "Test Book",
         24.99,
-        "Test Customer"
+        "Test Customer",
+        1
       );
 
       // Verify paths were revalidated
