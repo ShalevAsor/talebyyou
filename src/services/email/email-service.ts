@@ -403,7 +403,9 @@ interface EmailOptions {
   html: string;
   text?: string;
   replyTo?: string;
-  emailType?: EmailType; // New: specify which alias to use
+  emailType?: EmailType;
+  cc?: string; // Add CC support
+  bcc?: string; // Add BCC support
 }
 
 /**
@@ -758,6 +760,57 @@ class EmailService {
    * Uses: Appropriate email based on category for internal email
    *       Support email for customer confirmation
    */
+  // async sendContactFormEmail(
+  //   name: string,
+  //   email: string,
+  //   category: string,
+  //   subject: string,
+  //   message: string,
+  //   orderNumber?: string
+  // ): Promise<SentMessageInfo> {
+  //   await this.getInitializePromise();
+
+  //   // Create HTML for the internal contact form email (to admin)
+  //   const internalHtml = getContactFormEmailTemplate(
+  //     name,
+  //     email,
+  //     category,
+  //     subject,
+  //     message,
+  //     orderNumber
+  //   );
+
+  //   // Determine email type based on category
+  //   const emailType =
+  //     orderNumber || category.includes("order")
+  //       ? EmailType.ORDER // Order-related inquiries
+  //       : EmailType.INFO; // General inquiries
+
+  //   const recipientEmail = config.EMAIL.USER;
+
+  //   try {
+  //     // 1. Send internal email to admin
+  //     console.log("📧 Sending internal contact form email to admin...");
+  //     const internalResult = await this.sendEmail({
+  //       to: recipientEmail,
+  //       subject: `Contact Form: ${subject}`,
+  //       html: internalHtml,
+  //       replyTo: email, // Customer's email for easy reply
+  //       emailType: emailType,
+  //     });
+
+  //     // 2. Send confirmation email to customer
+  //     console.log("📧 Sending confirmation email to customer...");
+  //     await this.sendCustomerConfirmationEmail(name, email, subject, category);
+
+  //     console.log("✅ Both contact form emails sent successfully");
+  //     return internalResult;
+  //   } catch (error) {
+  //     console.log("❌ Contact form email failed:", error);
+  //     throw error;
+  //   }
+  // }
+
   async sendContactFormEmail(
     name: string,
     email: string,
@@ -768,43 +821,47 @@ class EmailService {
   ): Promise<SentMessageInfo> {
     await this.getInitializePromise();
 
-    // Create HTML for the internal contact form email (to admin)
-    const internalHtml = getContactFormEmailTemplate(
-      name,
-      email,
-      category,
-      subject,
-      message,
-      orderNumber
-    );
-
-    // Determine email type based on category
-    const emailType =
-      orderNumber || category.includes("order")
-        ? EmailType.ORDER // Order-related inquiries
-        : EmailType.INFO; // General inquiries
-
-    const recipientEmail = config.EMAIL.USER;
-
     try {
-      // 1. Send internal email to admin
-      console.log("📧 Sending internal contact form email to admin...");
-      const internalResult = await this.sendEmail({
-        to: recipientEmail,
-        subject: `Contact Form: ${subject}`,
+      // 1. Send internal email to YOU (with all the form details)
+      const internalHtml = getContactFormEmailTemplate(
+        name,
+        email,
+        category,
+        subject,
+        message,
+        orderNumber
+      );
+
+      await this.sendEmail({
+        to: config.EMAIL.USER,
+        subject: `[INTERNAL] Contact Form: ${subject}`,
         html: internalHtml,
-        replyTo: email, // Customer's email for easy reply
-        emailType: emailType,
+        emailType: EmailType.AUTOMATED,
       });
 
-      // 2. Send confirmation email to customer
-      console.log("📧 Sending confirmation email to customer...");
-      await this.sendCustomerConfirmationEmail(name, email, subject, category);
+      // 2. Send SEPARATE email to CUSTOMER (clean, professional)
+      const customerHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #4f46e5;">Hi ${name},</h2>
+          <p>Thank you for contacting TaleByYou regarding "${subject}".</p>
+          <p>We've received your message and will get back to you within 24 hours.</p>
+          <p>Best regards,<br>The TaleByYou Support Team</p>
+        </div>
+      `;
 
-      console.log("✅ Both contact form emails sent successfully");
-      return internalResult;
+      const customerResult = await this.sendEmail({
+        to: email,
+        subject: `Re: ${subject}`, // This creates a clean thread
+        html: customerHtml,
+        emailType: EmailType.SUPPORT, // From support@talebyyou.com
+      });
+
+      console.log(
+        "✅ Both emails sent - internal notification and customer confirmation"
+      );
+      return customerResult;
     } catch (error) {
-      console.log("❌ Contact form email failed:", error);
+      console.log("❌ Contact form emails failed:", error);
       throw error;
     }
   }
@@ -847,9 +904,54 @@ class EmailService {
    * @param options Email options (to, subject, html, emailType)
    * @returns Promise resolving to the nodemailer info object
    */
+  // private async sendEmail(options: EmailOptions): Promise<SentMessageInfo> {
+  //   try {
+  //     // Ensure transporter is initialized
+  //     if (!this.transporter) {
+  //       throw new Error("Email transporter not initialized");
+  //     }
+
+  //     const {
+  //       to,
+  //       subject,
+  //       html,
+  //       text,
+  //       replyTo,
+  //       emailType = EmailType.AUTOMATED,
+  //     } = options;
+
+  //     // Get the appropriate from and reply-to emails
+  //     const fromEmail = this.getFromEmail(emailType);
+  //     const replyToEmail = replyTo || this.getReplyToEmail(emailType);
+
+  //     const mailOptions: SendMailOptions = {
+  //       from: `"TaleByYou" <${fromEmail}>`, // 🎯 Dynamic based on email type
+  //       to,
+  //       subject,
+  //       html,
+  //       text: text || "",
+  //       replyTo: replyToEmail,
+  //     };
+
+  //     const info = await this.transporter.sendMail(mailOptions);
+
+  //     if (config.APP.NODE_ENV === "development") {
+  //       // Log Ethereal URL for development
+  //       const previewUrl = nodemailer.getTestMessageUrl(info);
+  //       if (previewUrl) {
+  //         logger.info(`📧 Email preview URL: ${previewUrl}`);
+  //       }
+  //     }
+
+  //     logger.info(`📧 Email sent from ${fromEmail} to ${to}: ${subject}`);
+  //     return info;
+  //   } catch (error) {
+  //     logger.error("Failed to send email:", error);
+  //     throw new Error("Failed to send email");
+  //   }
+  // }
   private async sendEmail(options: EmailOptions): Promise<SentMessageInfo> {
     try {
-      // Ensure transporter is initialized
       if (!this.transporter) {
         throw new Error("Email transporter not initialized");
       }
@@ -861,25 +963,27 @@ class EmailService {
         text,
         replyTo,
         emailType = EmailType.AUTOMATED,
+        cc, // Add CC
+        bcc, // Add BCC
       } = options;
 
-      // Get the appropriate from and reply-to emails
       const fromEmail = this.getFromEmail(emailType);
       const replyToEmail = replyTo || this.getReplyToEmail(emailType);
 
       const mailOptions: SendMailOptions = {
-        from: `"TaleByYou" <${fromEmail}>`, // 🎯 Dynamic based on email type
+        from: `"TaleByYou" <${fromEmail}>`,
         to,
         subject,
         html,
         text: text || "",
         replyTo: replyToEmail,
+        ...(cc && { cc }), // Add CC if provided
+        ...(bcc && { bcc }), // Add BCC if provided
       };
 
       const info = await this.transporter.sendMail(mailOptions);
 
       if (config.APP.NODE_ENV === "development") {
-        // Log Ethereal URL for development
         const previewUrl = nodemailer.getTestMessageUrl(info);
         if (previewUrl) {
           logger.info(`📧 Email preview URL: ${previewUrl}`);
