@@ -715,17 +715,6 @@ class EmailService {
   ): Promise<SentMessageInfo> {
     await this.getInitializePromise();
 
-    console.log("=== CONTACT FORM EMAIL DEBUG START ===");
-    console.log("📧 Contact form parameters:", {
-      name,
-      email,
-      category,
-      subject,
-      messageLength: message.length,
-      orderNumber,
-      hasOrderNumber: !!orderNumber,
-    });
-
     // Create HTML for the contact form email
     const html = getContactFormEmailTemplate(
       name,
@@ -736,27 +725,13 @@ class EmailService {
       orderNumber
     );
 
-    console.log("📧 Generated HTML length:", html.length);
-
     // Determine email type based on category
     const emailType =
       orderNumber || category.includes("order")
         ? EmailType.ORDER // Order-related inquiries
         : EmailType.INFO; // General inquiries
 
-    console.log("📧 Determined email type:", emailType);
-
-    // Determine recipient
-    // const recipientEmail =
-    //   emailType === EmailType.ORDER ? config.EMAIL.ORDER : config.EMAIL.SUPPORT;
     const recipientEmail = config.EMAIL.USER;
-    console.log("📧 Email will be sent to:", recipientEmail);
-    console.log("📧 Email config values:", {
-      ORDER: config.EMAIL.ORDER,
-      SUPPORT: config.EMAIL.SUPPORT,
-      INFO: config.EMAIL.INFO,
-    });
-
     try {
       // Send email to the appropriate address
       const result = await this.sendEmail({
