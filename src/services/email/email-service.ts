@@ -385,7 +385,6 @@ import { logger } from "@/lib/logger";
 import config from "@/lib/config";
 import {
   getBookCompletionEmailTemplate,
-  getContactFormEmailTemplate,
   getCustomerConfirmationEmailTemplate,
   getOrderConfirmationEmailTemplate,
   getShippingConfirmationEmailTemplate,
