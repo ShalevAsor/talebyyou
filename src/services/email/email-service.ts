@@ -667,6 +667,44 @@ class EmailService {
    * Send a contact form submission email to the support team
    * Uses: info@talebyyou.com (general inquiries)
    */
+  // async sendContactFormEmail(
+  //   name: string,
+  //   email: string,
+  //   category: string,
+  //   subject: string,
+  //   message: string,
+  //   orderNumber?: string
+  // ): Promise<SentMessageInfo> {
+  //   await this.getInitializePromise();
+
+  //   // Create HTML for the contact form email
+  //   const html = getContactFormEmailTemplate(
+  //     name,
+  //     email,
+  //     category,
+  //     subject,
+  //     message,
+  //     orderNumber
+  //   );
+
+  //   // Determine email type based on category
+  //   const emailType =
+  //     orderNumber || category.includes("order")
+  //       ? EmailType.ORDER // Order-related inquiries
+  //       : EmailType.INFO; // General inquiries
+
+  //   // Send email to the appropriate address
+  //   return this.sendEmail({
+  //     to:
+  //       emailType === EmailType.ORDER
+  //         ? config.EMAIL.ORDER
+  //         : config.EMAIL.SUPPORT,
+  //     subject: `Contact Form: ${subject}`,
+  //     html,
+  //     replyTo: email, // Customer's email for easy reply
+  //     emailType: emailType, // 🎯 Uses orders@ or support@ based on type
+  //   });
+  // }
   async sendContactFormEmail(
     name: string,
     email: string,
@@ -676,6 +714,17 @@ class EmailService {
     orderNumber?: string
   ): Promise<SentMessageInfo> {
     await this.getInitializePromise();
+
+    console.log("=== CONTACT FORM EMAIL DEBUG START ===");
+    console.log("📧 Contact form parameters:", {
+      name,
+      email,
+      category,
+      subject,
+      messageLength: message.length,
+      orderNumber,
+      hasOrderNumber: !!orderNumber,
+    });
 
     // Create HTML for the contact form email
     const html = getContactFormEmailTemplate(
@@ -687,25 +736,46 @@ class EmailService {
       orderNumber
     );
 
+    console.log("📧 Generated HTML length:", html.length);
+
     // Determine email type based on category
     const emailType =
       orderNumber || category.includes("order")
         ? EmailType.ORDER // Order-related inquiries
         : EmailType.INFO; // General inquiries
 
-    // Send email to the appropriate address
-    return this.sendEmail({
-      to:
-        emailType === EmailType.ORDER
-          ? config.EMAIL.ORDER
-          : config.EMAIL.SUPPORT,
-      subject: `Contact Form: ${subject}`,
-      html,
-      replyTo: email, // Customer's email for easy reply
-      emailType: emailType, // 🎯 Uses orders@ or support@ based on type
-    });
-  }
+    console.log("📧 Determined email type:", emailType);
 
+    // Determine recipient
+    const recipientEmail =
+      emailType === EmailType.ORDER ? config.EMAIL.ORDER : config.EMAIL.SUPPORT;
+
+    console.log("📧 Email will be sent to:", recipientEmail);
+    console.log("📧 Email config values:", {
+      ORDER: config.EMAIL.ORDER,
+      SUPPORT: config.EMAIL.SUPPORT,
+      INFO: config.EMAIL.INFO,
+    });
+
+    try {
+      // Send email to the appropriate address
+      const result = await this.sendEmail({
+        to: recipientEmail,
+        subject: `Contact Form: ${subject}`,
+        html,
+        replyTo: email, // Customer's email for easy reply
+        emailType: emailType,
+      });
+
+      console.log("✅ Contact form email sent successfully");
+      console.log("=== CONTACT FORM EMAIL DEBUG END ===");
+      return result;
+    } catch (error) {
+      console.log("❌ Contact form email failed:", error);
+      console.log("=== CONTACT FORM EMAIL DEBUG END ===");
+      throw error;
+    }
+  }
   /**
    * Generic method to send an email
    * @param options Email options (to, subject, html, emailType)

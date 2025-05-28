@@ -162,6 +162,40 @@ export async function sendOrderConfirmationEmail(
  * @param orderNumber Optional order number for order-related inquiries
  * @returns ActionResult with success/error information
  */
+// export async function sendContactFormEmail(
+//   name: string,
+//   email: string,
+//   category: string,
+//   subject: string,
+//   message: string,
+//   orderNumber?: string
+// ): Promise<ActionResult<null>> {
+//   try {
+//     console.log("EMAIL CONFIG:", {
+//       SUPPORT: config.EMAIL.SUPPORT,
+//       ORDER: config.EMAIL.ORDER,
+//       TEST_MODE: config.EMAIL.TEST_MODE,
+//     });
+//     const emailService = getEmailService();
+//     await emailService.sendContactFormEmail(
+//       name,
+//       email,
+//       category,
+//       subject,
+//       message,
+//       orderNumber
+//     );
+//     return createSuccessResult(
+//       null,
+//       `Contact form submission received from ${email}`
+//     );
+//   } catch (error) {
+//     console.error("Failed to send contact form email:", error);
+//     return createErrorResult(
+//       "Failed to process your message. Please try again later."
+//     );
+//   }
+// }
 export async function sendContactFormEmail(
   name: string,
   email: string,
@@ -170,13 +204,28 @@ export async function sendContactFormEmail(
   message: string,
   orderNumber?: string
 ): Promise<ActionResult<null>> {
+  console.log("=== CONTACT FORM ACTION DEBUG START ===");
+  console.log("📧 Contact form action called with:", {
+    name,
+    email,
+    category,
+    subject,
+    messageLength: message.length,
+    orderNumber,
+  });
+
   try {
     console.log("EMAIL CONFIG:", {
       SUPPORT: config.EMAIL.SUPPORT,
       ORDER: config.EMAIL.ORDER,
+      INFO: config.EMAIL.INFO,
       TEST_MODE: config.EMAIL.TEST_MODE,
     });
+
+    console.log("📧 Getting email service...");
     const emailService = getEmailService();
+
+    console.log("📧 Calling email service method...");
     await emailService.sendContactFormEmail(
       name,
       email,
@@ -185,11 +234,18 @@ export async function sendContactFormEmail(
       message,
       orderNumber
     );
+
+    console.log("✅ Contact form email action completed successfully");
+    console.log("=== CONTACT FORM ACTION DEBUG END ===");
+
     return createSuccessResult(
       null,
       `Contact form submission received from ${email}`
     );
   } catch (error) {
+    console.log("❌ Contact form email action failed:", error);
+    console.log("=== CONTACT FORM ACTION DEBUG END ===");
+
     console.error("Failed to send contact form email:", error);
     return createErrorResult(
       "Failed to process your message. Please try again later."
