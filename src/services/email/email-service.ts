@@ -581,7 +581,8 @@ class EmailService {
     productType: ProductType,
     bookTitle: string,
     price: number,
-    fullName?: string
+    fullName?: string,
+    quality?: number
   ): Promise<SentMessageInfo> {
     await this.getInitializePromise();
     const html = getOrderConfirmationEmailTemplate(
@@ -589,7 +590,8 @@ class EmailService {
       productType,
       bookTitle,
       price,
-      fullName
+      fullName,
+      quality
     );
     return this.sendEmail({
       to,

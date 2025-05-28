@@ -7,7 +7,7 @@ import {
   createSuccessResult,
   createErrorResult,
 } from "@/types/actions";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus, ProductType } from "@prisma/client";
 import { paypal } from "@/services/payment/paypal-service";
 import { revalidatePath } from "next/cache";
 import { generateRemainingPageImages } from "./image-actions";
@@ -156,6 +156,9 @@ export async function processPayment(
     // Get the order
     const order = await prisma.order.findUnique({
       where: { id: orderId },
+      include: {
+        user: true,
+      },
     });
 
     if (!order) {
@@ -218,13 +221,15 @@ export async function processPayment(
 
     // 4. Send confirmation email to customer
     try {
+      const userEmail = order.user?.email || order.customerEmail;
       await sendOrderConfirmationEmail(
-        order.customerEmail,
+        userEmail,
         order.orderNumber,
         order.productType,
         updatedBook.title,
         order.pricePaid || order.totalPrice.toNumber(),
-        order.name || "Customer"
+        order.name || "Customer",
+        order.productType === ProductType.BOOK ? order.quantity : undefined
       );
     } catch (emailError) {
       logger.error(

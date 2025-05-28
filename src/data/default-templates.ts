@@ -879,23 +879,24 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "After practicing for a while, [CHILD_NAME] was getting much better at controlling the soccer ball. [HE_SHE] kicked it toward the goal and watched as it rolled right between the goal posts! 'Goal!' cheered the other kids. [CHILD_NAME] jumped up and down with excitement. Even though [HE_SHE] was only [CHILD_AGE] years old, [HE_SHE] felt like a real soccer player.",
         imagePrompt:
-          "Kicking soccer ball toward goal posts, ball going in, jumping up with arms raised in celebration, other kids cheering in background",
+          "Kicking soccer ball toward goal posts, ball going in, jumping up with arms raised in celebration, crowd cheering in background",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
+
       {
         pageNumber: 4,
         content:
-          "The next day, [CHILD_NAME] decided to try swimming at the community pool. [HE_SHE] put on [HIS_HER] swimsuit and water wings for safety. The swimming instructor taught [HIM_HER] how to kick [HIS_HER] legs and move [HIS_HER] arms. 'Pretend you're a friendly fish swimming through the water,' said the instructor. [CHILD_NAME] giggled and started paddling around the shallow end.",
+          "The next day, [CHILD_NAME] decided to visit the community pool. [HE_SHE] put on [HIS_HER] favorite swim clothes and walked carefully down the pool steps into the shallow water. The cool water felt wonderful on [HIS_HER] feet and legs. [CHILD_NAME] stood in the shallow end, feeling the gentle movement of the water around [HIM_HER]. 'The water feels so refreshing!' [HE_SHE] said, enjoying the new sensation of being in the pool.",
         imagePrompt:
-          "In swimming pool wearing swimsuit and water wings, practicing swimming strokes in shallow end, instructor nearby, happy splashing",
+          "Standing in shallow end of swimming pool wearing green swim shirt and swim shorts, water up to waist, happy peaceful expression, clear blue pool water",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
         pageNumber: 5,
         content:
-          "Swimming was harder than [CHILD_NAME] expected, but [HE_SHE] didn't give up. [HE_SHE] practiced floating on [HIS_HER] back, looking up at the fluffy white clouds in the blue sky. The water felt cool and refreshing on the warm day. 'I'm getting stronger!' [CHILD_NAME] said proudly as [HE_SHE] swam a little farther each time.",
+          "Swimming was harder than [CHILD_NAME] expected, but [HE_SHE] didn't give up. [HE_SHE] practiced swimming in the shallow water, occasionally stopping to look up at the fluffy white clouds in the blue sky. The water felt cool and refreshing on the warm day. 'I'm getting stronger!' [CHILD_NAME] said proudly as [HE_SHE] swam a little farther each time.",
         imagePrompt:
-          "Floating on back in pool looking up at clouds, relaxed peaceful expression, water sparkling in sunlight around",
+          "Swimming in pool looking up at clouds, relaxed peaceful expression, water sparkling in sunlight around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -930,12 +931,13 @@ export const defaultTemplates: BookTemplateCreateData[] = [
           "Swinging across monkey bars with determined expression, then balancing on balance beam with arms out for stability, playground equipment around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
+
       {
         pageNumber: 10,
         content:
-          "[CHILD_NAME] tried team games too, like relay races and group activities. [HE_SHE] learned that sports were even more fun when shared with friends. Sometimes [HIS_HER] team won, and sometimes they didn't, but [CHILD_NAME] discovered that trying [HIS_HER] best and encouraging teammates was what mattered most. 'Good job, everyone!' [HE_SHE] would cheer.",
+          "[CHILD_NAME] tried team games too, like relay races and group activities. [HE_SHE] learned that sports were even more fun when shared with friends. Sometimes [HIS_HER] team won, and sometimes they didn't, but [CHILD_NAME] discovered that trying [HIS_HER] best and encouraging teammates was what mattered most. After each game, [HE_SHE] would give everyone a big thumbs up and say 'Good job, everyone!'",
         imagePrompt:
-          "Running in relay race passing baton to teammate, everyone cheering and encouraging each other, teamwork and fun expressions",
+          "Standing on sports field holding relay baton with big thumbs up gesture, encouraging smile and happy team spirit expression, sports equipment visible around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1095,7 +1097,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     published: false,
     characterGender: "boy",
     minAge: 5,
-    maxAge: 9,
+    maxAge: 15,
     genres: ["Adventure", "Science Fiction"],
     pages: [
       {
@@ -1103,7 +1105,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "[CHILD_NAME] was exploring the dusty attic when [HE_SHE] found something incredible hidden under an old sheet. It was a strange machine covered in colorful buttons, spinning gears, and glowing lights that looked like a giant clock! A sign on it read 'Time Travel Machine - Handle with Care.' [CHILD_NAME]'s eyes grew wide with excitement. 'Could this really travel through time?' [HE_SHE] wondered.",
         imagePrompt:
-          "In dusty attic discovering time machine under old sheet, machine with colorful buttons and spinning gears, looking amazed and curious",
+          "In dusty attic discovering time machine under old sheet, machine with colorful buttons and spinning gears, looking amazed and happy",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1135,15 +1137,16 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "The pirate ship sailed to a tropical island where [CHILD_NAME] helped dig up a treasure chest filled with shiny coins and pretty jewels. But the best treasure was the friendship [HE_SHE] made with the crew! They shared tropical fruit and told funny stories under the palm trees. 'Being a pirate is about adventure and helping friends,' the captain explained as they watched dolphins play in the waves.",
         imagePrompt:
-          "On tropical island digging up treasure chest with pirate crew, palm trees and dolphins in background, sharing tropical fruits, happy friendship scene",
+          "On tropical island digging up treasure chest full of golden coins, palm trees in background, sharing tropical fruits, happy",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
+
       {
         pageNumber: 6,
         content:
-          "When [CHILD_NAME] pressed the 'Dinosaur Time' button, [HE_SHE] traveled to a world full of gentle, plant-eating dinosaurs! [HE_SHE] met a friendly long-neck dinosaur who was as tall as a tree and loved to eat leaves. The dinosaur let [CHILD_NAME] pet [HIS_HER] neck, which felt like warm, bumpy leather. 'Dinosaurs are much friendlier than I thought!' [CHILD_NAME] said with delight.",
+          "When [CHILD_NAME] pressed the 'Dinosaur Time' button, [HE_SHE] traveled to a world full of gentle, friendly dinosaurs! [HE_SHE] smiled with delight as [HE_SHE] met a small, cute dinosaur that was about the same size as [HIM_HER]. The little dinosaur had big friendly eyes and was munching happily on colorful flowers. It wagged its tail like a happy puppy when it saw [CHILD_NAME]. 'You're so adorable!' [CHILD_NAME] said with joy.",
         imagePrompt:
-          "Petting friendly long-neck dinosaur in prehistoric landscape with palm trees, dinosaur bending down gently, other plant-eating dinosaurs in background",
+          "Standing next to small friendly dinosaur same size as child, both smiling happily, cute dinosaur with big eyes eating colorful flowers, sunny prehistoric garden setting",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1191,7 +1194,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "After visiting so many wonderful time periods, [CHILD_NAME] realized [HE_SHE] had learned something important from each era. The medieval times taught [HIM_HER] about courage and helping others. The pirates showed [HIM_HER] the value of friendship and adventure. The dinosaurs taught [HIM_HER] that different doesn't mean scary. Each time period had its own special magic and lessons to share.",
         imagePrompt:
-          "Standing by time machine thinking about all adventures, seeing glimpses of different time periods in thought bubbles around head, wise thoughtful expression",
+          "Standing by time machine thinking about all adventures, smiling, seeing glimpses of different time periods in thought bubbles around head, wise thoughtful expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1231,7 +1234,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "[CHILD_NAME] approached the piano first and gently pressed one of the white keys. A clear, beautiful note rang out! [HE_SHE] tried pressing different keys and discovered that some made high sounds and others made low sounds. Soon, [CHILD_NAME] was playing simple melodies by pressing the keys one at a time. 'Each key has its own special voice!' [HE_SHE] said with delight.",
         imagePrompt:
-          "Sitting at piano bench pressing white and black keys, listening carefully to different notes, musical notes floating above piano, concentrated happy expression",
+          "Sitting at piano bench pressing on the keyboards, listening carefully to different notes, musical notes floating above piano, concentrated happy expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1245,17 +1248,17 @@ export const defaultTemplates: BookTemplateCreateData[] = [
       {
         pageNumber: 4,
         content:
-          "The guitar looked tricky, but [CHILD_NAME] was brave enough to try. [HE_SHE] held it carefully and plucked the strings one by one. Each string sang a different note! A kind music teacher appeared and showed [CHILD_NAME] how to hold the guitar properly and press the strings to make even more beautiful sounds. 'Every instrument needs gentle care and practice,' the teacher explained kindly.",
+          "The guitar looked tricky, but [CHILD_NAME] was brave enough to try. [HE_SHE] held it carefully and plucked the strings one by one. Each string sang a different note! [CHILD_NAME] noticed a colorful music book open nearby with pictures showing how to hold the guitar properly. Following the pictures step by step, [HE_SHE] learned to press the strings gently to make even more beautiful sounds. 'Every instrument needs gentle care and practice,' [CHILD_NAME] said to [HIM_HER]self.",
         imagePrompt:
-          "Holding guitar properly with music teacher helping show finger positions, plucking strings carefully, teacher pointing to guitar neck, learning together",
+          "Holding guitar carefully and plucking strings, colorful music instruction book open on stand nearby showing guitar finger positions, concentrating and learning",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
         pageNumber: 5,
         content:
-          "[CHILD_NAME] discovered that [HE_SHE] had a musical instrument [HE_SHE] carried everywhere - [HIS_HER] own voice! The music teacher taught [HIM_HER] simple songs and showed [HIM_HER] how to sing high notes and low notes. [CHILD_NAME] practiced singing scales: 'Do, Re, Mi, Fa, So, La, Ti, Do!' [HIS_HER] voice got stronger and clearer with each try.",
+          "[CHILD_NAME] discovered that [HE_SHE] had a musical instrument [HE_SHE] carried everywhere - [HIS_HER] own voice! Looking at a colorful poster on the wall showing musical notes and scales, [CHILD_NAME] tried to copy the sounds. [HE_SHE] practiced singing high notes that sounded like tiny birds and low notes that rumbled like friendly bears. 'Do, Re, Mi, Fa, So, La, Ti, Do!' [CHILD_NAME] sang, [HIS_HER] voice getting stronger and clearer with each try.",
         imagePrompt:
-          "Standing with music teacher practicing singing, mouth open in song, hand gestures showing high and low notes, musical staff with notes visible on wall",
+          "Standing alone, singing while holding microphone close to mouth, looking up at colorful musical notes poster on wall, hand gestures showing high and low notes, joyful singing expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1271,7 +1274,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "[CHILD_NAME] tried the violin next, placing it carefully under [HIS_HER] chin like the music teacher showed [HIM_HER]. Drawing the bow across the strings created sweet, singing sounds. It took practice to make it sound just right, but [CHILD_NAME] didn't give up. 'Even when it doesn't sound perfect, I'm learning!' [HE_SHE] said with determination, trying again and again.",
         imagePrompt:
-          "Holding violin under chin with bow, concentrating hard on making music, music teacher encouraging nearby, violin strings visible and bow in motion",
+          "Holding violin under chin with bow, concentrating hard on making music, violin strings visible and bow in motion",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
@@ -1301,9 +1304,9 @@ export const defaultTemplates: BookTemplateCreateData[] = [
       {
         pageNumber: 11,
         content:
-          "For [HIS_HER] first recital, [CHILD_NAME] decided to create a special song using all the instruments [HE_SHE] had learned. [HE_SHE] started with a gentle piano melody, added drumbeats for rhythm, hummed along with [HIS_HER] voice, and finished with a joyful tambourine shake. The music teacher clapped enthusiastically. 'You've become a real musician!' [HE_SHE] said proudly.",
+          "For [HIS_HER] first concert, [CHILD_NAME] decided to create a special song using all the instruments [HE_SHE] had learned. [HE_SHE] arranged [HIS_HER] favorite stuffed animals as an audience and began the show. [CHILD_NAME] started with a gentle piano melody, added drumbeats for rhythm, hummed along with [HIS_HER] voice, and finished with a joyful tambourine shake. [HIS_HER] stuffed animal audience seemed to love it! 'I've become a real musician!' [HE_SHE] announced proudly.",
         imagePrompt:
-          "Performing at small recital using multiple instruments in sequence, music teacher and small audience clapping, confident performer expression",
+          "Playing piano for arrangement of stuffed animals sitting as audience, mid-performance with confident expression, music room setting with various instruments visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {

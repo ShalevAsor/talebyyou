@@ -340,18 +340,18 @@ export const getWelcomeEmailTemplate = (userName: string): string => {
       <p>Thank you for creating an account with us. We're excited to have you join our community of custom book creators!</p>
       <p>Here's how to create your perfect personalized book:</p>
       <ol style="line-height: 1.8;">
-        <li><strong>Choose a Story</strong> - Select from our curated collection of tale templates that best suits your child's interests.</li>
-        <li><strong>Personalize</strong> - Add your child's name, photo, and customize the details to make the tale special and unique to them.</li>
+        <li><strong>Choose a Story</strong> - Select from our curated collection of book templates that best suits your child's interests.</li>
+        <li><strong>Personalize</strong> - Add your child's name, photo, and customize the details to make the book special and unique to them.</li>
         <li><strong>Preview and Customize</strong> - See how your personalized book will look in real-time. Edit the title, text, images, and add dedications or personal messages.</li>
-        <li><strong>Place Your Order</strong> - Once you're happy with your customizations, place your order and get ready for a magical tale made just for you!</li>
+        <li><strong>Place Your Order</strong> - Once you're happy with your customizations, place your order and get ready for a magical book made just for you!</li>
         <li><strong>Create and Edit</strong> - After you place your order, we'll create the remaining images for your book. Continue making edits until you're completely satisfied, then send for printing or download as an eBook.</li>
       </ol>
-      <p>We add new tale templates every week or two, so check back often to see what's new!</p>
+      <p>We add new book templates every week or two, so check back often to see what's new!</p>
       <div style="text-align: center; margin: 30px 0;">
         <a href="${
           config.APP.CLIENT_URL
         }/library" style="background-color: #4F46E5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-          Explore Our Tale Library
+          Explore Our Library
         </a>
       </div>
       <p>If you have any questions or need assistance, feel free to reply to this email or contact our support team.</p>
@@ -373,27 +373,29 @@ export const getOrderConfirmationEmailTemplate = (
   productType: ProductType,
   bookTitle: string,
   price: number,
-  fullName?: string
+  fullName?: string,
+  quantity?: number
 ): string => {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #4F46E5;">Your Order Confirmation</h2>
       <p>Hello ${fullName},</p>
-      <p>Thank you for your order! We're excited to confirm your purchase and are now working on generating the remaining images for your personalized tale.</p>
+      <p>Thank you for your order! We're excited to confirm your purchase and are now working on generating the remaining images for your personalized book.</p>
       
       <div style="background-color: #f7f7f7; padding: 15px; border-radius: 4px; margin: 20px 0;">
         <h3 style="margin-top: 0; color: #333;">Order Details</h3>
         <p><strong>Order Number:</strong> ${orderNumber}</p>
-        <p><strong>Tale Title:</strong> ${bookTitle}</p>
+        <p><strong>Book Title:</strong> ${bookTitle}</p>
         <p><strong>Product Type:</strong> ${productType}</p>
+        ${quantity ? `<p><strong>Quantity:</strong> ${quantity}</p>` : ""}
         <p><strong>Price:</strong> $${price.toFixed(2)}</p>
       </div>
       
       <h3 style="color: #333;">What Happens Next?</h3>
       <ol style="line-height: 1.6;">
-        <li><strong>Image Generation:</strong> Our system is now creating the remaining images for your personalized tale. This process takes a few minutes to complete.</li>
-        <li><strong>Customization:</strong> Once the images are ready, you can continue to customize your tale. You can add text, adjust images, and make other edits until you're completely satisfied.</li>
-        <li><strong>Finalization:</strong> When you're happy with your tale, you can ${
+        <li><strong>Image Generation:</strong> Our system is now creating the remaining images for your personalized book. This process takes a few minutes to complete.</li>
+        <li><strong>Customization:</strong> Once the images are ready, you can continue to customize your book. You can add text, adjust images, and make other edits until you're completely satisfied.</li>
+        <li><strong>Finalization:</strong> When you're happy with your book, you can ${
           productType === ProductType.EBOOK
             ? "save and download your eBook from your account."
             : "send it for printing. We'll notify you once your book has been shipped."
@@ -404,7 +406,7 @@ export const getOrderConfirmationEmailTemplate = (
         <a href="${
           config.APP.CLIENT_URL
         }/my-books" style="background-color: #4F46E5; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-          View My Tales
+          View My Books
         </a>
       </div>
       
@@ -432,14 +434,14 @@ export const getBookCompletionEmailTemplate = (
 ): string => {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #4F46E5;">Your Personalized Tale is Ready!</h2>
+      <h2 style="color: #4F46E5;">Your Personalized Book is Ready!</h2>
       <p>Hello ${fullName},</p>
-      <p>Great news! Your personalized tale "${bookTitle}" is now complete${
+      <p>Great news! Your personalized book "${bookTitle}" is now complete${
     productType === ProductType.BOOK ? " and has been sent for printing" : ""
   }.</p>
       
       <div style="background-color: #f7f7f7; padding: 15px; border-radius: 4px; margin: 20px 0;">
-        <h3 style="margin-top: 0; color: #333;">Tale Information</h3>
+        <h3 style="margin-top: 0; color: #333;">Book Information</h3>
         <p><strong>Title:</strong> ${bookTitle}</p>
         <p><strong>Format:</strong> ${
           productType === ProductType.BOOK
@@ -452,7 +454,7 @@ export const getBookCompletionEmailTemplate = (
       <p>Your eBook is now ready for download. You can access it in two ways:</p>
       <ol style="line-height: 1.6;">
         <li><strong>Direct Download:</strong> Click the button below to download your eBook immediately.</li>
-        <li><strong>From Your Account:</strong> You can always access your eBooks from the "My Tales" section of your account.</li>
+        <li><strong>From Your Account:</strong> You can always access your eBooks from the "My Books" section of your account.</li>
       </ol>
       
       <div style="text-align: center; margin: 30px 0;">
@@ -463,7 +465,7 @@ export const getBookCompletionEmailTemplate = (
         <a href="${
           config.APP.CLIENT_URL
         }/my-books" style="background-color: white; color: #4F46E5; border: 1px solid #4F46E5; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
-          View in My Tales
+          View in My Books
         </a>
       </div>
       
@@ -473,7 +475,7 @@ export const getBookCompletionEmailTemplate = (
       <h3 style="color: #333;">Your Printed Book</h3>
       <p>In addition to your eBook, your physical copy is being prepared. Here's what happens next:</p>
       <ol style="line-height: 1.6;">
-        <li><strong>Printing:</strong> Your tale will be professionally printed on high-quality paper.</li>
+        <li><strong>Printing:</strong> Your book will be professionally printed on high-quality paper.</li>
         <li><strong>Quality Check:</strong> Our team will inspect your book to ensure it meets our standards.</li>
         <li><strong>Shipping:</strong> Once approved, your book will be carefully packaged and shipped to your address.</li>
       </ol>
@@ -520,7 +522,7 @@ export const getShippingConfirmationEmailTemplate = (
   // Build the shipping information section dynamically
   let shippingInfoContent = `
     <p><strong>Order Number:</strong> ${orderNumber}</p>
-    <p><strong>Tale Title:</strong> ${bookTitle}</p>
+    <p><strong>Book Title:</strong> ${bookTitle}</p>
   `;
 
   // Only add carrier if it has a value
@@ -554,22 +556,22 @@ export const getShippingConfirmationEmailTemplate = (
   `;
 
   if (hasValue(estimatedDelivery)) {
-    whatsNextContent += `<li><strong>Delivery:</strong> Your tale is expected to arrive by ${estimatedDelivery}. Delivery times may vary based on your location.</li>`;
+    whatsNextContent += `<li><strong>Delivery:</strong> Your book is expected to arrive by ${estimatedDelivery}. Delivery times may vary based on your location.</li>`;
   } else {
-    whatsNextContent += `<li><strong>Delivery:</strong> Your tale is on its way. Delivery times may vary based on your location.</li>`;
+    whatsNextContent += `<li><strong>Delivery:</strong> Your book is on its way. Delivery times may vary based on your location.</li>`;
   }
 
   whatsNextContent += `
       <li><strong>Package Receipt:</strong> Once delivered, your book will be packaged securely to prevent damage during transit.</li>
-      <li><strong>Enjoy Your Tale:</strong> Open and enjoy your personalized creation! Remember, you can always access the digital version from your account.</li>
+      <li><strong>Enjoy Your Book:</strong> Open and enjoy your personalized creation! Remember, you can always access the digital version from your account.</li>
     </ol>
   `;
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #4F46E5;">Your Tale is on the Way!</h2>
+      <h2 style="color: #4F46E5;">Your Book is on the Way!</h2>
       <p>Hello ${fullName},</p>
-      <p>Great news! Your personalized printed tale "${bookTitle}" has been shipped and is on its way to you.</p>
+      <p>Great news! Your personalized printed book "${bookTitle}" has been shipped and is on its way to you.</p>
       
       <div style="background-color: #f7f7f7; padding: 15px; border-radius: 4px; margin: 20px 0;">
         <h3 style="margin-top: 0; color: #333;">Shipping Information</h3>

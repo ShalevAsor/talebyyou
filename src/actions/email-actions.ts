@@ -7,6 +7,7 @@ import {
   createSuccessResult,
   createErrorResult,
 } from "@/types/actions";
+import config from "@/lib/config";
 
 /**
  * Sends a welcome email to a new user
@@ -125,7 +126,8 @@ export async function sendOrderConfirmationEmail(
   productType: ProductType,
   bookTitle: string,
   price: number,
-  fullName?: string
+  fullName?: string,
+  quantity?: number
 ): Promise<ActionResult<null>> {
   try {
     const emailService = getEmailService();
@@ -135,7 +137,8 @@ export async function sendOrderConfirmationEmail(
       productType,
       bookTitle,
       price,
-      fullName
+      fullName,
+      quantity
     );
     return createSuccessResult(
       null,
@@ -168,6 +171,11 @@ export async function sendContactFormEmail(
   orderNumber?: string
 ): Promise<ActionResult<null>> {
   try {
+    console.log("EMAIL CONFIG:", {
+      SUPPORT: config.EMAIL.SUPPORT,
+      ORDER: config.EMAIL.ORDER,
+      TEST_MODE: config.EMAIL.TEST_MODE,
+    });
     const emailService = getEmailService();
     await emailService.sendContactFormEmail(
       name,
