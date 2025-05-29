@@ -147,6 +147,10 @@ export default function PrintJobDetailSheet({
               <span className="font-medium">Email:</span>{" "}
               {selectedPrintJob.order?.customerEmail || "N/A"}
             </p>
+            <p>
+              <span className="font-medium">Quantity:</span>{" "}
+              {selectedPrintJob.order?.quantity || "N/A"}
+            </p>
           </div>
         </div>
 

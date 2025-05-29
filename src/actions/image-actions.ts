@@ -49,6 +49,75 @@ export async function getImageGenerationByGenerationId(
  * @param generationId The generation ID from Leonardo
  * @param images Array of image URLs
  */
+// export async function processCompletedGeneration(
+//   generationId: string,
+//   images: string[]
+// ): Promise<ActionResult<void>> {
+//   try {
+//     // 1. Get the image generation record
+//     const imageGenerationResult = await getImageGenerationByGenerationId(
+//       generationId
+//     );
+//     if (!imageGenerationResult.success) {
+//       return imageGenerationResult;
+//     }
+//     const imageGeneration = imageGenerationResult.data;
+
+//     // 2. Mark the generation as completed (no longer storing imageUrls here)
+//     await prisma.imageGeneration.update({
+//       where: { id: imageGeneration.id },
+//       data: {
+//         status: GenerationStatus.COMPLETE,
+//         completedAt: new Date(),
+//       },
+//     });
+
+//     // 3. Update the book or page with all generated images
+//     const selectedImageUrl = images[0]; // Default to first image
+
+//     if (imageGeneration.type === ImageType.COVER) {
+//       // Update book with cover image and all options
+//       await prisma.book.update({
+//         where: { id: imageGeneration.bookId },
+//         data: {
+//           coverImage: selectedImageUrl,
+//           coverImageOptions: images, // Store all options
+//         },
+//       });
+//     } else if (
+//       imageGeneration.type === ImageType.PAGE &&
+//       imageGeneration.pageId
+//     ) {
+//       // Update page with selected image and all options
+//       await prisma.page.update({
+//         where: { id: imageGeneration.pageId },
+//         data: {
+//           imageUrl: selectedImageUrl,
+//           imageOptions: images, // Store all options
+//         },
+//       });
+//     }
+
+//     logger.info(
+//       {
+//         generationId,
+//         bookId: imageGeneration.bookId,
+//         imageCount: images.length,
+//       },
+//       "Successfully processed completed generation"
+//     );
+//     return createSuccessResult(undefined);
+//   } catch (error) {
+//     logger.error(
+//       { error, generationId },
+//       "Error processing completed generation"
+//     );
+//     return createErrorResult(
+//       error instanceof Error ? error.message : "Failed to process images"
+//     );
+//   }
+// }
+
 export async function processCompletedGeneration(
   generationId: string,
   images: string[]
@@ -63,16 +132,41 @@ export async function processCompletedGeneration(
     }
     const imageGeneration = imageGenerationResult.data;
 
-    // 2. Mark the generation as completed (no longer storing imageUrls here)
-    await prisma.imageGeneration.update({
-      where: { id: imageGeneration.id },
+    // 2. IDEMPOTENCY CHECK - If already complete, return success without processing
+    if (imageGeneration.status === GenerationStatus.COMPLETE) {
+      logger.info(
+        {
+          generationId,
+          bookId: imageGeneration.bookId,
+          type: imageGeneration.type,
+        },
+        "Generation already completed - skipping duplicate processing"
+      );
+      return createSuccessResult(undefined);
+    }
+
+    // 3. Mark the generation as completed (with atomic update)
+    const updatedGeneration = await prisma.imageGeneration.update({
+      where: {
+        id: imageGeneration.id,
+        status: GenerationStatus.PENDING, // Only update if still pending
+      },
       data: {
         status: GenerationStatus.COMPLETE,
         completedAt: new Date(),
       },
     });
 
-    // 3. Update the book or page with all generated images
+    // If no rows were updated, it means another process already completed this
+    if (!updatedGeneration) {
+      logger.info(
+        { generationId },
+        "Generation was completed by another process - skipping"
+      );
+      return createSuccessResult(undefined);
+    }
+
+    // 4. Update the book or page with all generated images
     const selectedImageUrl = images[0]; // Default to first image
 
     if (imageGeneration.type === ImageType.COVER) {
@@ -103,11 +197,27 @@ export async function processCompletedGeneration(
         generationId,
         bookId: imageGeneration.bookId,
         imageCount: images.length,
+        type: imageGeneration.type,
       },
       "Successfully processed completed generation"
     );
     return createSuccessResult(undefined);
   } catch (error) {
+    // Handle specific Prisma errors
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "P2025"
+    ) {
+      // Record not found or condition not met
+      logger.info(
+        { generationId },
+        "Generation already processed by another request"
+      );
+      return createSuccessResult(undefined);
+    }
+
     logger.error(
       { error, generationId },
       "Error processing completed generation"
@@ -117,7 +227,6 @@ export async function processCompletedGeneration(
     );
   }
 }
-
 /**
  * Process a failed generation from Leonardo AI
  * @param generationId The generation ID from Leonardo
@@ -469,6 +578,230 @@ export async function generateBookFirstPageImage(
  * Generates remaining page images after order is placed
  * @param bookId The book ID
  */
+// export async function generateRemainingPageImages(
+//   bookId: string
+// ): Promise<ActionResult<string[]>> {
+//   try {
+//     // Get the book with all pages that need images
+//     const book = await prisma.book.findUnique({
+//       where: { id: bookId },
+//       include: {
+//         pages: {
+//           where: {
+//             type: PageType.IMAGE,
+//             imagePrompt: { not: null },
+//             imageUrl: null, // Only pages without images
+//           },
+//           orderBy: {
+//             pageNumber: "asc",
+//           },
+//         },
+//       },
+//     });
+
+//     if (!book) {
+//       return createErrorResult("Book not found");
+//     }
+
+//     if (book.pages.length === 0) {
+//       return createSuccessResult([]); // No pages need generation
+//     }
+
+//     if (!book.characterImageReference) {
+//       return createErrorResult("No character image reference found for book");
+//     }
+
+//     const generationIds: string[] = [];
+//     const errors: string[] = [];
+
+//     // Generate images for each page
+//     for (const page of book.pages) {
+//       const result = await generateBookPageImage(
+//         bookId,
+//         page.id,
+//         book.characterImageReference
+//       );
+
+//       if (result.success) {
+//         generationIds.push(result.data);
+//       } else {
+//         errors.push(`Page ${page.pageNumber}: ${result.error}`);
+//         logger.error(
+//           { pageId: page.id, pageNumber: page.pageNumber, error: result.error },
+//           "Failed to generate image for page"
+//         );
+//       }
+//     }
+
+//     // If some generations failed but others succeeded, we still return the successful ones
+//     if (generationIds.length > 0) {
+//       if (errors.length > 0) {
+//         logger.warn(
+//           {
+//             bookId,
+//             successCount: generationIds.length,
+//             errorCount: errors.length,
+//           },
+//           "Some page image generations failed"
+//         );
+//       }
+//       return createSuccessResult(generationIds);
+//     }
+
+//     // If all generations failed, return an error
+//     return createErrorResult(`Failed to generate images: ${errors.join("; ")}`);
+//   } catch (error) {
+//     logger.error({ error, bookId }, "Error generating remaining page images");
+//     return createErrorResult(
+//       error instanceof Error ? error.message : "Unknown error occurred"
+//     );
+//   }
+// }
+
+// export async function generateRemainingPageImages(
+//   bookId: string
+// ): Promise<ActionResult<string[]>> {
+//   try {
+//     // Get the book with all pages that need images
+//     const book = await prisma.book.findUnique({
+//       where: { id: bookId },
+//       include: {
+//         pages: {
+//           where: {
+//             type: PageType.IMAGE,
+//             imagePrompt: { not: null },
+//             imageUrl: null, // Only pages without images
+//           },
+//           orderBy: {
+//             pageNumber: "asc",
+//           },
+//         },
+//       },
+//     });
+
+//     if (!book) {
+//       return createErrorResult("Book not found");
+//     }
+
+//     if (book.pages.length === 0) {
+//       return createSuccessResult([]); // No pages need generation
+//     }
+
+//     if (!book.characterImageReference) {
+//       return createErrorResult("No character image reference found for book");
+//     }
+
+//     const generationIds: string[] = [];
+//     const errors: string[] = [];
+//     const batchSize = 3; // Generate 3 images at a time
+//     const delayBetweenBatches = 2000; // 2 seconds between batches
+
+//     logger.info(
+//       {
+//         bookId,
+//         totalPages: book.pages.length,
+//         batchSize,
+//         totalBatches: Math.ceil(book.pages.length / batchSize),
+//       },
+//       "Starting batched page image generation"
+//     );
+
+//     // Process pages in batches
+//     for (let i = 0; i < book.pages.length; i += batchSize) {
+//       const batch = book.pages.slice(i, i + batchSize);
+//       const batchNumber = Math.floor(i / batchSize) + 1;
+//       const totalBatches = Math.ceil(book.pages.length / batchSize);
+
+//       logger.info(
+//         {
+//           bookId,
+//           batchNumber,
+//           totalBatches,
+//           batchSize: batch.length,
+//           pageNumbers: batch.map((p) => p.pageNumber),
+//         },
+//         `Processing batch ${batchNumber}/${totalBatches}`
+//       );
+
+//       // Generate images for this batch (still sequential within batch for safety)
+//       for (const page of batch) {
+//         const result = await generateBookPageImage(
+//           bookId,
+//           page.id,
+//           book.characterImageReference
+//         );
+
+//         if (result.success) {
+//           generationIds.push(result.data);
+//           logger.info(
+//             {
+//               pageId: page.id,
+//               pageNumber: page.pageNumber,
+//               generationId: result.data,
+//             },
+//             "Page image generation started successfully"
+//           );
+//         } else {
+//           errors.push(`Page ${page.pageNumber}: ${result.error}`);
+//           logger.error(
+//             {
+//               pageId: page.id,
+//               pageNumber: page.pageNumber,
+//               error: result.error,
+//             },
+//             "Failed to generate image for page"
+//           );
+//         }
+//       }
+
+//       // Add delay between batches (except for the last batch)
+//       if (i + batchSize < book.pages.length) {
+//         logger.info(
+//           { bookId, batchNumber, delayMs: delayBetweenBatches },
+//           `Waiting ${delayBetweenBatches}ms before next batch`
+//         );
+//         await new Promise((resolve) =>
+//           setTimeout(resolve, delayBetweenBatches)
+//         );
+//       }
+//     }
+
+//     // Log final results
+//     logger.info(
+//       {
+//         bookId,
+//         successCount: generationIds.length,
+//         errorCount: errors.length,
+//         generationIds: generationIds.slice(0, 3), // Log first 3 IDs for reference
+//       },
+//       "Completed batched page image generation"
+//     );
+
+//     // If some generations failed but others succeeded, we still return the successful ones
+//     if (generationIds.length > 0) {
+//       if (errors.length > 0) {
+//         logger.warn(
+//           {
+//             bookId,
+//             successCount: generationIds.length,
+//             errorCount: errors.length,
+//             errors: errors.slice(0, 3), // Log first 3 errors
+//           },
+//           "Some page image generations failed"
+//         );
+//       }
+//       return createSuccessResult(generationIds);
+//     }
+
+//     // If all generations failed, return an error
+//     return createErrorResult(`Failed to generate images: ${errors.join("; ")}`);
+//   } catch (error) {
+//     logger.error({ error, bookId }, "Error generating remaining page images");
+//     return createErrorResult(
+//       error instanceof Error ? error.message : "Unknown error occurred"
+//     );
+//   }
+// }
 export async function generateRemainingPageImages(
   bookId: string
 ): Promise<ActionResult<string[]>> {
@@ -504,25 +837,91 @@ export async function generateRemainingPageImages(
 
     const generationIds: string[] = [];
     const errors: string[] = [];
+    const batchSize = 3; // Generate 3 images at a time
+    const delayBetweenBatches = 2000; // 2 seconds between batches
 
-    // Generate images for each page
-    for (const page of book.pages) {
-      const result = await generateBookPageImage(
+    logger.info(
+      {
         bookId,
-        page.id,
-        book.characterImageReference
+        totalPages: book.pages.length,
+        batchSize,
+        totalBatches: Math.ceil(book.pages.length / batchSize),
+      },
+      "🔧 MOCK MODE: Starting batched page image generation (no actual API calls)"
+    );
+
+    // Process pages in batches
+    for (let i = 0; i < book.pages.length; i += batchSize) {
+      const batch = book.pages.slice(i, i + batchSize);
+      const batchNumber = Math.floor(i / batchSize) + 1;
+      const totalBatches = Math.ceil(book.pages.length / batchSize);
+
+      logger.info(
+        {
+          bookId,
+          batchNumber,
+          totalBatches,
+          batchSize: batch.length,
+          pageNumbers: batch.map((p) => p.pageNumber),
+        },
+        `🔧 MOCK: Processing batch ${batchNumber}/${totalBatches}`
       );
 
-      if (result.success) {
-        generationIds.push(result.data);
-      } else {
-        errors.push(`Page ${page.pageNumber}: ${result.error}`);
-        logger.error(
-          { pageId: page.id, pageNumber: page.pageNumber, error: result.error },
-          "Failed to generate image for page"
+      // MOCK: Simulate image generation for this batch
+      for (const page of batch) {
+        // 🔧 MOCK: Generate fake generation ID instead of real API call
+        const mockGenerationId = `mock-gen-${Date.now()}-${Math.random()
+          .toString(36)
+          .substr(2, 9)}`;
+
+        // 🔧 MOCK: Simulate success (you can add some failures for testing)
+        const mockSuccess = Math.random() > 0.1; // 90% success rate for testing
+
+        if (mockSuccess) {
+          generationIds.push(mockGenerationId);
+          logger.info(
+            {
+              pageId: page.id,
+              pageNumber: page.pageNumber,
+              generationId: mockGenerationId,
+            },
+            "🔧 MOCK: Page image generation started successfully (simulated)"
+          );
+        } else {
+          errors.push(`Page ${page.pageNumber}: Mock API error`);
+          logger.error(
+            {
+              pageId: page.id,
+              pageNumber: page.pageNumber,
+              error: "Mock API error",
+            },
+            "🔧 MOCK: Failed to generate image for page (simulated)"
+          );
+        }
+      }
+
+      // Add delay between batches (except for the last batch)
+      if (i + batchSize < book.pages.length) {
+        logger.info(
+          { bookId, batchNumber, delayMs: delayBetweenBatches },
+          `🔧 MOCK: Waiting ${delayBetweenBatches}ms before next batch`
+        );
+        await new Promise((resolve) =>
+          setTimeout(resolve, delayBetweenBatches)
         );
       }
     }
+
+    // Log final results
+    logger.info(
+      {
+        bookId,
+        successCount: generationIds.length,
+        errorCount: errors.length,
+        generationIds: generationIds.slice(0, 3), // Log first 3 IDs for reference
+      },
+      "🔧 MOCK: Completed batched page image generation (simulated)"
+    );
 
     // If some generations failed but others succeeded, we still return the successful ones
     if (generationIds.length > 0) {
@@ -532,8 +931,9 @@ export async function generateRemainingPageImages(
             bookId,
             successCount: generationIds.length,
             errorCount: errors.length,
+            errors: errors.slice(0, 3), // Log first 3 errors
           },
-          "Some page image generations failed"
+          "🔧 MOCK: Some page image generations failed (simulated)"
         );
       }
       return createSuccessResult(generationIds);
@@ -542,13 +942,15 @@ export async function generateRemainingPageImages(
     // If all generations failed, return an error
     return createErrorResult(`Failed to generate images: ${errors.join("; ")}`);
   } catch (error) {
-    logger.error({ error, bookId }, "Error generating remaining page images");
+    logger.error(
+      { error, bookId },
+      "🔧 MOCK: Error generating remaining page images"
+    );
     return createErrorResult(
       error instanceof Error ? error.message : "Unknown error occurred"
     );
   }
 }
-
 /**
  * Deletes a character image from Leonardo AI
  * @param imageId The Leonardo AI image ID to delete

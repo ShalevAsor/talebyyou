@@ -773,17 +773,17 @@ export const defaultTemplates: BookTemplateCreateData[] = [
       {
         pageNumber: 5,
         content:
-          "Their first stop was a grove where three baby rabbits were crying softly. 'What's wrong, little ones?' asked Princess [CHILD_NAME], kneeling down to their level. The mama rabbit explained that they had lost their favorite ball while playing. It had rolled into a bush with thorns, and they were too small to get it back. 'Don't worry,' said Princess [CHILD_NAME]. 'I know just how to help!'",
+          "Their first stop was a grove where three baby rabbits were crying softly. 'What's wrong, little ones?' asked Princess [CHILD_NAME], kneeling down to their level. The mama rabbit explained that they had lost their favorite ball while playing. It had rolled into a bush with prickly branches, and they were too small to get it back. 'Don't worry,' said Princess [CHILD_NAME]. 'I know just how to help!'",
         imagePrompt:
-          "Kneeling beside three crying baby rabbits with mama rabbit, thorny bush with ball visible inside, caring concerned expression",
+          "Kneeling beside three crying baby rabbits with mama rabbit, prickly bush with ball visible inside, caring concerned expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
         pageNumber: 6,
         content:
-          "Princess [CHILD_NAME] used [HIS_HER] magic wand to gently move the thorny branches aside without hurting the bush. The colorful ball rolled right out into [HIS_HER] hands! The baby rabbits jumped with joy and hugged Princess [CHILD_NAME]'s legs. 'Thank you, Princess!' they squeaked happily. 'You're the kindest princess ever!' Their mama rabbit smiled proudly at how well [CHILD_NAME] had helped.",
+          "Princess [CHILD_NAME] used [HIS_HER] magic wand to gently move the prickly branches aside without hurting the bush. The colorful ball rolled right out into [HIS_HER] hands! The baby rabbits jumped with joy and hugged Princess [CHILD_NAME]'s legs. 'Thank you, Princess!' they squeaked happily. 'You're the kindest princess ever!' Their mama rabbit smiled proudly at how well [CHILD_NAME] had helped.",
         imagePrompt:
-          "Using magic wand to move thorny branches, ball rolling out safely, baby rabbits jumping with joy and hugging princess legs, mama rabbit smiling",
+          "Using magic wand to move prickly branches, ball rolling out safely, baby rabbits jumping with joy and hugging princess legs, mama rabbit smiling",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {

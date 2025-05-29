@@ -81,7 +81,10 @@ export const useOrderStore = create<OrderState>()(
             shippingLevel: cachedData.shippingLevel,
             shippingCost: cachedData.shippingCost,
             totalCost: cachedData.totalCost,
-            quantity: cachedData.quantity || 1,
+            quantity:
+              cachedData.quantity && cachedData.quantity >= 1
+                ? cachedData.quantity
+                : 1,
           });
         } else {
           // Otherwise start fresh with this book

@@ -304,8 +304,18 @@ export async function handlePrintJobUnpaidStatus(
         where: { id: orderId },
         data: {
           poProviderOrderId: luluOrderId,
-          shippingCost: shippingCost?.total_cost_incl_tax,
-          printingCost: lineItemCost?.total_cost_incl_tax,
+          shippingCost: shippingCost?.total_cost_incl_tax
+            ? new Prisma.Decimal(shippingCost.total_cost_incl_tax)
+            : undefined,
+          printingCost: lineItemCost?.total_cost_incl_tax
+            ? new Prisma.Decimal(lineItemCost.total_cost_incl_tax)
+            : undefined,
+          fulfillmentCost: webhookPayload.data.costs?.fulfillment_cost
+            ?.total_cost_incl_tax
+            ? new Prisma.Decimal(
+                webhookPayload.data.costs.fulfillment_cost.total_cost_incl_tax
+              )
+            : undefined,
         },
       });
     });

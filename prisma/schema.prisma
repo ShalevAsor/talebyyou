@@ -175,6 +175,7 @@ model Order {
   // Cost information 
   shippingCost    Decimal?     @db.Decimal(10, 2)
   printingCost   Decimal?     @db.Decimal(10, 2)
+  fulfillmentCost   Decimal?     @db.Decimal(10, 2)
   imagesCost    Decimal?     @db.Decimal(10, 2)
   // Shipping information (for physical books)
   shippingLevel    ShippingLevel? 

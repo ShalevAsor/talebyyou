@@ -7,7 +7,7 @@ import {
   createErrorResult,
 } from "@/types/actions";
 import prisma from "@/lib/prisma";
-import { BookStatus, ProductType } from "@prisma/client";
+import { BookStatus, Prisma, ProductType } from "@prisma/client";
 import { getCurrentUser } from "./user-actions";
 import { logger } from "@/lib/logger";
 import { BookFull } from "@/types/book";
@@ -20,6 +20,7 @@ import {
   deleteCharacterImage,
 } from "./image-actions";
 import { checkGuestBookLimit } from "./guest-actions";
+import { getTotalImagesCost } from "@/utils/orderUtils";
 
 /**
  * Server action to create a personalized book from a template
@@ -364,6 +365,42 @@ export async function updateBookDetails(
           wearingGlasses: book.character.wearingGlasses,
         },
       });
+    }
+    // ✅ ADD: If book is being marked as READY_FOR_PRINTING, calculate and set image costs
+    if (book.status === BookStatus.READY_FOR_PRINTING) {
+      // Get all image generations for this book
+      const imageGenerations = await prisma.imageGeneration.findMany({
+        where: { bookId: book.id },
+      });
+
+      // Calculate total image cost using your existing utility
+      const totalImageCost = getTotalImagesCost(imageGenerations);
+
+      // Find any existing order for this book and update with image costs
+      const existingOrder = await prisma.order.findFirst({
+        where: {
+          bookId: book.id,
+          status: { not: "CANCELLED" },
+        },
+      });
+
+      if (existingOrder && totalImageCost > 0) {
+        await prisma.order.update({
+          where: { id: existingOrder.id },
+          data: {
+            imagesCost: new Prisma.Decimal(totalImageCost.toString()),
+          },
+        });
+
+        logger.info(
+          {
+            bookId: book.id,
+            orderId: existingOrder.id,
+            imagesCost: totalImageCost,
+          },
+          "Updated order with image generation costs"
+        );
+      }
     }
 
     // Refetch the book with all its relations to return the updated version

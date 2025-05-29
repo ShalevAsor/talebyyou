@@ -345,30 +345,31 @@ describe("Order Actions", () => {
         ShippingLevel.PRIORITY_MAIL,
         "5.99",
         "30.98",
-        {
-          printingCost: "15.00",
-          imagesCost: "3.50",
-        }
+        1 // quantity parameter
       );
-      const orderId = result.success ? result.data : null;
 
       // Verify the result
+      const updatedOrder = result.success ? result.data : null;
       expect(result.success).toBe(true);
-      expect(orderId).toBe("order123");
+      expect(updatedOrder).toBe("order123");
 
-      // Verify prisma calls
-      expect(prisma.order.update).toHaveBeenCalledWith(
+      // Verify prisma was called twice (once for updateOrder, once for shipping)
+      expect(prisma.order.update).toHaveBeenCalledTimes(2);
+
+      // Check the SECOND call for shipping details only
+      expect(prisma.order.update).toHaveBeenNthCalledWith(
+        2,
         expect.objectContaining({
           where: { id: "order123" },
           data: expect.objectContaining({
             shippingLevel: ShippingLevel.PRIORITY_MAIL,
             shippingCost: expect.any(Object), // Decimal
-            printingCost: expect.any(Object), // Decimal
-            imagesCost: expect.any(Object), // Decimal
             totalPrice: expect.any(Object), // Decimal
+            quantity: 1,
           }),
         })
       );
+
       expect(revalidatePath).toHaveBeenCalled();
     });
 

@@ -102,14 +102,7 @@ export function PrintJobsTable({
                 </p>
               </TableCell>
               <TableCell className="text-center">
-                {formatCurrency(
-                  printJob.totalCostInclTax ||
-                    (printJob.printingCostInclTax &&
-                    printJob.shippingCostInclTax
-                      ? Number(printJob.printingCostInclTax) +
-                        Number(printJob.shippingCostInclTax)
-                      : 0)
-                )}
+                {formatCurrency(printJob.totalCostInclTax)}
               </TableCell>
               <TableCell className="text-center">
                 <Sheet>

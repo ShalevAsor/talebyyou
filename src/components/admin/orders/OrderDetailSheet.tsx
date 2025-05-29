@@ -200,6 +200,7 @@ export default function OrderDetailSheet({
               {formatCurrency(
                 Number(selectedOrder.shippingCost || 0) +
                   Number(selectedOrder.printingCost || 0) +
+                  +Number(selectedOrder.fulfillmentCost) +
                   imagesCost
               )}
             </p>

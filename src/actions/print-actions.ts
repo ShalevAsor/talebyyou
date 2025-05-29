@@ -526,13 +526,549 @@ export async function validateBookPdfs(
  * Then it sends the book to Lulu for printing
  * and returns the print job ID
  */
+// export async function sendBookForPrinting(
+//   orderId: string
+// ): Promise<ActionResult<{ printJobId: number | null }>> {
+//   try {
+//     logger.info({ orderId }, "Preparing book for printing");
+
+//     // 1. Get the order with book data
+//     const order = await prisma.order.findUnique({
+//       where: { id: orderId },
+//       include: {
+//         book: {
+//           include: {
+//             pages: true,
+//             character: true,
+//           },
+//         },
+//         printJob: true, // Check if a print job already exists
+//       },
+//     });
+
+//     if (!order) {
+//       logger.error({ orderId }, "Order not found");
+//       return createErrorResult("Order not found");
+//     }
+
+//     // Check if a print job already exists for this order
+//     if (order.printJob) {
+//       logger.info(
+//         { orderId, printJobId: order.printJob.luluPrintJobId },
+//         "Print job already exists for this order"
+//       );
+//       return createSuccessResult({
+//         printJobId: order.printJob.luluPrintJobId || null,
+//       });
+//     }
+
+//     // 2. Check if this is a physical book order
+//     if (order.productType !== ProductType.BOOK) {
+//       logger.error(
+//         { orderId, productType: order.productType },
+//         "Not a physical book order"
+//       );
+//       return createErrorResult(
+//         "Only physical books can be prepared for printing"
+//       );
+//     }
+//     // check if the book is ready to print
+//     if (order.book.status !== BookStatus.READY_FOR_PRINTING) {
+//       logger.error(
+//         { orderId, bookStatus: order.book.status },
+//         "Book not ready to print"
+//       );
+//       return createErrorResult("Book not ready to print");
+//     }
+
+//     // 3. Check if order has required shipping info
+//     if (
+//       !order.shippingLevel ||
+//       !order.name ||
+//       !order.street1 ||
+//       !order.city ||
+//       !order.phoneNumber ||
+//       !order.country ||
+//       !order.postcode
+//     ) {
+//       logger.error({ orderId }, "Order missing shipping information");
+//       return createErrorResult("Order missing required shipping information");
+//     }
+
+//     // 4. Create shipping address object from order
+//     const shippingAddress: ShippingAddress = {
+//       name: order.name,
+//       street1: order.street1,
+//       street2: order.street2 || undefined,
+//       city: order.city,
+//       state_code: order.state_code ? order.state_code : undefined,
+//       country_code: order.country,
+//       postcode: order.postcode,
+//       phone_number: order.phoneNumber,
+//       is_business: false,
+//     };
+
+//     // Calculate accurate costs using our existing function - this should happen BEFORE creating the PrintJob
+//     const costResult = await calculatePrintJobCost(
+//       shippingAddress,
+//       order.quantity,
+//       order.book.pageCount,
+//       order.shippingLevel
+//     );
+
+//     // Create print job data including cost information if available from the order
+//     const printJobData: Prisma.PrintJobCreateInput = {
+//       order: { connect: { id: order.id } },
+//       book: { connect: { id: order.book.id } },
+//       podPackageId: SKU,
+//       pageCount: order.book.pageCount,
+//       status: PrintJobStatus.CREATED,
+//       statusMessage: "Starting print job creation",
+//       attempts: 1,
+//       currency: "USD",
+//     };
+
+//     // Use the pre-calculated costs if available
+//     if (costResult.success) {
+//       logger.info("Using pre-calculated costs for print job");
+
+//       // Set shipping costs
+//       if (costResult.data.shipping_cost) {
+//         if (costResult.data.shipping_cost.total_cost_excl_tax) {
+//           printJobData.shippingCostExclTax = new Prisma.Decimal(
+//             costResult.data.shipping_cost.total_cost_excl_tax
+//           );
+//         }
+
+//         if (costResult.data.shipping_cost.total_cost_incl_tax) {
+//           printJobData.shippingCostInclTax = new Prisma.Decimal(
+//             costResult.data.shipping_cost.total_cost_incl_tax
+//           );
+//         }
+//       }
+
+//       // Extract printing costs from line_item_costs and fees
+//       if (
+//         costResult.data.line_item_costs &&
+//         costResult.data.line_item_costs.length > 0
+//       ) {
+//         // Sum up all line items for the total book printing cost
+//         let totalPrintingCostExclTax = 0;
+//         let totalPrintingCostInclTax = 0;
+
+//         for (const lineItem of costResult.data.line_item_costs) {
+//           if (lineItem.total_cost_excl_tax) {
+//             totalPrintingCostExclTax += parseFloat(
+//               lineItem.total_cost_excl_tax
+//             );
+//           }
+
+//           if (lineItem.total_cost_incl_tax) {
+//             totalPrintingCostInclTax += parseFloat(
+//               lineItem.total_cost_incl_tax
+//             );
+//           }
+//         }
+
+//         // Store the summed line item costs as the printing cost
+//         printJobData.printingCostExclTax = new Prisma.Decimal(
+//           totalPrintingCostExclTax.toString()
+//         );
+//         printJobData.printingCostInclTax = new Prisma.Decimal(
+//           totalPrintingCostInclTax.toString()
+//         );
+
+//         logger.info(
+//           `Extracted printing costs from line items - Excl Tax: ${totalPrintingCostExclTax}, Incl Tax: ${totalPrintingCostInclTax}`
+//         );
+//       }
+
+//       // Check if we need to include fees in the printing cost
+//       // These are usually handling fees and fulfillment fees
+//       let totalFeesExclTax = 0;
+//       let totalFeesInclTax = 0;
+
+//       if (costResult.data.fees && costResult.data.fees.length > 0) {
+//         for (const fee of costResult.data.fees) {
+//           if (fee.total_cost_excl_tax) {
+//             totalFeesExclTax += parseFloat(fee.total_cost_excl_tax);
+//           }
+
+//           if (fee.total_cost_incl_tax) {
+//             totalFeesInclTax += parseFloat(fee.total_cost_incl_tax);
+//           }
+//         }
+
+//         logger.info(
+//           `Extracted fees - Excl Tax: ${totalFeesExclTax}, Incl Tax: ${totalFeesInclTax}`
+//         );
+
+//         // Add fees to the printing cost if we have them
+//         if (printJobData.printingCostExclTax && totalFeesExclTax > 0) {
+//           const newPrintingCostExclTax =
+//             parseFloat(printJobData.printingCostExclTax.toString()) +
+//             totalFeesExclTax;
+//           printJobData.printingCostExclTax = new Prisma.Decimal(
+//             newPrintingCostExclTax.toString()
+//           );
+//         }
+
+//         if (printJobData.printingCostInclTax && totalFeesInclTax > 0) {
+//           const newPrintingCostInclTax =
+//             parseFloat(printJobData.printingCostInclTax.toString()) +
+//             totalFeesInclTax;
+//           printJobData.printingCostInclTax = new Prisma.Decimal(
+//             newPrintingCostInclTax.toString()
+//           );
+//         }
+
+//         logger.info(
+//           `Printing costs with fees - Excl Tax: ${printJobData.printingCostExclTax}, Incl Tax: ${printJobData.printingCostInclTax}`
+//         );
+//       }
+
+//       // Check if we're still missing printing costs (unlikely, but just in case)
+//       if (
+//         !printJobData.printingCostExclTax ||
+//         !printJobData.printingCostInclTax
+//       ) {
+//         // Fall back to calculating printing cost from total - shipping
+//         if (
+//           costResult.data.total_cost_excl_tax &&
+//           printJobData.shippingCostExclTax
+//         ) {
+//           const totalCostExclTax = parseFloat(
+//             costResult.data.total_cost_excl_tax
+//           );
+//           const shippingCostExclTax = parseFloat(
+//             printJobData.shippingCostExclTax.toString()
+//           );
+//           const derivedPrintingCost = totalCostExclTax - shippingCostExclTax;
+
+//           printJobData.printingCostExclTax = new Prisma.Decimal(
+//             derivedPrintingCost.toString()
+//           );
+//           logger.info(
+//             `Derived printing cost (excl tax): ${derivedPrintingCost}`
+//           );
+//         }
+
+//         if (
+//           costResult.data.total_cost_incl_tax &&
+//           printJobData.shippingCostInclTax
+//         ) {
+//           const totalCostInclTax = parseFloat(
+//             costResult.data.total_cost_incl_tax
+//           );
+//           const shippingCostInclTax = parseFloat(
+//             printJobData.shippingCostInclTax.toString()
+//           );
+//           const derivedPrintingCostInclTax =
+//             totalCostInclTax - shippingCostInclTax;
+
+//           printJobData.printingCostInclTax = new Prisma.Decimal(
+//             derivedPrintingCostInclTax.toString()
+//           );
+//           logger.info(
+//             `Derived printing cost (incl tax): ${derivedPrintingCostInclTax}`
+//           );
+//         }
+//       }
+
+//       // Set total costs
+//       if (costResult.data.total_cost_excl_tax) {
+//         printJobData.totalCostExclTax = new Prisma.Decimal(
+//           costResult.data.total_cost_excl_tax
+//         );
+//       }
+
+//       if (costResult.data.total_cost_incl_tax) {
+//         printJobData.totalCostInclTax = new Prisma.Decimal(
+//           costResult.data.total_cost_incl_tax
+//         );
+//       }
+
+//       if (costResult.data.total_tax) {
+//         printJobData.totalTax = new Prisma.Decimal(costResult.data.total_tax);
+//       }
+
+//       // Validate that our costs make sense
+//       if (
+//         costResult.data.total_cost_excl_tax &&
+//         printJobData.printingCostExclTax &&
+//         printJobData.shippingCostExclTax
+//       ) {
+//         const totalCost = parseFloat(costResult.data.total_cost_excl_tax);
+//         const printingCost = parseFloat(
+//           printJobData.printingCostExclTax.toString()
+//         );
+//         const shippingCost = parseFloat(
+//           printJobData.shippingCostExclTax.toString()
+//         );
+
+//         const calculatedTotal = printingCost + shippingCost;
+//         const difference = Math.abs(totalCost - calculatedTotal);
+
+//         // If the difference is more than 1% of the total, log a warning
+//         if (difference > totalCost * 0.01) {
+//           logger.warn(
+//             `Cost discrepancy: API total cost (${totalCost}) differs from calculated total (${calculatedTotal}) by ${difference}`
+//           );
+//         } else {
+//           logger.info(
+//             `Cost validation: Printing (${printingCost}) + Shipping (${shippingCost}) ≈ Total (${totalCost})`
+//           );
+//         }
+//       }
+//     } else {
+//       // Fallback to order costs if pre-calculation fails
+//       logger.info("Using order costs as fallback (pre-calculation failed)");
+
+//       // If order has shipping cost, store it
+//       if (order.shippingCost) {
+//         printJobData.shippingCostInclTax = order.shippingCost;
+//       }
+
+//       // If order has printing cost, store it
+//       if (order.printingCost) {
+//         printJobData.printingCostInclTax = order.printingCost;
+//       }
+//     }
+
+//     // 5. Create a new PrintJob record to track the process
+//     const printJob = await prisma.printJob.create({
+//       data: printJobData,
+//     });
+
+//     // Update the book with the print job ID
+//     await prisma.book.update({
+//       where: { id: order.book.id },
+//       data: {
+//         printJobId: printJob.id,
+//       },
+//     });
+
+//     // Update the order with the print job ID
+//     await prisma.order.update({
+//       where: { id: order.id },
+//       data: {
+//         printJobId: printJob.id,
+//         printingCost: printJob.printingCostInclTax,
+//         shippingCost: printJob.shippingCostInclTax,
+
+//       },
+//     });
+
+//     // 6. Use print service to prepare book for printing
+//     // First, generate PDFs and upload to S3
+//     const prepareResult = await prepareBookForPrinting(order.book);
+
+//     if (!prepareResult.success) {
+//       // Update the print job record with error information
+//       await prisma.printJob.update({
+//         where: { id: printJob.id },
+//         data: {
+//           errorMessage: prepareResult.message,
+//         },
+//       });
+
+//       logger.error(
+//         { orderId, error: prepareResult.message },
+//         "Failed to prepare book PDF files"
+//       );
+//       return createErrorResult(
+//         `Failed to prepare book for printing: ${prepareResult.message}`
+//       );
+//     }
+
+//     // Update the print job with PDF URLs and S3 keys
+//     await prisma.printJob.update({
+//       where: { id: printJob.id },
+//       data: {
+//         interiorPdfUrl: prepareResult.interiorUrl,
+//         coverPdfUrl: prepareResult.coverUrl,
+//         // Extract S3 keys from URLs if needed
+//         interiorS3Key: prepareResult.interiorUrl?.split("/").pop(),
+//         coverS3Key: prepareResult.coverUrl?.split("/").pop(),
+//       },
+//     });
+
+//     // 7. Validate PDFs with Lulu
+//     const validationResult = await validateBookPdfs(
+//       prepareResult.interiorUrl!,
+//       prepareResult.coverUrl!,
+//       prepareResult.pageCount!
+//     );
+
+//     // Update print job with validation results
+//     if (!validationResult.success || !validationResult.isValid) {
+//       const errors =
+//         validationResult.errors?.join(", ") || "Unknown validation error";
+
+//       // Update the print job record with validation failure
+//       await prisma.printJob.update({
+//         where: { id: printJob.id },
+//         data: {
+//           interiorValidationStatus: FileValidationStatus.ERROR,
+//           coverValidationStatus: FileValidationStatus.ERROR,
+//           validationErrors: validationResult.errors || [
+//             "Unknown validation error",
+//           ],
+//           statusMessage: `PDF validation failed: ${errors}`,
+//         },
+//       });
+
+//       logger.error({ orderId, errors }, "PDF validation failed with Lulu");
+//       return createErrorResult(`PDF validation failed: ${errors}`);
+//     }
+
+//     // Update print job with successful validation
+//     await prisma.printJob.update({
+//       where: { id: printJob.id },
+//       data: {
+//         interiorValidationId: validationResult.validationId,
+//         coverValidationId: validationResult.validationId,
+//         interiorValidationStatus: FileValidationStatus.NORMALIZED,
+//         coverValidationStatus: FileValidationStatus.NORMALIZED,
+//         statusMessage: "PDF validation successful",
+//       },
+//     });
+
+//     // 8. Create print job with Lulu
+
+//     const printItem: PrintJobLineItem = {
+//       external_id: order.book.id,
+//       printable_normalization: {
+//         cover: {
+//           source_url: prepareResult.coverUrl!,
+//         },
+//         interior: {
+//           source_url: prepareResult.interiorUrl!,
+//         },
+//         pod_package_id: SKU,
+//       },
+//       quantity: order.quantity,
+//       title: order.book.title,
+//     };
+//     // Create a request object for the print job
+//     const printJobRequest: CreatePrintJobRequest = {
+//       contact_email: config.PRINTING.LULU.CONTACT_EMAIL,
+//       external_id: order.id,
+//       line_items: [printItem],
+//       production_delay: PRODUCTION_DELAYED, // production delay in minutes - 2 hours by default
+//       shipping_address: shippingAddress,
+//       shipping_level: order.shippingLevel,
+//     };
+//     try {
+//       // Create the print job with Lulu
+//       const luluPrintingService = getLuluPrintingService();
+//       const printJobResponse = await luluPrintingService.createPrintJob(
+//         printJobRequest
+//       );
+
+//       // Prepare data for updating the print job
+//       const updateData: Prisma.PrintJobUpdateInput = {
+//         luluPrintJobId: printJobResponse.id,
+//         status: mapLuluStatusToPrintJobStatus(printJobResponse.status.name),
+//         statusMessage:
+//           printJobResponse.status.message || "Print job created successfully",
+//         sentToPrinterAt: new Date(),
+//         estimatedShipDate: printJobResponse.estimated_shipping_dates
+//           ?.dispatch_min
+//           ? new Date(printJobResponse.estimated_shipping_dates.dispatch_min)
+//           : null,
+//         estimatedDeliveryDate: printJobResponse.estimated_shipping_dates
+//           ?.arrival_max
+//           ? new Date(printJobResponse.estimated_shipping_dates.arrival_max)
+//           : null,
+//       };
+
+//       // 9. Update the print job record
+//       await prisma.printJob.update({
+//         where: { id: printJob.id },
+//         data: updateData,
+//       });
+
+//       // Update order status
+//       await prisma.order.update({
+//         where: { id: orderId },
+//         data: {
+//           status: OrderStatus.PRINTING,
+//           printJobId: printJob.id,
+//         },
+//       });
+
+//       logger.info(
+//         {
+//           orderId,
+//           printJobId: printJobResponse.id,
+//           estimatedArrival:
+//             printJobResponse.estimated_shipping_dates?.arrival_max,
+//         },
+//         "Successfully prepared book for printing"
+//       );
+
+//       revalidatePath("/admin/orders");
+//       revalidatePath(`/admin/orders/${orderId}`);
+//       revalidatePath("/admin/print-jobs");
+
+//       return createSuccessResult({
+//         printJobId: printJobResponse.id || null,
+//       });
+//     } catch (error) {
+//       // Update the print job record with error
+//       await prisma.printJob.update({
+//         where: { id: printJob.id },
+//         data: {
+//           errorMessage:
+//             error instanceof Error ? error.message : "Unknown error",
+//           statusMessage: `Failed to create print job: ${
+//             error instanceof Error ? error.message : "Unknown error"
+//           }`,
+//         },
+//       });
+
+//       logger.error({ orderId, error }, "Failed to create print job with Lulu");
+//       return createErrorResult(
+//         `Failed to create print job: ${
+//           error instanceof Error ? error.message : "Unknown error"
+//         }`
+//       );
+//     }
+//   } catch (error) {
+//     logger.error({ error, orderId }, "Error preparing book for printing");
+//     return createErrorResult(
+//       error instanceof Error ? error.message : "Unknown error occurred"
+//     );
+//   }
+// }
+/**
+ * Sends a book order to Lulu for printing
+ *
+ * This function handles the complete workflow of preparing a book for printing:
+ * 1. Validates the order and book status
+ * 2. Creates a print job record for tracking
+ * 3. Generates and uploads PDF files to S3
+ * 4. Validates PDFs with Lulu's API
+ * 5. Creates the print job with Lulu
+ *
+ * Note: Cost information is intentionally NOT set here as it will be
+ * updated accurately via webhook when Lulu provides final pricing.
+ *
+ * @param orderId - The ID of the order to prepare for printing
+ * @returns ActionResult containing the Lulu print job ID if successful
+ */
 export async function sendBookForPrinting(
   orderId: string
 ): Promise<ActionResult<{ printJobId: number | null }>> {
   try {
     logger.info({ orderId }, "Preparing book for printing");
 
-    // 1. Get the order with book data
+    // ========================================
+    // 1. VALIDATION AND DATA RETRIEVAL
+    // ========================================
+
+    // Get the order with all required related data
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -542,7 +1078,7 @@ export async function sendBookForPrinting(
             character: true,
           },
         },
-        printJob: true, // Check if a print job already exists
+        printJob: true, // Check if print job already exists
       },
     });
 
@@ -562,7 +1098,7 @@ export async function sendBookForPrinting(
       });
     }
 
-    // 2. Check if this is a physical book order
+    // Validate this is a physical book order
     if (order.productType !== ProductType.BOOK) {
       logger.error(
         { orderId, productType: order.productType },
@@ -572,7 +1108,8 @@ export async function sendBookForPrinting(
         "Only physical books can be prepared for printing"
       );
     }
-    // check if the book is ready to print
+
+    // Validate book is ready for printing
     if (order.book.status !== BookStatus.READY_FOR_PRINTING) {
       logger.error(
         { orderId, bookStatus: order.book.status },
@@ -581,7 +1118,7 @@ export async function sendBookForPrinting(
       return createErrorResult("Book not ready to print");
     }
 
-    // 3. Check if order has required shipping info
+    // Validate order has required shipping information
     if (
       !order.shippingLevel ||
       !order.name ||
@@ -595,7 +1132,11 @@ export async function sendBookForPrinting(
       return createErrorResult("Order missing required shipping information");
     }
 
-    // 4. Create shipping address object from order
+    // ========================================
+    // 2. CREATE PRINT JOB RECORD
+    // ========================================
+
+    // Create shipping address object from order data
     const shippingAddress: ShippingAddress = {
       name: order.name,
       street1: order.street1,
@@ -608,15 +1149,8 @@ export async function sendBookForPrinting(
       is_business: false,
     };
 
-    // Calculate accurate costs using our existing function - this should happen BEFORE creating the PrintJob
-    const costResult = await calculatePrintJobCost(
-      shippingAddress,
-      order.quantity,
-      order.book.pageCount,
-      order.shippingLevel
-    );
-
-    // Create print job data including cost information if available from the order
+    // Create print job record with basic information
+    // Note: Cost fields are intentionally omitted - they will be set via webhook
     const printJobData: Prisma.PrintJobCreateInput = {
       order: { connect: { id: order.id } },
       book: { connect: { id: order.book.id } },
@@ -628,219 +1162,11 @@ export async function sendBookForPrinting(
       currency: "USD",
     };
 
-    // Use the pre-calculated costs if available
-    if (costResult.success) {
-      logger.info("Using pre-calculated costs for print job");
-
-      // Set shipping costs
-      if (costResult.data.shipping_cost) {
-        if (costResult.data.shipping_cost.total_cost_excl_tax) {
-          printJobData.shippingCostExclTax = new Prisma.Decimal(
-            costResult.data.shipping_cost.total_cost_excl_tax
-          );
-        }
-
-        if (costResult.data.shipping_cost.total_cost_incl_tax) {
-          printJobData.shippingCostInclTax = new Prisma.Decimal(
-            costResult.data.shipping_cost.total_cost_incl_tax
-          );
-        }
-      }
-
-      // Extract printing costs from line_item_costs and fees
-      if (
-        costResult.data.line_item_costs &&
-        costResult.data.line_item_costs.length > 0
-      ) {
-        // Sum up all line items for the total book printing cost
-        let totalPrintingCostExclTax = 0;
-        let totalPrintingCostInclTax = 0;
-
-        for (const lineItem of costResult.data.line_item_costs) {
-          if (lineItem.total_cost_excl_tax) {
-            totalPrintingCostExclTax += parseFloat(
-              lineItem.total_cost_excl_tax
-            );
-          }
-
-          if (lineItem.total_cost_incl_tax) {
-            totalPrintingCostInclTax += parseFloat(
-              lineItem.total_cost_incl_tax
-            );
-          }
-        }
-
-        // Store the summed line item costs as the printing cost
-        printJobData.printingCostExclTax = new Prisma.Decimal(
-          totalPrintingCostExclTax.toString()
-        );
-        printJobData.printingCostInclTax = new Prisma.Decimal(
-          totalPrintingCostInclTax.toString()
-        );
-
-        logger.info(
-          `Extracted printing costs from line items - Excl Tax: ${totalPrintingCostExclTax}, Incl Tax: ${totalPrintingCostInclTax}`
-        );
-      }
-
-      // Check if we need to include fees in the printing cost
-      // These are usually handling fees and fulfillment fees
-      let totalFeesExclTax = 0;
-      let totalFeesInclTax = 0;
-
-      if (costResult.data.fees && costResult.data.fees.length > 0) {
-        for (const fee of costResult.data.fees) {
-          if (fee.total_cost_excl_tax) {
-            totalFeesExclTax += parseFloat(fee.total_cost_excl_tax);
-          }
-
-          if (fee.total_cost_incl_tax) {
-            totalFeesInclTax += parseFloat(fee.total_cost_incl_tax);
-          }
-        }
-
-        logger.info(
-          `Extracted fees - Excl Tax: ${totalFeesExclTax}, Incl Tax: ${totalFeesInclTax}`
-        );
-
-        // Add fees to the printing cost if we have them
-        if (printJobData.printingCostExclTax && totalFeesExclTax > 0) {
-          const newPrintingCostExclTax =
-            parseFloat(printJobData.printingCostExclTax.toString()) +
-            totalFeesExclTax;
-          printJobData.printingCostExclTax = new Prisma.Decimal(
-            newPrintingCostExclTax.toString()
-          );
-        }
-
-        if (printJobData.printingCostInclTax && totalFeesInclTax > 0) {
-          const newPrintingCostInclTax =
-            parseFloat(printJobData.printingCostInclTax.toString()) +
-            totalFeesInclTax;
-          printJobData.printingCostInclTax = new Prisma.Decimal(
-            newPrintingCostInclTax.toString()
-          );
-        }
-
-        logger.info(
-          `Printing costs with fees - Excl Tax: ${printJobData.printingCostExclTax}, Incl Tax: ${printJobData.printingCostInclTax}`
-        );
-      }
-
-      // Check if we're still missing printing costs (unlikely, but just in case)
-      if (
-        !printJobData.printingCostExclTax ||
-        !printJobData.printingCostInclTax
-      ) {
-        // Fall back to calculating printing cost from total - shipping
-        if (
-          costResult.data.total_cost_excl_tax &&
-          printJobData.shippingCostExclTax
-        ) {
-          const totalCostExclTax = parseFloat(
-            costResult.data.total_cost_excl_tax
-          );
-          const shippingCostExclTax = parseFloat(
-            printJobData.shippingCostExclTax.toString()
-          );
-          const derivedPrintingCost = totalCostExclTax - shippingCostExclTax;
-
-          printJobData.printingCostExclTax = new Prisma.Decimal(
-            derivedPrintingCost.toString()
-          );
-          logger.info(
-            `Derived printing cost (excl tax): ${derivedPrintingCost}`
-          );
-        }
-
-        if (
-          costResult.data.total_cost_incl_tax &&
-          printJobData.shippingCostInclTax
-        ) {
-          const totalCostInclTax = parseFloat(
-            costResult.data.total_cost_incl_tax
-          );
-          const shippingCostInclTax = parseFloat(
-            printJobData.shippingCostInclTax.toString()
-          );
-          const derivedPrintingCostInclTax =
-            totalCostInclTax - shippingCostInclTax;
-
-          printJobData.printingCostInclTax = new Prisma.Decimal(
-            derivedPrintingCostInclTax.toString()
-          );
-          logger.info(
-            `Derived printing cost (incl tax): ${derivedPrintingCostInclTax}`
-          );
-        }
-      }
-
-      // Set total costs
-      if (costResult.data.total_cost_excl_tax) {
-        printJobData.totalCostExclTax = new Prisma.Decimal(
-          costResult.data.total_cost_excl_tax
-        );
-      }
-
-      if (costResult.data.total_cost_incl_tax) {
-        printJobData.totalCostInclTax = new Prisma.Decimal(
-          costResult.data.total_cost_incl_tax
-        );
-      }
-
-      if (costResult.data.total_tax) {
-        printJobData.totalTax = new Prisma.Decimal(costResult.data.total_tax);
-      }
-
-      // Validate that our costs make sense
-      if (
-        costResult.data.total_cost_excl_tax &&
-        printJobData.printingCostExclTax &&
-        printJobData.shippingCostExclTax
-      ) {
-        const totalCost = parseFloat(costResult.data.total_cost_excl_tax);
-        const printingCost = parseFloat(
-          printJobData.printingCostExclTax.toString()
-        );
-        const shippingCost = parseFloat(
-          printJobData.shippingCostExclTax.toString()
-        );
-
-        const calculatedTotal = printingCost + shippingCost;
-        const difference = Math.abs(totalCost - calculatedTotal);
-
-        // If the difference is more than 1% of the total, log a warning
-        if (difference > totalCost * 0.01) {
-          logger.warn(
-            `Cost discrepancy: API total cost (${totalCost}) differs from calculated total (${calculatedTotal}) by ${difference}`
-          );
-        } else {
-          logger.info(
-            `Cost validation: Printing (${printingCost}) + Shipping (${shippingCost}) ≈ Total (${totalCost})`
-          );
-        }
-      }
-    } else {
-      // Fallback to order costs if pre-calculation fails
-      logger.info("Using order costs as fallback (pre-calculation failed)");
-
-      // If order has shipping cost, store it
-      if (order.shippingCost) {
-        printJobData.shippingCostInclTax = order.shippingCost;
-      }
-
-      // If order has printing cost, store it
-      if (order.printingCost) {
-        printJobData.printingCostInclTax = order.printingCost;
-      }
-    }
-
-    // 5. Create a new PrintJob record to track the process
     const printJob = await prisma.printJob.create({
       data: printJobData,
     });
 
-    // Update the book with the print job ID
+    // Link the print job to both book and order
     await prisma.book.update({
       where: { id: order.book.id },
       data: {
@@ -848,7 +1174,6 @@ export async function sendBookForPrinting(
       },
     });
 
-    // Update the order with the print job ID
     await prisma.order.update({
       where: { id: order.id },
       data: {
@@ -856,16 +1181,25 @@ export async function sendBookForPrinting(
       },
     });
 
-    // 6. Use print service to prepare book for printing
-    // First, generate PDFs and upload to S3
+    logger.info(
+      { orderId, printJobId: printJob.id },
+      "Print job record created successfully"
+    );
+
+    // ========================================
+    // 3. PDF PREPARATION AND UPLOAD
+    // ========================================
+
+    // Generate PDF files and upload to S3
     const prepareResult = await prepareBookForPrinting(order.book);
 
     if (!prepareResult.success) {
-      // Update the print job record with error information
+      // Update print job record with error information
       await prisma.printJob.update({
         where: { id: printJob.id },
         data: {
           errorMessage: prepareResult.message,
+          statusMessage: `PDF preparation failed: ${prepareResult.message}`,
         },
       });
 
@@ -878,31 +1212,39 @@ export async function sendBookForPrinting(
       );
     }
 
-    // Update the print job with PDF URLs and S3 keys
+    // Update print job record with PDF information
     await prisma.printJob.update({
       where: { id: printJob.id },
       data: {
         interiorPdfUrl: prepareResult.interiorUrl,
         coverPdfUrl: prepareResult.coverUrl,
-        // Extract S3 keys from URLs if needed
         interiorS3Key: prepareResult.interiorUrl?.split("/").pop(),
         coverS3Key: prepareResult.coverUrl?.split("/").pop(),
+        statusMessage: "PDF files generated and uploaded successfully",
       },
     });
 
-    // 7. Validate PDFs with Lulu
+    logger.info(
+      { orderId, printJobId: printJob.id },
+      "PDF files prepared and uploaded successfully"
+    );
+
+    // ========================================
+    // 4. PDF VALIDATION WITH LULU
+    // ========================================
+
+    // Validate PDFs with Lulu's validation service
     const validationResult = await validateBookPdfs(
       prepareResult.interiorUrl!,
       prepareResult.coverUrl!,
       prepareResult.pageCount!
     );
 
-    // Update print job with validation results
+    // Handle validation failure
     if (!validationResult.success || !validationResult.isValid) {
       const errors =
         validationResult.errors?.join(", ") || "Unknown validation error";
 
-      // Update the print job record with validation failure
       await prisma.printJob.update({
         where: { id: printJob.id },
         data: {
@@ -919,7 +1261,7 @@ export async function sendBookForPrinting(
       return createErrorResult(`PDF validation failed: ${errors}`);
     }
 
-    // Update print job with successful validation
+    // Update print job with successful validation results
     await prisma.printJob.update({
       where: { id: printJob.id },
       data: {
@@ -927,12 +1269,20 @@ export async function sendBookForPrinting(
         coverValidationId: validationResult.validationId,
         interiorValidationStatus: FileValidationStatus.NORMALIZED,
         coverValidationStatus: FileValidationStatus.NORMALIZED,
-        statusMessage: "PDF validation successful",
+        statusMessage: "PDF validation completed successfully",
       },
     });
 
-    // 8. Create print job with Lulu
+    logger.info(
+      { orderId, printJobId: printJob.id },
+      "PDF validation completed successfully"
+    );
 
+    // ========================================
+    // 5. CREATE LULU PRINT JOB
+    // ========================================
+
+    // Prepare print job line item
     const printItem: PrintJobLineItem = {
       external_id: order.book.id,
       printable_normalization: {
@@ -947,23 +1297,25 @@ export async function sendBookForPrinting(
       quantity: order.quantity,
       title: order.book.title,
     };
-    // Create a request object for the print job
+
+    // Create print job request object
     const printJobRequest: CreatePrintJobRequest = {
       contact_email: config.PRINTING.LULU.CONTACT_EMAIL,
       external_id: order.id,
       line_items: [printItem],
-      production_delay: PRODUCTION_DELAYED, // production delay in minutes - 2 hours by default
+      production_delay: PRODUCTION_DELAYED,
       shipping_address: shippingAddress,
       shipping_level: order.shippingLevel,
     };
+
     try {
-      // Create the print job with Lulu
+      // Submit print job to Lulu
       const luluPrintingService = getLuluPrintingService();
       const printJobResponse = await luluPrintingService.createPrintJob(
         printJobRequest
       );
 
-      // Prepare data for updating the print job
+      // Update print job record with Lulu response
       const updateData: Prisma.PrintJobUpdateInput = {
         luluPrintJobId: printJobResponse.id,
         status: mapLuluStatusToPrintJobStatus(printJobResponse.status.name),
@@ -980,18 +1332,16 @@ export async function sendBookForPrinting(
           : null,
       };
 
-      // 9. Update the print job record
       await prisma.printJob.update({
         where: { id: printJob.id },
         data: updateData,
       });
 
-      // Update order status
+      // Update order status to printing
       await prisma.order.update({
         where: { id: orderId },
         data: {
           status: OrderStatus.PRINTING,
-          printJobId: printJob.id,
         },
       });
 
@@ -1002,9 +1352,10 @@ export async function sendBookForPrinting(
           estimatedArrival:
             printJobResponse.estimated_shipping_dates?.arrival_max,
         },
-        "Successfully prepared book for printing"
+        "Successfully submitted book for printing to Lulu"
       );
 
+      // Revalidate admin pages
       revalidatePath("/admin/orders");
       revalidatePath(`/admin/orders/${orderId}`);
       revalidatePath("/admin/print-jobs");
@@ -1013,33 +1364,29 @@ export async function sendBookForPrinting(
         printJobId: printJobResponse.id || null,
       });
     } catch (error) {
-      // Update the print job record with error
+      // Handle Lulu API errors
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+
       await prisma.printJob.update({
         where: { id: printJob.id },
         data: {
-          errorMessage:
-            error instanceof Error ? error.message : "Unknown error",
-          statusMessage: `Failed to create print job: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`,
+          errorMessage,
+          statusMessage: `Failed to create print job with Lulu: ${errorMessage}`,
         },
       });
 
       logger.error({ orderId, error }, "Failed to create print job with Lulu");
-      return createErrorResult(
-        `Failed to create print job: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+      return createErrorResult(`Failed to create print job: ${errorMessage}`);
     }
   } catch (error) {
-    logger.error({ error, orderId }, "Error preparing book for printing");
-    return createErrorResult(
-      error instanceof Error ? error.message : "Unknown error occurred"
-    );
+    // Handle unexpected errors
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    logger.error({ error, orderId }, "Unexpected error in sendBookForPrinting");
+    return createErrorResult(errorMessage);
   }
 }
-
 /**
  * Cancel a print job with Lulu and update the local record
  */

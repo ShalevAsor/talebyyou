@@ -315,6 +315,8 @@ import {
 } from "@/actions/image-actions";
 import { revalidatePath } from "next/cache";
 import config from "@/lib/config";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 // Leonardo.ai IP addresses
 const LEONARDO_IPS = [

@@ -670,10 +670,6 @@ export function OrderContent({
       const shippingCostValue =
         costResult.data.shipping_cost.total_cost_incl_tax;
 
-      // Extract the printing cost (fulfillment cost) from the API response
-      const printingCostValue =
-        costResult.data.fulfillment_cost.total_cost_incl_tax;
-
       // Calculate the total price with new pricing system
       const pricingDetails = getPricingDetails(
         productType,
@@ -690,12 +686,6 @@ export function OrderContent({
         pricingDetails.totalPrice.toFixed(2)
       );
 
-      // Prepare cost breakdown to store our actual costs
-      const costBreakdown = {
-        printingCost: printingCostValue,
-        // imagesCost will be blank for now, could be added later
-      };
-
       // Process the order with shipping and cost breakdown
       await processOrderWithShipping(
         book.id,
@@ -704,7 +694,7 @@ export function OrderContent({
         level,
         shippingCostValue,
         pricingDetails.totalPrice.toFixed(2),
-        costBreakdown
+        quantity
       );
     } catch (error) {
       console.error("Error calculating shipping costs:", error);

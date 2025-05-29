@@ -972,14 +972,11 @@ export async function updateOrderWithShipping(
   shippingLevel: ShippingLevel,
   shippingCost: string,
   totalPrice: string,
-  costBreakdown?: {
-    printingCost?: string;
-    imagesCost?: string;
-  }
+  quantity: number = 1
 ): Promise<ActionResult<string>> {
   try {
     logger.info(
-      { orderId, shippingLevel, shippingCost, totalPrice, costBreakdown },
+      { orderId, shippingLevel, shippingCost, totalPrice },
       "Updating order with shipping details"
     );
 
@@ -1036,25 +1033,14 @@ export async function updateOrderWithShipping(
     const sanitizedShippingCost = sanitizeDecimal(shippingCost);
     const sanitizedTotalPrice = sanitizeDecimal(totalPrice);
 
-    // Default printing cost if not explicitly provided
-    const printingCostValue = costBreakdown?.printingCost
-      ? sanitizeDecimal(costBreakdown.printingCost)
-      : "0.00";
-
-    // Default images cost if not explicitly provided
-    const imagesCostValue = costBreakdown?.imagesCost
-      ? sanitizeDecimal(costBreakdown.imagesCost)
-      : "0.00";
-
     // Update the order with shipping details
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
         shippingLevel: shippingLevel,
         shippingCost: new Prisma.Decimal(sanitizedShippingCost),
-        printingCost: new Prisma.Decimal(printingCostValue),
-        imagesCost: new Prisma.Decimal(imagesCostValue),
         totalPrice: new Prisma.Decimal(sanitizedTotalPrice),
+        quantity,
       },
     });
 
@@ -1063,8 +1049,6 @@ export async function updateOrderWithShipping(
         orderId: updatedOrder.id,
         shippingLevel,
         sanitizedShippingCost,
-        printingCost: printingCostValue,
-        imagesCost: imagesCostValue,
         sanitizedTotalPrice,
       },
       "Successfully updated order with shipping details"
@@ -1094,19 +1078,16 @@ export async function createOrderWithShipping(
   shippingLevel: ShippingLevel,
   shippingCost: string,
   totalPrice: string,
-  costBreakdown?: {
-    printingCost?: string;
-    imagesCost?: string;
-  }
+  quantity: number = 1
 ): Promise<ActionResult<string>> {
   try {
     logger.info(
-      { bookId, shippingLevel, shippingCost, totalPrice, costBreakdown },
+      { bookId, shippingLevel, shippingCost, totalPrice },
       "Creating order with shipping details"
     );
 
     // First create the base order
-    const createResult = await createOrRecoverOrder(formData, bookId);
+    const createResult = await createOrRecoverOrder(formData, bookId, quantity);
     if (!createResult.success) {
       return createResult;
     }
@@ -1119,7 +1100,7 @@ export async function createOrderWithShipping(
       shippingLevel,
       shippingCost,
       totalPrice,
-      costBreakdown
+      quantity
     );
 
     return shippingResult;
