@@ -199,7 +199,7 @@ We encourage you to review this policy regularly.`,
 
 Email: ${siteConfig.contactEmail}
 
-Data Protection Officer: legal@talebyyou.com
+Or: ${siteConfig.supportEmail}
 
 For specific requests:
 

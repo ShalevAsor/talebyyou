@@ -4,7 +4,8 @@ import { ContactContent } from "@/components/contact/ContactContent";
 import PageHeader from "@/components/layout/PageHeader";
 import { createMetadata, generateStructuredData } from "@/config/site";
 import { Loading } from "@/components/common";
-
+import appConfig from "@/lib/config";
+import { siteConfig } from "@/config/site";
 // Generate metadata using your centralized function
 export const metadata = createMetadata({
   title: "Contact Us - Custom Books Store",
@@ -21,10 +22,10 @@ export default async function ContactPage() {
   const structuredData = generateStructuredData("ContactPage", {
     mainEntity: {
       "@type": "Organization",
-      name: "Custom Books Store",
+      name: siteConfig.name,
       contactPoint: {
         "@type": "ContactPoint",
-        email: "support@custombooks.com",
+        email: appConfig.EMAIL.SUPPORT,
         contactType: "customer service",
       },
     },

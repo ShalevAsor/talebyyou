@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { Mail, Info, ExternalLink } from "lucide-react";
+import config from "@/lib/config";
 
 /**
  * Component to display contact information sidebar
@@ -26,7 +27,7 @@ export const ContactInformation: React.FC = () => {
               href="mailto:support@custombooks.com"
               className="text-indigo-600 hover:text-indigo-800 font-medium text-sm mt-1 inline-block"
             >
-              support@custombooks.com
+              {config.EMAIL.SUPPORT}
             </Link>
           </div>
         </div>

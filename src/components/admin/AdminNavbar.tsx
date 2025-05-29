@@ -7,6 +7,7 @@ export const AdminNavbar = () => {
 
   const navItems = [
     { name: "Dashboard", href: "/admin" },
+    { name: "Pricing", href: "/admin/pricing" },
     { name: "Templates", href: "/admin/templates" },
     { name: "Orders", href: "/admin/orders" },
     { name: "Seed", href: "/admin/seed" },

@@ -183,7 +183,7 @@ Severability: If any provision is found unenforceable, the remaining provisions 
     content: `For questions about these Terms or our Services:
 
 General Support: ${siteConfig.contactEmail}
-Legal Matters: legal@talebyyou.com
+Legal Matters: ${siteConfig.supportEmail}
 
 Last Updated: ${termsLastUpdated}
 
