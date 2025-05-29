@@ -711,21 +711,25 @@ export function BookCard({ book }: BookCardProps) {
           };
         case OrderStatus.PAID:
           if (bookStatus === BookStatus.READY_FOR_PRINTING) {
-            return {
-              text: "READY FOR PRINTING",
-              variant: "default" as const,
-              icon: <MdPrint className="h-4 w-4" aria-hidden="true" />,
-              bgColor: "bg-indigo-50",
-              textColor: "text-indigo-500",
-            };
+            if (productType === ProductType.BOOK) {
+              return {
+                text: "READY FOR PRINTING",
+                variant: "default" as const,
+                icon: <MdPrint className="h-4 w-4" aria-hidden="true" />,
+                bgColor: "bg-indigo-50",
+                textColor: "text-indigo-500",
+              };
+            } else {
+              // For ebooks, show completed/ready for download
+              return {
+                text: "READY FOR DOWNLOAD",
+                variant: "success" as const,
+                icon: <FaFileDownload className="h-4 w-4" aria-hidden="true" />,
+                bgColor: "bg-emerald-50",
+                textColor: "text-emerald-700",
+              };
+            }
           }
-          return {
-            text: "PAID",
-            variant: "default" as const,
-            icon: <MdPaid className="h-4 w-4" aria-hidden="true" />,
-            bgColor: "bg-emerald-50",
-            textColor: "text-emerald-700",
-          };
         default:
           break;
       }
