@@ -1447,4 +1447,28 @@ export const defaultTemplates: BookTemplateCreateData[] = [
       },
     ],
   },
+  {
+    title: "Test template",
+    description:
+      "Journey into the magical world of dreams! Your child discovers that dreams can take you anywhere and let you be anything you want to be. From flying through cotton candy clouds to swimming with friendly dream creatures, this enchanting bedtime story shows that imagination has no limits. With gentle adventures and peaceful dream sequences, this story helps children see sleep and dreams as exciting adventures rather than something to fear. Perfect for sweet dreams ages 3-7.",
+    pageCount: 2, // 13 text/image pairs
+    coverPrompt:
+      "Floating peacefully on fluffy cloud wearing pajamas, surrounded by gentle glowing stars and dream bubbles, serene sleeping expression",
+    coverImage: "/images/placeholders/book-template-placeholder.jpg",
+    published: false,
+    characterGender: "boy",
+    minAge: 3,
+    maxAge: 7,
+    genres: ["Science Fiction", "Sport"],
+    pages: [
+      {
+        pageNumber: 1,
+        content:
+          "Every night when [CHILD_NAME] went to bed, [HE_SHE] wondered what dreams would come. [HIS_HER] cozy bedroom felt safe and warm under the soft blankets. As [HE_SHE] closed [HIS_HER] eyes and listened to the gentle night sounds, [CHILD_NAME] began to drift off to sleep. 'I hope I have a wonderful adventure tonight,' [HE_SHE] whispered softly to [HIS_HER] teddy bear.",
+        imagePrompt:
+          "Lying in cozy bed with soft blankets and teddy bear, eyes closing peacefully, moonlight streaming through window, comfortable bedroom setting",
+        imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+      },
+    ],
+  },
 ];

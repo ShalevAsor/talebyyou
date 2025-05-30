@@ -54,6 +54,15 @@ License to ${siteConfig.name}: By using our Services, you grant ${siteConfig.nam
 Template Content: Book templates and base content remain our intellectual property. You receive a license to use template content solely for creating your personalized books.`,
   },
   {
+    id: "branding-and-attribution",
+    title: "Branding and Attribution",
+    content: `Attribution in Final Products: All books produced through our service will include "Made with TaleByYou" attribution on the final page. This attribution is part of our service and cannot be removed from purchased books.
+  
+  Branding Purpose: The attribution serves to identify the source of the book creation service and may help others discover our platform. This is a standard practice for custom book creation services.
+  
+  Your Rights: Despite the presence of our attribution, you retain full ownership and commercial rights to your completed book as outlined in the "User Content and AI-Generated Materials" section above.`,
+  },
+  {
     id: "prohibited-uses-and-content",
     title: "Prohibited Uses and Content",
     content: `You agree not to create content that:
@@ -80,6 +89,15 @@ We reserve the right to review all content and refuse to process orders that vio
 Processing Times: AI image generation typically completes within minutes. If you experience any delays or issues with processing, please contact our support team. Physical books are printed and shipped through Lulu xPress.
 
 Payment Terms: Payment must be received before order processing begins. All prices are in USD unless otherwise specified. You are responsible for all applicable taxes and fees.`,
+  },
+  {
+    id: "book-previews-and-final-products",
+    title: "Book Previews and Final Products",
+    content: `Book Preview Disclaimer: The book preview feature is provided for demonstration purposes only to give you an idea of how your book will look. The preview is not intended to be an exact representation of the final product.
+  
+  The final physical books and digital eBooks you receive may appear different from the web preview. The preview serves as a general guide to help you visualize your book's content and layout before purchase.
+  
+  By using our service, you acknowledge that the preview is illustrative only and that the final delivered product may vary in appearance from what is shown in the preview.`,
   },
   {
     id: "returns-refunds-and-cancellations",

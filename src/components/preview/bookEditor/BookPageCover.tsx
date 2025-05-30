@@ -83,7 +83,7 @@ const BookPageCover = React.forwardRef<HTMLDivElement, BookPageCoverProps>(
 
         {/* Title */}
         <div className="absolute top-0 left-0 right-0 p-8 z-10">
-          <div className="bg-white/70 p-6 rounded-lg shadow-md relative">
+          <div className="relative">
             {/* Edit title button - only show in edit mode */}
             {isEditMode && !isReadyForPrint && !isLastPage && (
               <TooltipButton
@@ -96,7 +96,7 @@ const BookPageCover = React.forwardRef<HTMLDivElement, BookPageCoverProps>(
               </TooltipButton>
             )}
 
-            <h2 className="text-2xl font-bold text-black text-center">
+            <h2 className="text-2xl font-bold text-white text-center text-stroke">
               {children}
             </h2>
           </div>

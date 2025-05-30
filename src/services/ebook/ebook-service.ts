@@ -295,35 +295,27 @@ async function drawCoverTitle(
   const { doc, pageWidth } = ctx;
 
   // Set the font properties before calculating text dimensions
-  doc.font("Helvetica-Bold").fontSize(24);
+  doc.font("Helvetica-Bold").fontSize(36);
 
   // Calculate title dimensions
-  const titleTextWidth = doc.widthOfString(title);
-  const titleTextHeight = doc.heightOfString(title);
 
   // Add padding around text
-  const padding = 20; // 20px padding on all sides
-  const boxWidth = titleTextWidth + padding * 2;
-  const boxHeight = titleTextHeight + padding * 2;
 
-  // Calculate position to center the box
-  const titleY = 30;
-  const titleX = (pageWidth - boxWidth) / 2;
+  // Calculate center position for text
+  const maxWidth = pageWidth - 60; // 30px margin on each side
+  const textX = 30; // Start from left margin
+  const textY = 50; // Move down from top edge (was 30, now 50)
 
-  // Draw background box for title
-  doc
-    .fillColor("white")
-    .fillOpacity(0.8)
-    .roundedRect(titleX, titleY, boxWidth, boxHeight, 10)
-    .fill();
-
-  // Reset opacity for text
-  doc.fillOpacity(1).fillColor("black");
-
-  // Place text centered in the box
-  const textX = titleX + padding;
-  const textY = titleY + padding;
-  doc.text(title, textX, textY, { lineBreak: false });
+  // Draw title with stroke effect and automatic wrapping
+  doc.fillColor("white").strokeColor("black").lineWidth(2);
+  doc.text(title, textX, textY, {
+    width: maxWidth,
+    align: "center",
+    lineBreak: true,
+    stroke: true,
+    fill: true,
+    lineGap: 4, // Add some spacing between lines
+  });
 }
 
 /**
@@ -517,7 +509,11 @@ function drawTextPage(
 /**
  * Draws the end page
  */
-function drawEndPage(doc: PDFKit.PDFDocument, pageNumber: number): void {
+function drawEndPage(
+  doc: PDFKit.PDFDocument,
+  pageNumber: number,
+  book: BookForEbook
+): void {
   const pageWidth = doc.page.width;
   const pageHeight = doc.page.height;
   const ctx = { doc, pageWidth, pageHeight, pageNumber };
@@ -570,13 +566,41 @@ function drawEndPage(doc: PDFKit.PDFDocument, pageNumber: number): void {
     )
     .stroke();
 
-  // Add "THE END" text centered horizontally and vertically
-  doc.font("Helvetica-Bold").fontSize(30).fillColor("#333333");
-  centerText(doc, "THE END", pageHeight / 2 - 15);
+  // Add "THE END" text with stroke effect (like cover title)
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(36)
+    .fillColor("white")
+    .strokeColor("black")
+    .lineWidth(2);
 
-  // Add a footer line
-  doc.fontSize(14).font("Helvetica-Oblique").fillColor("#666666");
-  centerText(doc, "A custom children's book", pageHeight / 2 + 30);
+  const theEndText = "THE END";
+  const textWidth = doc.widthOfString(theEndText);
+  const textX = (pageWidth - textWidth) / 2;
+
+  doc.text(theEndText, textX, pageHeight / 2 - 30, {
+    lineBreak: false,
+    stroke: true,
+    fill: true,
+  });
+
+  // Add personalized message if character name exists
+  if (book.character?.name) {
+    doc.fontSize(18).font("Helvetica-Oblique").fillColor("#666666");
+    centerText(
+      doc,
+      `The End of ${book.character.name}'s Adventure`,
+      pageHeight / 2 + 15
+    );
+
+    // Add branding below personalization
+    doc.fontSize(14);
+    centerText(doc, "Made with TaleByYou", pageHeight / 2 + 50);
+  } else {
+    // No character name, just add branding
+    doc.fontSize(14).font("Helvetica-Oblique").fillColor("#666666");
+    centerText(doc, "Made with TaleByYou", pageHeight / 2 + 30);
+  }
 
   // Add page number
   drawPageNumber(ctx);
@@ -652,7 +676,7 @@ export async function generatePDF(
 
     // 7. Add "THE END" page
     doc.addPage();
-    drawEndPage(doc, pageNumber);
+    drawEndPage(doc, pageNumber, book);
 
     // 8. Finalize the PDF
     doc.end();
