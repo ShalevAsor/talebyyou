@@ -14,6 +14,8 @@ import {
 } from "@/actions/template-actions";
 import Link from "next/link";
 import { BookTemplateFull } from "@/types/book";
+import { Genre } from "@prisma/client";
+import { EditGenresDialog } from "./EditGenresDialog";
 
 interface TemplateListProps {
   initialTemplates: BookTemplateFull[];
@@ -75,6 +77,14 @@ export function TemplateList({
       );
     },
   });
+
+  const handleGenresUpdated = (templateId: string, newGenres: Genre[]) => {
+    setTemplates((prevTemplates) =>
+      prevTemplates.map((t) =>
+        t.id === templateId ? { ...t, genres: newGenres } : t
+      )
+    );
+  };
 
   const handleDeleteTemplate = async (id: string, title: string) => {
     setDeleteLoading(true);
@@ -199,6 +209,11 @@ export function TemplateList({
                   <BookImage className="h-4 w-4" />
                 )}
               </Button>
+
+              <EditGenresDialog
+                template={template}
+                onGenresUpdated={handleGenresUpdated}
+              />
 
               <PublishToggleButton
                 publish={template.published}

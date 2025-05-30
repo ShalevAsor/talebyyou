@@ -23,9 +23,10 @@ interface AdminActionDialogProps {
   triggerIcon?: ReactNode;
   isLoading?: boolean;
   onAction: () => Promise<void> | void;
-  variant?: "default" | "destructive";
+  variant?: "default" | "destructive" | "outline"; // Added outline variant
   actionVariant?: "default" | "destructive";
   size?: "default" | "sm" | "lg" | "icon";
+  disabled?: boolean; // Added disabled prop
 }
 
 export default function AdminActionDialog({
@@ -39,11 +40,16 @@ export default function AdminActionDialog({
   variant = "default",
   actionVariant = "default",
   size,
+  disabled = false, // Added disabled with default false
 }: AdminActionDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={variant} disabled={isLoading} size={size}>
+        <Button
+          variant={variant}
+          disabled={isLoading || disabled} // Include disabled prop
+          size={size}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

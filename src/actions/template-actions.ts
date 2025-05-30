@@ -850,3 +850,65 @@ export async function getTemplateS3Images(
     );
   }
 }
+
+/**
+ * Update genres for an existing template
+ */
+export async function updateTemplateGenres(
+  templateId: string,
+  genreNames: string[]
+): Promise<ActionResult<{ templateId: string; genres: Genre[] }>> {
+  try {
+    // Check if template exists
+    const template = await prisma.bookTemplate.findUnique({
+      where: { id: templateId },
+      select: { id: true, title: true, slug: true },
+    });
+
+    if (!template) {
+      return createErrorResult("Template not found");
+    }
+
+    // Find or create all genres
+    const genrePromises = genreNames.map(async (genreName) => {
+      return await prisma.genre.upsert({
+        where: { name: genreName },
+        update: { name: genreName },
+        create: { name: genreName },
+      });
+    });
+
+    const genres = await Promise.all(genrePromises);
+
+    // Update template genres (disconnect all, then connect new ones)
+    const updatedTemplate = await prisma.bookTemplate.update({
+      where: { id: templateId },
+      data: {
+        genres: {
+          set: [], // Clear existing connections
+          connect: genres.map((genre) => ({ id: genre.id })),
+        },
+      },
+      include: {
+        genres: true,
+      },
+    });
+
+    // Revalidate paths
+    revalidatePath("/library");
+    revalidatePath("/admin/templates");
+    revalidatePath(`/library/template-preview/${template.slug}`);
+
+    return createSuccessResult({
+      templateId: updatedTemplate.id,
+      genres: updatedTemplate.genres,
+    });
+  } catch (error) {
+    console.error("Error updating template genres:", error);
+    return createErrorResult(
+      `Failed to update genres: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
