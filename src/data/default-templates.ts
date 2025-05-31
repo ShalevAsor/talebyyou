@@ -856,7 +856,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     characterGender: "boy",
     minAge: 4,
     maxAge: 9,
-    genres: ["Adventure", "Educational"],
+    genres: ["Adventure", "Sport"],
     pages: [
       {
         pageNumber: 1,
