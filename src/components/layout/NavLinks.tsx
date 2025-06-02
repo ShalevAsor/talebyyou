@@ -47,13 +47,6 @@ export const NavLinks: React.FC<NavLinksProps> = memo(
             {link.label}
           </Link>
         ))}
-        <Link
-          href={
-            "https://shalev-book-store-bucket.s3.us-east-1.amazonaws.com/ebooks/2025-05-30/Space_Adventure_8596fcf4-39eb-4ed0-915a-b8484fda9da0.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAUYLSMZFOAJTEI77P%2F20250531%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250531T144748Z&X-Amz-Expires=86400&X-Amz-Signature=d53b88b122224ffe7ae0c17f9fc6b3afd26597627c0db9aa84b966d4d419141d&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject"
-          }
-        >
-          Ebook Example
-        </Link>
       </nav>
     );
   }
