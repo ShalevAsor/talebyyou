@@ -152,11 +152,10 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
       : genreParam
     : [];
 
-  // Fetch ALL templates (no server-side filtering)
+  // Fetch ALL templates
   const [genresResult, booksResult] = await Promise.all([
     getGenres(),
     getAllBookTemplates({
-      // Remove filterByGenre - get all templates
       publishedOnly: true,
     }),
   ]);
@@ -164,7 +163,6 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
   // Default values in case of fetch errors
   const allGenres = genresResult.success ? genresResult.data : [];
   const bookTemplates = booksResult.success ? booksResult.data : [];
-
   // Get any error messages
   const error = !booksResult.success
     ? booksResult.error
