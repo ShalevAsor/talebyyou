@@ -30,7 +30,7 @@ export const siteConfig = {
   supportEmail: "support@talebyyou.com",
   images: {
     homePage: {
-      hero: "https://shalev-book-store-bucket.s3.us-east-1.amazonaws.com/templates/around-the-world/page11.jpg",
+      hero: "/images/hero.jpg",
       example: {
         before: "/images/example/before.png",
         after: "/images/example/after.jpg",
