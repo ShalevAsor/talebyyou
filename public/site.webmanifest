@@ -9,6 +9,9 @@
   "orientation": "portrait-primary",
   "id": "/",
   "scope": "/",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "screenshots": [
     {
       "src": "/images/screenshot-desktop1.png",
