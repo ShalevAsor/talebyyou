@@ -3,7 +3,7 @@
 export const siteConfig = {
   name: "TaleByYou", // Replace with your actual site name
   description:
-    "Create personalized children's books with custom characters, stories and illustrations.",
+    "Create magical personalized children's books starring your child! Custom characters, names, and illustrations. Beautiful printed books and instant digital downloads make perfect gifts.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://talebyyou.com", // Default fallback, but use environment variable
   ogImage: "/images/logo/og-logo.png",
   links: {
@@ -14,18 +14,63 @@ export const siteConfig = {
   },
   creator: "TaleByYou Team",
   keywords: [
-    "custom books",
-    "children books",
-    "personalized stories",
-    "custom illustration",
-    "gift books",
+    // Core product terms
+    "personalized children's books",
+    "custom children's books",
+    "personalized books for kids",
+    "custom storybooks",
+    "children's books with child's name",
     "custom characters",
     "custom illustrations",
-    "personalized gifts",
-    "children's books",
-    "custom children books",
+
+    // Long-tail keywords (what people actually search)
+    "personalized books for kids",
+    "custom storybooks with photos",
+    "children's book gifts",
+    "bedtime stories with child's name",
+    "custom printed books",
+    "personalized story books",
+    "kids books with pictures",
+    "create children's book online",
+    "custom baby books",
+    "personalized gift books",
+
+    // Brand and variations
     "tale by you",
+    "talebyyou",
+
+    // Occasion-based keywords
+    "birthday book gifts",
+    "christmas books for kids",
+    "holiday children's books",
+    "graduation gifts for kids",
   ],
+  business: {
+    type: "Creative Services",
+    founded: "2025", // Update with actual year
+    location: "Online Worldwide",
+    slogan: "Make Your Child the Hero of Their Own Story",
+    taglines: [
+      "Personalized Stories, Magical Memories",
+      "Every Child Deserves to Be the Hero",
+      "Custom Books, Endless Imagination",
+    ],
+  },
+  audience: {
+    primary: "Parents with children ages 2-12",
+    secondary: [
+      "Grandparents",
+      "Gift buyers",
+      "Teachers",
+      "Childcare providers",
+    ],
+    interests: [
+      "Children's literature",
+      "Personalized gifts",
+      "Family memories",
+      "Child development",
+    ],
+  },
   contactEmail: "info@talebyyou.com",
   supportEmail: "support@talebyyou.com",
   images: {
@@ -36,6 +81,31 @@ export const siteConfig = {
         after: "/images/example/after.jpg",
       },
     },
+    social: {
+      facebook: "/images/social/facebook-share.jpg",
+      twitter: "/images/social/twitter-share.jpg",
+      instagram: "/images/social/instagram-share.jpg",
+    },
+    seo: {
+      logoStructured: "/images/logo/logo-structured.png", // For schema markup
+      brandIcon: "/images/logo/brand-icon.png",
+    },
+  },
+  contentThemes: {
+    benefits: [
+      "Boost reading confidence",
+      "Create lasting family memories",
+      "Encourage imagination and creativity",
+      "Perfect personalized gifts",
+      "Build emotional connection to reading",
+    ],
+    features: [
+      "Easy online customization",
+      "High-quality printing",
+      "Fast delivery worldwide",
+      "Digital and printed options",
+      "Professional illustrations",
+    ],
   },
 };
 
@@ -48,10 +118,11 @@ export function createMetadata({
   image = "",
   noIndex = false,
   alternates = {}, // Add this new parameter
+  type = "website", // Allow different page types
 } = {}) {
   const displayTitle = title
     ? `${title} | ${siteConfig.name}`
-    : `${siteConfig.name} - Create Custom Children's Books`;
+    : `${siteConfig.name} - Create Personalized Children's Books That Make Your Child the Hero`;
 
   const displayDescription = description || siteConfig.description;
   const ogImageUrl = image || siteConfig.ogImage;
@@ -61,6 +132,8 @@ export function createMetadata({
     description: displayDescription,
     keywords: siteConfig.keywords,
     authors: [{ name: siteConfig.creator }],
+    creator: siteConfig.creator,
+    publisher: siteConfig.name,
     // 🎯 Add favicon configuration here
     icons: {
       icon: [
@@ -96,14 +169,14 @@ export function createMetadata({
         {
           url: ogImageUrl,
           width: 1200,
-          height: 720,
+          height: 630,
           alt: `${siteConfig.name} - ${
             description || "Custom children's books"
           }`,
         },
       ],
       locale: "en_US",
-      type: "website",
+      type: type,
     },
     twitter: {
       card: "summary_large_image",
@@ -115,6 +188,9 @@ export function createMetadata({
         : undefined,
     },
     robots: noIndex ? "noindex, nofollow" : "index, follow",
+    category: "Children's Books",
+    classification: "Creative Services",
+
     // Include alternates if provided
     ...(Object.keys(alternates).length > 0 ? { alternates } : {}),
   };
@@ -151,4 +227,36 @@ export function generateStructuredData(type = "website", additionalData = {}) {
   }
 
   return { ...baseData, ...additionalData };
+}
+export function generateFAQSchema(
+  faqs: Array<{ question: string; answer: string }>
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+// Helper function to generate breadcrumb schema
+export function generateBreadcrumbSchema(
+  breadcrumbs: Array<{ name: string; url: string }>
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: `${siteConfig.url}${item.url}`,
+    })),
+  };
 }

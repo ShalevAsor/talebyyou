@@ -1,7 +1,7 @@
 // src/components/contact/ContactInformation.tsx
 import React from "react";
 import Link from "next/link";
-import { Mail, Info, ExternalLink } from "lucide-react";
+import { Mail, Info } from "lucide-react";
 import config from "@/lib/config";
 
 /**
@@ -23,12 +23,12 @@ export const ContactInformation: React.FC = () => {
               {"We'll respond to your inquiry within up to 3 business days."}
             </p>
             {/* Keep as regular <a> tag for mailto link */}
-            <Link
-              href="mailto:support@custombooks.com"
+            <a
+              href={`mailto:${config.EMAIL.SUPPORT}`}
               className="text-indigo-600 hover:text-indigo-800 font-medium text-sm mt-1 inline-block"
             >
               {config.EMAIL.SUPPORT}
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -49,22 +49,16 @@ export const ContactInformation: React.FC = () => {
                 <Link
                   href="/terms"
                   className="text-indigo-600 hover:text-indigo-800 text-sm inline-flex items-center"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   Terms of Service
-                  <ExternalLink className="h-3 w-3 ml-0.5" aria-hidden="true" />
                 </Link>
               </li>
               <li>
                 <Link
                   href="/privacy"
                   className="text-indigo-600 hover:text-indigo-800 text-sm inline-flex items-center"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   Privacy Policy
-                  <ExternalLink className="h-3 w-3 ml-0.5" aria-hidden="true" />
                 </Link>
               </li>
             </ul>

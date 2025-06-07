@@ -4,11 +4,10 @@ import { ContactContent } from "@/components/contact/ContactContent";
 import PageHeader from "@/components/layout/PageHeader";
 import { createMetadata, generateStructuredData } from "@/config/site";
 import { Loading } from "@/components/common";
-import appConfig from "@/lib/config";
 import { siteConfig } from "@/config/site";
 // Generate metadata using your centralized function
 export const metadata = createMetadata({
-  title: "Contact Us - Custom Books Store",
+  title: "Contact Us - Get Help with Your Personalized Children's Books",
   description:
     "Get in touch with our team for any questions or support with your custom children's books. We're here to help with your inquiries.",
 });
@@ -25,7 +24,7 @@ export default async function ContactPage() {
       name: siteConfig.name,
       contactPoint: {
         "@type": "ContactPoint",
-        email: appConfig.EMAIL.SUPPORT,
+        email: siteConfig.supportEmail,
         contactType: "customer service",
       },
     },

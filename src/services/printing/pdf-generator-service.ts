@@ -8,6 +8,9 @@
 // import { fetchImageAsBuffer } from "@/utils/imageUtils";
 // import { BookPrint } from "@/types/book";
 // import { CoverDimensions, PrintPdfGenerationResult } from "@/types/print";
+// import config from "@/lib/config";
+
+// // ==================== FONT CONFIGURATION ====================
 
 // // Define paths to our custom fonts relative to the project root
 // const FONT_PATHS = {
@@ -39,6 +42,90 @@
 // }
 
 // /**
+//  * Register fonts with the PDFKit document
+//  */
+// function registerFonts(doc: PDFKit.PDFDocument): boolean {
+//   try {
+//     doc.registerFont("Regular", FONT_PATHS.REGULAR);
+//     doc.registerFont("Bold", FONT_PATHS.BOLD);
+//     doc.registerFont("Italic", FONT_PATHS.ITALIC);
+//     doc.registerFont("BoldItalic", FONT_PATHS.BOLD_ITALIC);
+
+//     // Set default font
+//     doc.font("Regular");
+//     logger.info("Custom fonts registered successfully");
+//     return true;
+//   } catch (fontError) {
+//     logger.error("Error registering custom fonts:", fontError);
+//     logger.warn(
+//       "Falling back to standard fonts. Note: This may result in font embedding issues with Lulu."
+//     );
+//     return false;
+//   }
+// }
+
+// // ==================== DESIGN CONSTANTS ====================
+
+// const DESIGN = {
+//   DEEP_BLUE: "#1A365D", // Deep dark blue for borders and other decorative elements
+//   DARK_GREY: "#333333", // Dark grey for spine
+//   TEXT_COLOR: "#333333", // Dark shade for text content
+//   LIGHT_GREY: "#999999", // Light grey for placeholder text
+//   PAGE_NUMBER_BG: "#F5F5F5", // Light background for page numbers
+// };
+
+// // ==================== CALCULATION UTILITIES ====================
+
+// /**
+//  * Capitalizes the first letter of each word in a title
+//  * excluding articles, coordinating conjunctions & prepositions
+//  * unless they're the first or last word
+//  */
+// export function capitalizeTitle(title: string): string {
+//   if (!title) return "";
+
+//   // Words that shouldn't be capitalized (unless they're first or last)
+//   const minorWords = new Set([
+//     "a",
+//     "an",
+//     "the",
+//     "and",
+//     "but",
+//     "or",
+//     "for",
+//     "nor",
+//     "on",
+//     "at",
+//     "to",
+//     "by",
+//     "in",
+//     "of",
+//     "with",
+//     "from",
+//     "as",
+//   ]);
+
+//   const words = title.split(" ");
+
+//   return words
+//     .map((word, index) => {
+//       // Always capitalize first and last word
+//       if (index === 0 || index === words.length - 1) {
+//         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+//       }
+
+//       // Check if it's a minor word
+//       if (minorWords.has(word.toLowerCase())) {
+//         return word.toLowerCase();
+//       }
+
+//       // For all other words, capitalize the first letter
+//       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+//     })
+//     .join(" ");
+// }
+
+// /**
 //  * Calculates spine width in inches based on page count for hardcover books
 //  * Following Lulu's hardcover spine width table
 //  */
@@ -56,14 +143,102 @@
 //   return 0.25; // Default for our case (under 84 pages)
 // }
 
-// // Design constants
-// const DESIGN = {
-//   DEEP_BLUE: "#1A365D", // Deep dark blue for borders and other decorative elements
-//   DARK_GREY: "#333333", // Dark grey for spine
-//   TEXT_COLOR: "#333333", // Dark shade for text content
-//   LIGHT_GREY: "#999999", // Light grey for placeholder text
-//   PAGE_NUMBER_BG: "#F5F5F5", // Light background for page numbers
-// };
+// /**
+//  * Calculate gutter margin addition based on page count
+//  * Following Lulu's gutter margin guidelines
+//  */
+// function calculateGutterAddition(pageCount: number): number {
+//   if (pageCount < 60) return 0; // No additional gutter for less than 60 pages
+//   if (pageCount <= 150) return 0.125; // 0.125" additional for 61-150 pages
+//   if (pageCount <= 400) return 0.5; // 0.5" additional for 151-400 pages
+//   if (pageCount <= 600) return 0.625; // 0.625" additional for 401-600 pages
+//   return 0.75; // 0.75" additional for over 600 pages
+// }
+
+// // ==================== FILE AND DOCUMENT SETUP ====================
+
+// /**
+//  * Creates a unique filename and file path for a PDF
+//  */
+// function createPdfFilePath(
+//   bookId: string,
+//   filePrefix: string
+// ): { fileName: string; filePath: string } {
+//   const tempDir = os.tmpdir();
+//   const fileName = `${filePrefix}_${bookId}_${uuidv4()}.pdf`;
+//   const filePath = path.join(tempDir, fileName);
+//   return { fileName, filePath };
+// }
+
+// /**
+//  * Creates a new PDFDocument for the interior pages
+//  */
+// function createInteriorPdfDocument(
+//   title: string,
+//   documentWidth: number,
+//   documentHeight: number
+// ): PDFKit.PDFDocument {
+//   return new PDFDocument({
+//     size: [documentWidth, documentHeight],
+//     // Don't set margins here as we'll handle the safety margin manually
+//     margins: {
+//       top: 0,
+//       bottom: 0,
+//       left: 0,
+//       right: 0,
+//     },
+//     info: {
+//       Title: title,
+//       Creator: "Your Custom Books Store",
+//       Producer: "Your Custom Books Store",
+//     },
+//     // Use PDF 1.6 to ensure proper compatibility with Lulu's systems
+//     pdfVersion: "1.6",
+//     compress: true,
+//     autoFirstPage: true,
+//     // Use PDF/A-1b which handles color profiles better for printing
+//     subset: "PDF/A-1b",
+//     bufferPages: false,
+//   });
+// }
+
+// /**
+//  * Creates a new PDFDocument for the cover
+//  */
+// function createCoverPdfDocument(
+//   title: string,
+//   documentWidth: number,
+//   documentHeight: number
+// ): PDFKit.PDFDocument {
+//   return new PDFDocument({
+//     size: [documentWidth, documentHeight],
+//     margins: {
+//       top: 0,
+//       bottom: 0,
+//       left: 0,
+//       right: 0,
+//     },
+//     info: {
+//       Title: `Cover - ${title}`,
+//       Creator: "Your Custom Books Store",
+//       Producer: "Your Custom Books Store",
+//     },
+//     pdfVersion: "1.6",
+//     compress: true,
+//     autoFirstPage: true,
+//     subset: "PDF/A-1b",
+//     bufferPages: false,
+//   });
+// }
+
+// // ==================== INTERIOR PAGE DRAWING FUNCTIONS ====================
+
+// /**
+//  * Draws a white background for a page
+//  */
+// function drawWhiteBackground(doc: PDFKit.PDFDocument): void {
+//   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+// }
 
 // /**
 //  * Draws a title page with decorative elements and centered title
@@ -73,9 +248,9 @@
 //   title: string,
 //   characterName?: string,
 //   safetyMargin = 36 // Default safetyMargin in points (0.5")
-// ) {
+// ): void {
 //   // Set white background extending to bleed area
-//   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+//   drawWhiteBackground(doc);
 
 //   // Draw title page decoration - simple border only, no squares outside
 //   drawTitleDecoration(doc, safetyMargin);
@@ -126,7 +301,7 @@
 // export function drawTitleDecoration(
 //   doc: PDFKit.PDFDocument,
 //   safetyMargin = 36 // Default safetyMargin in points (0.5")
-// ) {
+// ): void {
 //   // Get document dimensions
 //   const { width, height } = doc.page;
 
@@ -163,9 +338,9 @@
 // /**
 //  * Draws an empty page with no content or decoration
 //  */
-// export function drawEmptyPage(doc: PDFKit.PDFDocument) {
+// export function drawEmptyPage(doc: PDFKit.PDFDocument): void {
 //   // Set white background extending to bleed area
-//   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+//   drawWhiteBackground(doc);
 
 //   logger.info("Empty page drawn");
 // }
@@ -177,9 +352,9 @@
 //   doc: PDFKit.PDFDocument,
 //   dedicationText?: string,
 //   safetyMargin = 36 // Default safetyMargin in points (0.5")
-// ) {
+// ): void {
 //   // Set white background extending to bleed area
-//   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+//   drawWhiteBackground(doc);
 
 //   // Draw dedication page decoration with stars (not dots)
 //   drawDedicationDecoration(doc, safetyMargin);
@@ -227,7 +402,7 @@
 // export function drawDedicationDecoration(
 //   doc: PDFKit.PDFDocument,
 //   safetyMargin = 36 // Default safetyMargin in points (0.5")
-// ) {
+// ): void {
 //   // Get document dimensions
 //   const { width, height } = doc.page;
 
@@ -256,6 +431,23 @@
 //     .stroke();
 
 //   // Draw stars in each corner (inside the border)
+//   drawStarsInCorners(doc, frameMargin, width, height);
+
+//   // Restore the graphics state
+//   doc.restore();
+
+//   logger.info("Dedication decoration drawn");
+// }
+
+// /**
+//  * Draw stars in the corners of the dedication page
+//  */
+// function drawStarsInCorners(
+//   doc: PDFKit.PDFDocument,
+//   frameMargin: number,
+//   width: number,
+//   height: number
+// ): void {
 //   const starInset = 25; // Distance from the corner
 //   const starSize = 12; // Size of the star
 
@@ -313,11 +505,6 @@
 //     height - frameMargin - starInset,
 //     starSize
 //   );
-
-//   // Restore the graphics state
-//   doc.restore();
-
-//   logger.info("Dedication decoration drawn");
 // }
 
 // /**
@@ -330,9 +517,9 @@
 //   leftMargin: number,
 //   rightMargin: number,
 //   safetyMargin = 36 // Default safety margin in points (0.5")
-// ) {
+// ): void {
 //   // Set white background extending to bleed area
-//   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+//   drawWhiteBackground(doc);
 
 //   // Draw text page decoration
 //   drawTextPageDecoration(doc, safetyMargin);
@@ -369,7 +556,7 @@
 //   safetyMargin = 36, // Default safety margin in points (0.5")
 //   color = DESIGN.DEEP_BLUE,
 //   size = 30
-// ) {
+// ): void {
 //   // Get document dimensions
 //   const { width, height } = doc.page;
 
@@ -427,7 +614,7 @@
 // ): Promise<boolean> {
 //   try {
 //     // Set white background extending to bleed area (in case image fails to load)
-//     doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+//     drawWhiteBackground(doc);
 
 //     // Fetch image from URL
 //     const imageBuffer = await fetchImageAsBuffer(imageUrl);
@@ -486,7 +673,7 @@
 //   rightMargin: number,
 //   safetyMargin = 36, // Default safety margin in points (0.5")
 //   onImagePage = false // Whether the page number is on an image page
-// ) {
+// ): void {
 //   // Do not add page numbers to special pages or if page number is 0 or negative
 //   if (pageNumber <= 0) return;
 
@@ -530,9 +717,9 @@
 //   doc: PDFKit.PDFDocument,
 //   publisherName = "Your Custom Books Store",
 //   safetyMargin = 36 // Default safety margin in points (0.5")
-// ) {
+// ): void {
 //   // Set white background extending to bleed area
-//   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#FFFFFF");
+//   drawWhiteBackground(doc);
 
 //   // Add decorative corners for consistency with text pages
 //   drawTextPageDecoration(doc, safetyMargin);
@@ -571,16 +758,151 @@
 //   logger.info("Copyright page drawn successfully");
 // }
 
+// // ==================== COVER PAGE DRAWING FUNCTIONS ====================
+
 // /**
-//  * Calculate gutter margin addition based on page count
-//  * Following Lulu's gutter margin guidelines
+//  * Draws the back cover with blue background and text
 //  */
-// function calculateGutterAddition(pageCount: number): number {
-//   if (pageCount < 60) return 0; // No additional gutter for less than 60 pages
-//   if (pageCount <= 150) return 0.125; // 0.125" additional for 61-150 pages
-//   if (pageCount <= 400) return 0.5; // 0.5" additional for 151-400 pages
-//   if (pageCount <= 600) return 0.625; // 0.625" additional for 401-600 pages
-//   return 0.75; // 0.75" additional for over 600 pages
+// function drawBackCover(
+//   doc: PDFKit.PDFDocument,
+//   backCoverX: number,
+//   backCoverWidth: number,
+//   verticalOffset: number,
+//   trimHeight: number,
+//   bleedMargin: number,
+//   safetyMargin: number
+// ): void {
+//   // BACK COVER - Deep blue background extending to the bleed area
+//   // This covers the white area and extends into the Dark Navy Blue Border in the template
+//   doc
+//     .rect(
+//       backCoverX - bleedMargin, // Extend left by bleed margin
+//       verticalOffset - bleedMargin, // Extend top by bleed margin
+//       backCoverWidth + bleedMargin, // Extend right by bleed margin
+//       trimHeight + bleedMargin * 2 // Extend top and bottom by bleed margin
+//     )
+//     .fill(DESIGN.DEEP_BLUE);
+
+//   // Add publisher info at top of back cover (in white text)
+//   // Moved further down from the top edge as requested
+//   doc.font("Bold");
+//   doc.fontSize(14);
+//   doc.fillColor("#FFFFFF");
+
+//   // Position text within safety margin, but moved down a bit (added 40 points)
+//   doc.text(
+//     "Your Custom Books Store",
+//     backCoverX + safetyMargin,
+//     verticalOffset + safetyMargin + 40, // Moved down by 40 points
+//     {
+//       width: backCoverWidth - safetyMargin * 2,
+//       align: "center",
+//     }
+//   );
+
+//   // Book description - properly positioned within safety margins
+//   doc.font("Regular");
+//   doc.fontSize(12);
+//   doc.fillColor("#FFFFFF");
+//   doc.text(
+//     "A custom children's book created especially for you. This personalized story features your child's name and characteristics to create a unique reading experience they'll cherish.",
+//     backCoverX + safetyMargin,
+//     verticalOffset + trimHeight / 3,
+//     {
+//       width: backCoverWidth - safetyMargin * 2,
+//       align: "center",
+//       lineGap: 3,
+//     }
+//   );
+
+//   // Copyright notice - ensure it stays within safety margin from bottom
+//   doc.font("Regular");
+//   doc.fontSize(10);
+//   doc.fillColor("#FFFFFF");
+//   doc.text(
+//     `© ${new Date().getFullYear()} Your Custom Books Store\nAll rights reserved.`,
+//     backCoverX + safetyMargin,
+//     verticalOffset + trimHeight - safetyMargin - 40,
+//     {
+//       width: backCoverWidth - safetyMargin * 2,
+//       align: "center",
+//     }
+//   );
+// }
+
+// /**
+//  * Draws the spine of the book
+//  */
+// function drawSpine(
+//   doc: PDFKit.PDFDocument,
+//   spineX: number,
+//   spineWidth: number,
+//   verticalOffset: number,
+//   trimHeight: number,
+//   bleedMargin: number
+// ): void {
+//   // SPINE - Dark grey, following Lulu's guidelines to avoid text for thin books
+//   doc
+//     .rect(
+//       spineX, // Spine starts at spine X position
+//       verticalOffset - bleedMargin, // Extend top by bleed margin
+//       spineWidth, // Spine width based on page count
+//       trimHeight + bleedMargin * 2 // Extend top and bottom by bleed margin
+//     )
+//     .fill(DESIGN.DARK_GREY);
+// }
+
+// /**
+//  * Draw the front cover with image
+//  */
+// async function drawFrontCover(
+//   doc: PDFKit.PDFDocument,
+//   frontCoverX: number,
+//   frontCoverWidth: number,
+//   verticalOffset: number,
+//   trimHeight: number,
+//   bleedMargin: number,
+//   safetyMargin: number,
+//   coverImage?: string
+// ): Promise<void> {
+//   if (coverImage) {
+//     try {
+//       const imageBuffer = await fetchImageAsBuffer(coverImage);
+
+//       // Draw image to fill the entire front cover INCLUDING bleed area
+//       // This ensures the image extends beyond the trim lines as recommended by Lulu
+//       doc.image(
+//         imageBuffer,
+//         frontCoverX - bleedMargin, // Start left of the trim edge for bleed
+//         verticalOffset - bleedMargin, // Start above the trim edge for bleed
+//         {
+//           width: frontCoverWidth + bleedMargin * 2, // Extend right by bleed
+//           height: trimHeight + bleedMargin * 2, // Extend top and bottom by bleed
+//         }
+//       );
+//     } catch (error) {
+//       logger.error("Error adding cover image:", error);
+//       // Fall back to placeholder if image fails
+//       doc
+//         .rect(
+//           frontCoverX - bleedMargin,
+//           verticalOffset - bleedMargin,
+//           frontCoverWidth + bleedMargin * 2,
+//           trimHeight + bleedMargin * 2
+//         )
+//         .fill("#E0E0E0");
+//     }
+//   } else {
+//     // If no cover image, use a placeholder color that extends to bleed area
+//     doc
+//       .rect(
+//         frontCoverX - bleedMargin,
+//         verticalOffset - bleedMargin,
+//         frontCoverWidth + bleedMargin * 2,
+//         trimHeight + bleedMargin * 2
+//       )
+//       .fill("#E0E0E0");
+//   }
 // }
 
 // /**
@@ -602,85 +924,48 @@
 //       );
 //     }
 
-//     // 1. Create a unique filename for the PDF
-//     const tempDir = os.tmpdir();
-//     const fileName = `interior_${book.id}_${uuidv4()}.pdf`;
-//     const filePath = path.join(tempDir, fileName);
+//     // Create a unique filename and file path for the PDF
+//     const { fileName, filePath } = createPdfFilePath(book.id, "interior");
 
-//     // 2. Create a PDFKit document with proper dimensions including bleed
-//     // Using Lulu's exact specifications: 8.75" x 11.25" for US Letter with bleed
+//     // Calculate document dimensions
 //     const docWidth = inchesToPoints(INTERIOR_PDF.DOCUMENT_WIDTH);
 //     const docHeight = inchesToPoints(INTERIOR_PDF.DOCUMENT_HEIGHT);
 
-//     const doc = new PDFDocument({
-//       size: [docWidth, docHeight],
-//       // Don't set margins here as we'll handle the safety margin manually
-//       margins: {
-//         top: 0,
-//         bottom: 0,
-//         left: 0,
-//         right: 0,
-//       },
-//       info: {
-//         Title: book.title,
-//         Creator: "Your Custom Books Store",
-//         Producer: "Your Custom Books Store",
-//       },
-//       // Use PDF 1.6 to ensure proper compatibility with Lulu's systems
-//       pdfVersion: "1.6",
-//       compress: true,
-//       autoFirstPage: true,
-//       // Use PDF/A-1b which handles color profiles better for printing
-//       subset: "PDF/A-1b",
-//       bufferPages: false,
-//     });
+//     // Create a PDFKit document with proper dimensions
+//     const doc = createInteriorPdfDocument(book.title, docWidth, docHeight);
 
-//     // 3. Pipe the PDF to a file
+//     // Pipe the PDF to a file
 //     const writeStream = fs.createWriteStream(filePath);
 //     doc.pipe(writeStream);
 
-//     // 4. Register custom fonts for proper embedding
-//     try {
-//       doc.registerFont("Regular", FONT_PATHS.REGULAR);
-//       doc.registerFont("Bold", FONT_PATHS.BOLD);
-//       doc.registerFont("Italic", FONT_PATHS.ITALIC);
-//       doc.registerFont("BoldItalic", FONT_PATHS.BOLD_ITALIC);
+//     // Register fonts for the document
+//     registerFonts(doc);
 
-//       // Set default font
-//       doc.font("Regular");
-//       logger.info("Custom fonts registered successfully");
-//     } catch (fontError) {
-//       logger.error("Error registering custom fonts:", fontError);
-//       logger.warn(
-//         "Falling back to standard fonts. Note: This may result in font embedding issues with Lulu."
-//       );
-//     }
-
-//     // 5. Sort pages by page number to ensure correct order
+//     // Sort pages by page number to ensure correct order
 //     const sortedPages = [...book.pages].sort(
 //       (a, b) => a.pageNumber - b.pageNumber
 //     );
 
-//     // 6. Track page count for return value
+//     // Track page count for return value
 //     let pageCount = 0;
 
-//     // 7. Keep track of display page number (starting from 1 for content pages)
+//     // Keep track of display page number (starting from 1 for content pages)
 //     let displayPageNumber = 0;
 
-//     // 8. Calculate safety margin in points
+//     // Calculate safety margin in points
 //     const safetyMargin = inchesToPoints(INTERIOR_PDF.SAFETY_MARGIN);
 
-//     // 9. Calculate gutter addition based on page count
+//     // Calculate gutter addition based on page count
 //     const gutterAddition = inchesToPoints(
 //       calculateGutterAddition(book.pageCount)
 //     );
 
-//     // 10. Add title page (first page, right-hand side)
+//     // Add title page (first page, right-hand side)
 //     const characterName = book.character?.name;
 //     drawTitlePage(doc, book.title, characterName, safetyMargin);
 //     pageCount++;
 
-//     // 11. Check if we have a dedication - only add dedication pages if we have content
+//     // Check if we have a dedication - only add dedication pages if we have content
 //     const dedicationText = book.pageDedication || book.coverDedication || "";
 //     const hasDedication = dedicationText && dedicationText.trim().length > 0;
 
@@ -718,7 +1003,7 @@
 //       }
 //     }
 
-//     // 12. Process all content pages
+//     // Process all content pages
 //     for (let i = 0; i < contentPages.length; i++) {
 //       const page = contentPages[i];
 
@@ -819,7 +1104,7 @@
 //       }
 //     }
 
-//     // 13. For "The End" page, ensure it's on the right side (odd page)
+//     // For "The End" page, ensure it's on the right side (odd page)
 //     // First ensure we have an empty page on the left (even page)
 //     if (pageCount % 2 === 1) {
 //       // If current page count is odd, next page would be even - add empty page
@@ -833,7 +1118,7 @@
 //     drawCopyrightPage(doc, "Your Custom Books Store", safetyMargin);
 //     pageCount++;
 
-//     // 14. Ensure minimum page count requirement (24 for hardcover per Lulu's requirements)
+//     // Ensure minimum page count requirement (24 for hardcover per Lulu's requirements)
 //     // But limit to 32 pages max as specified in your requirements
 //     while (pageCount < 24 && pageCount < 32) {
 //       doc.addPage();
@@ -841,17 +1126,17 @@
 //       pageCount++;
 //     }
 
-//     // 15. Ensure we end with an even total page count as required by Lulu
+//     // Ensure we end with an even total page count as required by Lulu
 //     if (pageCount % 2 !== 0 && pageCount < 32) {
 //       doc.addPage();
 //       drawEmptyPage(doc);
 //       pageCount++;
 //     }
 
-//     // 16. Finalize the PDF
+//     // Finalize the PDF
 //     doc.end();
 
-//     // 17. Return a promise that resolves when the PDF is written to file
+//     // Return a promise that resolves when the PDF is written to file
 //     return new Promise<PrintPdfGenerationResult>((resolve, reject) => {
 //       writeStream.on("finish", () => {
 //         logger.info(`Interior PDF generated successfully: ${filePath}`);
@@ -876,6 +1161,7 @@
 //     );
 //   }
 // }
+
 // /**
 //  * Generate a cover PDF file for Lulu printing
 //  * Following Lulu's exact specifications for cover layout with proper bleed and safety margins
@@ -887,12 +1173,10 @@
 //   try {
 //     logger.info(`Starting cover PDF generation for book: ${book.id}`);
 
-//     // 1. Create a unique filename for the PDF
-//     const tempDir = os.tmpdir();
-//     const fileName = `cover_${book.id}_${uuidv4()}.pdf`;
-//     const filePath = path.join(tempDir, fileName);
+//     // Create a unique filename and file path for the PDF
+//     const { fileName, filePath } = createPdfFilePath(book.id, "cover");
 
-//     // 2. Use Lulu's dimensions from API when available, otherwise use our constants
+//     // Use Lulu's dimensions from API when available, otherwise use our constants
 //     let documentWidth, documentHeight;
 
 //     if (coverDimensions && coverDimensions.width && coverDimensions.height) {
@@ -918,45 +1202,21 @@
 //       );
 //     }
 
-//     // 3. Create a PDFKit document with the exact dimensions
-//     const doc = new PDFDocument({
-//       size: [documentWidth, documentHeight],
-//       margins: {
-//         top: 0,
-//         bottom: 0,
-//         left: 0,
-//         right: 0,
-//       },
-//       info: {
-//         Title: `Cover - ${book.title}`,
-//         Creator: "Your Custom Books Store",
-//         Producer: "Your Custom Books Store",
-//       },
-//       pdfVersion: "1.6",
-//       compress: true,
-//       autoFirstPage: true,
-//       subset: "PDF/A-1b",
-//       bufferPages: false,
-//     });
+//     // Create a PDFKit document with the exact dimensions
+//     const doc = createCoverPdfDocument(
+//       book.title,
+//       documentWidth,
+//       documentHeight
+//     );
 
-//     // 4. Pipe the PDF to a file
+//     // Pipe the PDF to a file
 //     const writeStream = fs.createWriteStream(filePath);
 //     doc.pipe(writeStream);
 
-//     // 5. Register custom fonts
-//     try {
-//       doc.registerFont("Regular", FONT_PATHS.REGULAR);
-//       doc.registerFont("Bold", FONT_PATHS.BOLD);
-//       doc.registerFont("Italic", FONT_PATHS.ITALIC);
-//       doc.registerFont("BoldItalic", FONT_PATHS.BOLD_ITALIC);
-//       doc.font("Regular");
-//       logger.info("Custom fonts registered successfully for cover");
-//     } catch (fontError) {
-//       logger.error("Error registering custom fonts for cover:", fontError);
-//       logger.warn("Falling back to standard fonts for cover.");
-//     }
+//     // Register fonts for the document
+//     registerFonts(doc);
 
-//     // 6. Calculate dimensions for different parts of the cover
+//     // Calculate dimensions for different parts of the cover
 //     // Convert all measurements to points for PDFKit
 //     const trimWidth = inchesToPoints(COVER_PDF.TRIM_WIDTH);
 //     const trimHeight = inchesToPoints(COVER_PDF.TRIM_HEIGHT);
@@ -970,7 +1230,7 @@
 //     const backCoverWidth = trimWidth;
 //     const frontCoverWidth = trimWidth;
 
-//     // 7. Calculate positions for different cover parts
+//     // Calculate positions for different cover parts
 //     // Center the entire cover layout within the document
 //     const totalPrintWidth = backCoverWidth + spineWidth + frontCoverWidth;
 //     const horizontalOffset = (documentWidth - totalPrintWidth) / 2;
@@ -982,119 +1242,36 @@
 //     // Vertical offset to center the cover in the document
 //     const verticalOffset = (documentHeight - trimHeight) / 2;
 
-//     // 8. Create a white background for the entire document
-//     doc.rect(0, 0, documentWidth, documentHeight).fill("#FFFFFF");
+//     // Create a white background for the entire document
+//     drawWhiteBackground(doc);
 
-//     // 9. BACK COVER - Deep blue background extending to the bleed area
-//     // This covers the white area and extends into the Dark Navy Blue Border in the template
-//     doc
-//       .rect(
-//         backCoverX - bleedMargin, // Extend left by bleed margin
-//         verticalOffset - bleedMargin, // Extend top by bleed margin
-//         backCoverWidth + bleedMargin, // Extend right by bleed margin
-//         trimHeight + bleedMargin * 2 // Extend top and bottom by bleed margin
-//       )
-//       .fill(DESIGN.DEEP_BLUE);
-
-//     // 10. Add publisher info at top of back cover (in white text)
-//     // Moved further down from the top edge as requested
-//     doc.font("Bold");
-//     doc.fontSize(14);
-//     doc.fillColor("#FFFFFF");
-
-//     // Position text within safety margin, but moved down a bit (added 40 points)
-//     doc.text(
-//       "Your Custom Books Store",
-//       backCoverX + safetyMargin,
-//       verticalOffset + safetyMargin + 40, // Moved down by 40 points
-//       {
-//         width: backCoverWidth - safetyMargin * 2,
-//         align: "center",
-//       }
+//     // Draw back cover with blue background and text
+//     drawBackCover(
+//       doc,
+//       backCoverX,
+//       backCoverWidth,
+//       verticalOffset,
+//       trimHeight,
+//       bleedMargin,
+//       safetyMargin
 //     );
 
-//     // 11. Book description - properly positioned within safety margins
-//     doc.font("Regular");
-//     doc.fontSize(12);
-//     doc.fillColor("#FFFFFF");
-//     doc.text(
-//       "A custom children's book created especially for you. This personalized story features your child's name and characteristics to create a unique reading experience they'll cherish.",
-//       backCoverX + safetyMargin,
-//       verticalOffset + trimHeight / 3,
-//       {
-//         width: backCoverWidth - safetyMargin * 2,
-//         align: "center",
-//         lineGap: 3,
-//       }
+//     // Draw spine
+//     drawSpine(doc, spineX, spineWidth, verticalOffset, trimHeight, bleedMargin);
+
+//     // Draw front cover with image
+//     await drawFrontCover(
+//       doc,
+//       frontCoverX,
+//       frontCoverWidth,
+//       verticalOffset,
+//       trimHeight,
+//       bleedMargin,
+//       safetyMargin,
+//       book.coverImage!
 //     );
 
-//     // 12. Copyright notice - ensure it stays within safety margin from bottom
-//     doc.font("Regular");
-//     doc.fontSize(10);
-//     doc.fillColor("#FFFFFF");
-//     doc.text(
-//       `© ${new Date().getFullYear()} Your Custom Books Store\nAll rights reserved.`,
-//       backCoverX + safetyMargin,
-//       verticalOffset + trimHeight - safetyMargin - 40,
-//       {
-//         width: backCoverWidth - safetyMargin * 2,
-//         align: "center",
-//       }
-//     );
-
-//     // 13. SPINE - Dark grey, following Lulu's guidelines to avoid text for thin books
-//     doc
-//       .rect(
-//         spineX, // Spine starts at spine X position
-//         verticalOffset - bleedMargin, // Extend top by bleed margin
-//         spineWidth, // Spine width based on page count
-//         trimHeight + bleedMargin * 2 // Extend top and bottom by bleed margin
-//       )
-//       .fill(DESIGN.DARK_GREY);
-
-//     // 14. REMOVED: White circle from spine as requested
-
-//     // 15. FRONT COVER - Implement proper full bleed image handling
-//     if (book.coverImage) {
-//       try {
-//         const imageBuffer = await fetchImageAsBuffer(book.coverImage);
-
-//         // Draw image to fill the entire front cover INCLUDING bleed area
-//         // This ensures the image extends beyond the trim lines as recommended by Lulu
-//         doc.image(
-//           imageBuffer,
-//           frontCoverX - bleedMargin, // Start left of the trim edge for bleed
-//           verticalOffset - bleedMargin, // Start above the trim edge for bleed
-//           {
-//             width: frontCoverWidth + bleedMargin * 2, // Extend right by bleed
-//             height: trimHeight + bleedMargin * 2, // Extend top and bottom by bleed
-//           }
-//         );
-//       } catch (error) {
-//         logger.error("Error adding cover image:", error);
-//         // Fall back to placeholder if image fails
-//         doc
-//           .rect(
-//             frontCoverX - bleedMargin,
-//             verticalOffset - bleedMargin,
-//             frontCoverWidth + bleedMargin * 2,
-//             trimHeight + bleedMargin * 2
-//           )
-//           .fill("#E0E0E0");
-//       }
-//     } else {
-//       // If no cover image, use a placeholder color that extends to bleed area
-//       doc
-//         .rect(
-//           frontCoverX - bleedMargin,
-//           verticalOffset - bleedMargin,
-//           frontCoverWidth + bleedMargin * 2,
-//           trimHeight + bleedMargin * 2
-//         )
-//         .fill("#E0E0E0");
-//     }
-
-//     // 16. FRONT COVER TEXT - Title with rounded background overlay
+//     // FRONT COVER TEXT - Title with rounded background overlay
 //     const titlePadding = 15;
 //     const titleY = verticalOffset + safetyMargin + 20; // Position from top, respecting safety margin
 //     const titleFontSize = 28;
@@ -1135,7 +1312,7 @@
 //       align: "center",
 //     });
 
-//     // 17. Cover dedication or subtitle with rounded corners
+//     // Cover dedication or subtitle with rounded corners
 //     if (book.coverDedication) {
 //       const dedicationFontSize = 14;
 //       const dedicationPadding = 10;
@@ -1192,8 +1369,9 @@
 //         }
 //       );
 //     }
-//     // 19. Add debugging logs for development without visual elements
-//     if (process.env.NODE_ENV === "development") {
+
+//     // Add debugging logs for development without visual elements
+//     if (config.APP.NODE_ENV === "development") {
 //       logger.info(`Cover PDF dimensions: ${documentWidth} x ${documentHeight}`);
 //       logger.info(
 //         `Back cover width: ${backCoverWidth}, Front cover width: ${frontCoverWidth}`
@@ -1206,10 +1384,10 @@
 //       );
 //     }
 
-//     // 20. Finalize the PDF
+//     // Finalize the PDF
 //     doc.end();
 
-//     // 21. Return a promise that resolves when the PDF is written to file
+//     // Return a promise that resolves when the PDF is written to file
 //     return new Promise<PrintPdfGenerationResult>((resolve, reject) => {
 //       writeStream.on("finish", () => {
 //         logger.info(`Cover PDF generated successfully: ${filePath}`);
@@ -1234,55 +1412,6 @@
 //     );
 //   }
 // }
-
-// /**
-//  * Capitalizes the first letter of each word in a title
-//  * excluding articles, coordinating conjunctions & prepositions
-//  * unless they're the first or last word
-//  */
-// export function capitalizeTitle(title: string): string {
-//   if (!title) return "";
-
-//   // Words that shouldn't be capitalized (unless they're first or last)
-//   const minorWords = new Set([
-//     "a",
-//     "an",
-//     "the",
-//     "and",
-//     "but",
-//     "or",
-//     "for",
-//     "nor",
-//     "on",
-//     "at",
-//     "to",
-//     "by",
-//     "in",
-//     "of",
-//     "with",
-//     "from",
-//     "as",
-//   ]);
-
-//   const words = title.split(" ");
-
-//   return words
-//     .map((word, index) => {
-//       // Always capitalize first and last word
-//       if (index === 0 || index === words.length - 1) {
-//         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-//       }
-
-//       // Check if it's a minor word
-//       if (minorWords.has(word.toLowerCase())) {
-//         return word.toLowerCase();
-//       }
-
-//       // For all other words, capitalize the first letter
-//       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-//     })
-//     .join(" ");
-// }
 import fs from "fs";
 import path from "path";
 import os from "os";
@@ -1294,7 +1423,7 @@ import { fetchImageAsBuffer } from "@/utils/imageUtils";
 import { BookPrint } from "@/types/book";
 import { CoverDimensions, PrintPdfGenerationResult } from "@/types/print";
 import config from "@/lib/config";
-
+import QRCode from "qrcode";
 // ==================== FONT CONFIGURATION ====================
 
 // Define paths to our custom fonts relative to the project root
@@ -1440,6 +1569,26 @@ function calculateGutterAddition(pageCount: number): number {
   return 0.75; // 0.75" additional for over 600 pages
 }
 
+/**
+ * QR code generator
+ */
+
+async function generateQRCodeDataURL(url: string): Promise<string> {
+  try {
+    return await QRCode.toDataURL(url, {
+      width: 80,
+      margin: 1,
+      color: {
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
+    });
+  } catch (error) {
+    console.error("Error generating QR code:", error);
+    return "";
+  }
+}
+
 // ==================== FILE AND DOCUMENT SETUP ====================
 
 /**
@@ -1474,8 +1623,8 @@ function createInteriorPdfDocument(
     },
     info: {
       Title: title,
-      Creator: "Your Custom Books Store",
-      Producer: "Your Custom Books Store",
+      Creator: "TaleByYou",
+      Producer: "TaleByYou",
     },
     // Use PDF 1.6 to ensure proper compatibility with Lulu's systems
     pdfVersion: "1.6",
@@ -1505,8 +1654,8 @@ function createCoverPdfDocument(
     },
     info: {
       Title: `Cover - ${title}`,
-      Creator: "Your Custom Books Store",
-      Producer: "Your Custom Books Store",
+      Creator: "TaleByYou",
+      Producer: "TaleByYou",
     },
     pdfVersion: "1.6",
     compress: true,
@@ -1648,7 +1797,7 @@ export function drawDedicationPage(
   const safeWidth = doc.page.width - safetyMargin * 2;
 
   // Position dedication exactly in the center of the page
-  const centerY = doc.page.height / 2 - 70;
+  const centerY = doc.page.height / 2 - 80;
 
   if (dedicationText) {
     // Add large opening quotation mark
@@ -2000,7 +2149,7 @@ export function drawPageNumber(
  */
 export function drawCopyrightPage(
   doc: PDFKit.PDFDocument,
-  publisherName = "Your Custom Books Store",
+  publisherName = "TaleByYou",
   safetyMargin = 36 // Default safety margin in points (0.5")
 ): void {
   // Set white background extending to bleed area
@@ -2048,7 +2197,7 @@ export function drawCopyrightPage(
 /**
  * Draws the back cover with blue background and text
  */
-function drawBackCover(
+async function drawBackCover(
   doc: PDFKit.PDFDocument,
   backCoverX: number,
   backCoverWidth: number,
@@ -2056,15 +2205,15 @@ function drawBackCover(
   trimHeight: number,
   bleedMargin: number,
   safetyMargin: number
-): void {
+): Promise<void> {
   // BACK COVER - Deep blue background extending to the bleed area
   // This covers the white area and extends into the Dark Navy Blue Border in the template
   doc
     .rect(
-      backCoverX - bleedMargin, // Extend left by bleed margin
-      verticalOffset - bleedMargin, // Extend top by bleed margin
-      backCoverWidth + bleedMargin, // Extend right by bleed margin
-      trimHeight + bleedMargin * 2 // Extend top and bottom by bleed margin
+      0, // Start at left edge of document
+      verticalOffset - bleedMargin,
+      backCoverX + backCoverWidth, // Extend to end of back cover area
+      trimHeight + bleedMargin * 2
     )
     .fill(DESIGN.DEEP_BLUE);
 
@@ -2076,7 +2225,7 @@ function drawBackCover(
 
   // Position text within safety margin, but moved down a bit (added 40 points)
   doc.text(
-    "Your Custom Books Store",
+    "TaleByYou",
     backCoverX + safetyMargin,
     verticalOffset + safetyMargin + 40, // Moved down by 40 points
     {
@@ -2090,7 +2239,7 @@ function drawBackCover(
   doc.fontSize(12);
   doc.fillColor("#FFFFFF");
   doc.text(
-    "A custom children's book created especially for you. This personalized story features your child's name and characteristics to create a unique reading experience they'll cherish.",
+    "Every child is the hero of their own story. This personalized adventure book features your child as the main character, creating a magical reading experience that will become a treasured keepsake for years to come.",
     backCoverX + safetyMargin,
     verticalOffset + trimHeight / 3,
     {
@@ -2105,14 +2254,37 @@ function drawBackCover(
   doc.fontSize(10);
   doc.fillColor("#FFFFFF");
   doc.text(
-    `© ${new Date().getFullYear()} Your Custom Books Store\nAll rights reserved.`,
+    `© ${new Date().getFullYear()} TaleByYou All rights reserved.\n\nVisit talebyyou.com`,
     backCoverX + safetyMargin,
-    verticalOffset + trimHeight - safetyMargin - 40,
+    verticalOffset + trimHeight - safetyMargin - 50, // Moved up slightly to fit website
     {
       width: backCoverWidth - safetyMargin * 2,
       align: "center",
     }
   );
+  // Add QR Code in bottom right corner
+  try {
+    const qrCodeDataURL = await generateQRCodeDataURL("https://talebyyou.com");
+    if (qrCodeDataURL) {
+      const qrSize = 60; // Size of QR code
+      const qrX = backCoverX + backCoverWidth - safetyMargin - qrSize;
+      const qrY = verticalOffset + trimHeight - safetyMargin - qrSize - 10;
+
+      doc.image(qrCodeDataURL, qrX, qrY, {
+        width: qrSize,
+        height: qrSize,
+      });
+
+      // Add text below QR code
+      doc.fontSize(8);
+      doc.text("talebyyou.com", qrX - 10, qrY + qrSize + 5, {
+        width: qrSize + 20,
+        align: "center",
+      });
+    }
+  } catch (error) {
+    console.error("Failed to add QR code:", error);
+  }
 }
 
 /**
@@ -2143,50 +2315,31 @@ function drawSpine(
 async function drawFrontCover(
   doc: PDFKit.PDFDocument,
   frontCoverX: number,
-  frontCoverWidth: number,
   verticalOffset: number,
   trimHeight: number,
   bleedMargin: number,
-  safetyMargin: number,
+  documentWidth: number,
   coverImage?: string
 ): Promise<void> {
-  if (coverImage) {
-    try {
-      const imageBuffer = await fetchImageAsBuffer(coverImage);
+  if (!coverImage) {
+    throw new Error("Cover image is required but not provided");
+  }
 
-      // Draw image to fill the entire front cover INCLUDING bleed area
-      // This ensures the image extends beyond the trim lines as recommended by Lulu
-      doc.image(
-        imageBuffer,
-        frontCoverX - bleedMargin, // Start left of the trim edge for bleed
-        verticalOffset - bleedMargin, // Start above the trim edge for bleed
-        {
-          width: frontCoverWidth + bleedMargin * 2, // Extend right by bleed
-          height: trimHeight + bleedMargin * 2, // Extend top and bottom by bleed
-        }
-      );
-    } catch (error) {
-      logger.error("Error adding cover image:", error);
-      // Fall back to placeholder if image fails
-      doc
-        .rect(
-          frontCoverX - bleedMargin,
-          verticalOffset - bleedMargin,
-          frontCoverWidth + bleedMargin * 2,
-          trimHeight + bleedMargin * 2
-        )
-        .fill("#E0E0E0");
-    }
-  } else {
-    // If no cover image, use a placeholder color that extends to bleed area
-    doc
-      .rect(
-        frontCoverX - bleedMargin,
-        verticalOffset - bleedMargin,
-        frontCoverWidth + bleedMargin * 2,
-        trimHeight + bleedMargin * 2
-      )
-      .fill("#E0E0E0");
+  try {
+    const imageBuffer = await fetchImageAsBuffer(coverImage);
+
+    // Draw image to fill the entire front cover INCLUDING bleed area
+    doc.image(imageBuffer, frontCoverX, verticalOffset - bleedMargin, {
+      width: documentWidth - frontCoverX, // Extend to right edge of document
+      height: trimHeight + bleedMargin * 2,
+    });
+  } catch (error) {
+    logger.error("Error loading cover image:", error);
+    throw new Error(
+      `Failed to load cover image: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 }
 
@@ -2251,7 +2404,7 @@ export async function generateInteriorPdf(
     pageCount++;
 
     // Check if we have a dedication - only add dedication pages if we have content
-    const dedicationText = book.pageDedication || book.coverDedication || "";
+    const dedicationText = book.pageDedication;
     const hasDedication = dedicationText && dedicationText.trim().length > 0;
 
     // Filter content pages (excluding special pages like dedication)
@@ -2400,7 +2553,7 @@ export async function generateInteriorPdf(
 
     // Now add "The End" page on the right side (odd page)
     doc.addPage();
-    drawCopyrightPage(doc, "Your Custom Books Store", safetyMargin);
+    drawCopyrightPage(doc, "TaleByYou", safetyMargin);
     pageCount++;
 
     // Ensure minimum page count requirement (24 for hardcover per Lulu's requirements)
@@ -2531,7 +2684,7 @@ export async function generateCoverPdf(
     drawWhiteBackground(doc);
 
     // Draw back cover with blue background and text
-    drawBackCover(
+    await drawBackCover(
       doc,
       backCoverX,
       backCoverWidth,
@@ -2548,11 +2701,10 @@ export async function generateCoverPdf(
     await drawFrontCover(
       doc,
       frontCoverX,
-      frontCoverWidth,
       verticalOffset,
       trimHeight,
       bleedMargin,
-      safetyMargin,
+      documentWidth,
       book.coverImage!
     );
 
@@ -2561,7 +2713,6 @@ export async function generateCoverPdf(
     const titleY = verticalOffset + safetyMargin + 20; // Position from top, respecting safety margin
     const titleFontSize = 28;
     // Define corner radius for rounded rectangles (tailwind md = 6px, lg = 8px)
-    const cornerRadius = 8; // Using tailwind's rounded-lg equivalent
 
     doc.font("Bold");
     doc.fontSize(titleFontSize);
@@ -2577,24 +2728,23 @@ export async function generateCoverPdf(
     // Ensure title doesn't exceed safe area width
     const safeAreaWidth = frontCoverWidth - safetyMargin * 2;
     const finalTitleWidth = Math.min(titleWidth, safeAreaWidth);
-    const titleHeight = titleFontSize + titlePadding * 2;
 
     // Center the title box horizontally within the safe area
     const titleX = frontCoverX + (frontCoverWidth - finalTitleWidth) / 2;
 
-    // Draw title background with rounded corners
+    // Add title text with white stroke (outline) - NO background rectangle
     doc
-      .roundedRect(titleX, titleY, finalTitleWidth, titleHeight, cornerRadius)
-      .fill("#F2F2F2");
+      .font("Bold")
+      .fontSize(titleFontSize)
+      .fillColor("white") // Change to WHITE fill
+      .strokeColor("#333333") // Change to DARK stroke
+      .lineWidth(1.5); // Much thinner stroke
 
-    // Reset opacity for text
-    doc.fillOpacity(1);
-
-    // Add title text
-    doc.fillColor(DESIGN.DEEP_BLUE);
     doc.text(displayTitle, titleX + titlePadding, titleY + titlePadding, {
       width: finalTitleWidth - titlePadding * 2,
       align: "center",
+      stroke: true,
+      fill: true,
     });
 
     // Cover dedication or subtitle with rounded corners
@@ -2618,7 +2768,6 @@ export async function generateCoverPdf(
         doc.widthOfString(displayDedication) + dedicationPadding * 4,
         safeAreaWidth // Ensure it stays within safe area width
       );
-
       const dedicationHeight =
         doc.heightOfString(displayDedication, {
           width: dedicationWidth - dedicationPadding * 2,
@@ -2627,7 +2776,7 @@ export async function generateCoverPdf(
 
       // Center horizontally within the front cover
       const dedicationX = frontCoverX + (frontCoverWidth - dedicationWidth) / 2;
-
+      const cornerRadius = 8;
       // Draw dedication background with rounded corners
       doc
         .roundedRect(

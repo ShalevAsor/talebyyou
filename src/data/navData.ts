@@ -19,6 +19,11 @@ export const navigationItems = [
     label: "Contact",
     description: "Contact Us",
   },
+  {
+    href: "/tutorials",
+    label: "Tutorials",
+    description: "Get help creating your book",
+  },
 ];
 
 export const adminNavigationItem = {

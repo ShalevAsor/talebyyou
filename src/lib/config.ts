@@ -89,9 +89,9 @@ const config = {
 
     // Email Addresses
     FROM: process.env.EMAIL_FROM || "noreply@talebyyou.com",
-    SUPPORT: process.env.EMAIL_SUPPORT || "support@talebyyou.com",
-    ORDER: process.env.EMAIL_ORDER || "orders@talebyyou.com",
-    INFO: process.env.EMAIL_INFO || "info@talebyyou.com",
+    SUPPORT: process.env.NEXT_PUBLIC_EMAIL_SUPPORT || "support@talebyyou.com",
+    ORDER: process.env.NEXT_PUBLIC_EMAIL_ORDER || "orders@talebyyou.com",
+    INFO: process.env.NEXT_PUBLIC_EMAIL_INFO || "info@talebyyou.com",
   },
 
   // Payment Configuration (PayPal)
