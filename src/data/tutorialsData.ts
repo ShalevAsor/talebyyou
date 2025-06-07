@@ -20,12 +20,12 @@ export const tutorialsData: Tutorial[] = [
     duration: "4:32",
   },
   {
-    id: "book-customization",
-    title: "Book Customization",
+    id: "template-selection",
+    title: "How to Choose the Perfect Book Template",
     description:
-      "Discover how to personalize your book with custom text, character names, and story elements to make it uniquely yours.",
+      " In this tutorial, you'll learn exactly how to choose the perfect book template for your personalized story on TaleByYou.",
     videoUrl: "https://www.youtube.com/embed/-qlp3sEtO5I", // Placeholder
-    thumbnail: "/images/placeholders/tn1.webp",
+    thumbnail: "/images/thumbnails/tn1.webp",
     duration: "2:03",
   },
   {
