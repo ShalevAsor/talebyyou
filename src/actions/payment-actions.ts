@@ -39,6 +39,7 @@ export async function createPayPalOrder(orderId: string): Promise<string> {
     }
     // const paypalOrder = await paypal.createOrder(Number(order.totalPrice));
     const paypalOrder = await paypal.createOrder(Number(2.69));
+
     // Save the PayPal order ID to our order
     await prisma.order.update({
       where: { id: orderId },

@@ -1,6 +1,6 @@
-// // src/components/payment/PaymentSection.tsx
 // "use client";
-// import React, { useState } from "react";
+
+// import React, { useState, useCallback, memo } from "react";
 // import {
 //   Card,
 //   CardContent,
@@ -16,103 +16,158 @@
 //   createPayPalOrder,
 // } from "@/actions/payment-actions";
 // import { toast } from "react-toastify";
+// import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
 // import { useRouter } from "next/navigation";
+
 // interface PaymentSectionProps {
 //   orderId: string;
 //   payPalClientId: string;
 // }
 
-// export function PaymentSection({
+// /**
+//  * PaymentSection component handles payment processing via PayPal
+//  * Manages payment state and redirects users after successful payment
+//  */
+// export const PaymentSection = memo(function PaymentSection({
 //   orderId,
 //   payPalClientId,
 // }: PaymentSectionProps) {
-//   const router = useRouter();
 //   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 //   const [paymentError, setPaymentError] = useState<string | null>(null);
-
-//   const handleCreatePaypalOrder = async () => {
+//   const router = useRouter();
+//   // Create PayPal order when user clicks payment button
+//   const handleCreatePaypalOrder = useCallback(async () => {
 //     try {
+//       setPaymentError(null);
 //       return await createPayPalOrder(orderId);
 //     } catch (error) {
-//       setPaymentError(
-//         error instanceof Error ? error.message : "Failed to create order"
-//       );
+//       const errorMessage =
+//         error instanceof Error ? error.message : "Failed to create order";
+
+//       setPaymentError(errorMessage);
 //       return "";
 //     }
-//   };
-//   const handleApprovePaypalOrder = async (data: { orderID: string }) => {
-//     try {
-//       setIsProcessingPayment(true);
-//       setPaymentError(null);
+//   }, [orderId]);
 
-//       await capturePayPalOrder(orderId, data.orderID);
-//       toast.success("Payment successful!");
+//   // Process payment when user approves PayPal order
+//   const handleApprovePaypalOrder = useCallback(
+//     async (data: { orderID: string }) => {
+//       try {
+//         setIsProcessingPayment(true);
+//         setPaymentError(null);
 
-//       // Navigate to my-books page
-//       router.push("/my-books");
-//     } catch (error) {
-//       const errorMessage =
-//         error instanceof Error ? error.message : "Payment processing failed";
-//       setPaymentError(errorMessage);
-//       toast.error(errorMessage);
-//     } finally {
-//       setIsProcessingPayment(false);
-//     }
-//   };
+//         await capturePayPalOrder(orderId, data.orderID);
+
+//         toast.success(
+//           "Payment successful! You'll receive a confirmation email shortly."
+//         );
+//         router.push("/my-books");
+//       } catch (error) {
+//         const errorMessage =
+//           error instanceof Error ? error.message : "Payment processing failed";
+
+//         setPaymentError(errorMessage);
+//         toast.error(errorMessage);
+//       } finally {
+//         setIsProcessingPayment(false);
+//       }
+//     },
+//     [orderId, router]
+//   );
+
+//   if (!orderId) {
+//     return (
+//       <Card>
+//         <CardHeader>
+//           <CardTitle>Payment</CardTitle>
+//         </CardHeader>
+//         <CardContent>
+//           <Alert variant="destructive" role="alert">
+//             <AlertCircle className="h-4 w-4 mr-2" />
+//             <AlertDescription>
+//               There was a problem creating your order. Please go back and try
+//               again.
+//             </AlertDescription>
+//           </Alert>
+//         </CardContent>
+//       </Card>
+//     );
+//   }
+
 //   return (
 //     <Card>
 //       <CardHeader>
 //         <CardTitle>Payment</CardTitle>
 //       </CardHeader>
 //       <CardContent>
-//         {!orderId ? (
-//           <Alert variant="destructive">
-//             <AlertDescription>
-//               There was a problem creating your order. Please go back and try
-//               again.
-//             </AlertDescription>
+//         {paymentError && (
+//           <Alert variant="destructive" className="mb-4" role="alert">
+//             <AlertCircle className="h-4 w-4 mr-2" />
+//             <AlertDescription>{paymentError}</AlertDescription>
 //           </Alert>
+//         )}
+
+//         {isProcessingPayment ? (
+//           <div
+//             className="flex items-center justify-center py-8 mb-4"
+//             aria-live="polite"
+//             aria-busy="true"
+//           >
+//             <Loader2
+//               className="animate-spin h-8 w-8 text-indigo-600 mr-2"
+//               aria-hidden="true"
+//             />
+//             <span className="text-indigo-800 font-medium">
+//               Processing payment...
+//             </span>
+//           </div>
 //         ) : (
-//           <>
-//             {paymentError && (
-//               <Alert variant="destructive" className="mb-4">
-//                 <AlertDescription>{paymentError}</AlertDescription>
-//               </Alert>
-//             )}
-//             {isProcessingPayment && (
-//               <div className="flex items-center justify-center py-8 mb-4">
-//                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-//                 <span className="ml-2">Processing payment...</span>
-//               </div>
-//             )}
-//             <PayPalScriptProvider options={{ clientId: payPalClientId }}>
-//               <PayPalLoader />
-//               {!isProcessingPayment && (
-//                 <PayPalButtons
-//                   createOrder={handleCreatePaypalOrder}
-//                   onApprove={handleApprovePaypalOrder}
-//                   disabled={isProcessingPayment}
-//                 />
-//               )}
-//             </PayPalScriptProvider>
-//           </>
+//           <PayPalScriptProvider options={{ clientId: payPalClientId }}>
+//             <PayPalLoader />
+//             <PayPalButtons
+//               createOrder={handleCreatePaypalOrder}
+//               onApprove={handleApprovePaypalOrder}
+//               disabled={isProcessingPayment}
+//               aria-label="Pay with PayPal"
+//               style={{
+//                 layout: "vertical",
+//                 color: "gold",
+//                 shape: "rect",
+//                 label: "pay",
+//               }}
+//             />
+//           </PayPalScriptProvider>
 //         )}
 //       </CardContent>
+
 //       <CardFooter className="flex-col items-stretch">
 //         <p className="mt-4 text-xs text-gray-500 text-center">
 //           By placing your order, you agree to our{" "}
-//           <a href="/terms" className="text-blue-600 hover:underline">
+//           <a
+//             href="/terms"
+//             className="text-blue-600 hover:underline inline-flex items-center"
+//             target="_blank"
+//             rel="noopener noreferrer"
+//           >
 //             Terms of Service
+//             <ExternalLink className="h-3 w-3 ml-0.5" aria-hidden="true" />
 //           </a>{" "}
 //           and{" "}
-//           <a href="/privacy" className="text-blue-600 hover:underline">
+//           <a
+//             href="/privacy"
+//             className="text-blue-600 hover:underline inline-flex items-center"
+//             target="_blank"
+//             rel="noopener noreferrer"
+//           >
 //             Privacy Policy
+//             <ExternalLink className="h-3 w-3 ml-0.5" aria-hidden="true" />
 //           </a>
 //         </p>
 //       </CardFooter>
 //     </Card>
 //   );
-// }
+// });
+
 "use client";
 
 import React, { useState, useCallback, memo } from "react";
@@ -150,6 +205,7 @@ export const PaymentSection = memo(function PaymentSection({
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const router = useRouter();
+
   // Create PayPal order when user clicks payment button
   const handleCreatePaypalOrder = useCallback(async () => {
     try {
@@ -209,6 +265,17 @@ export const PaymentSection = memo(function PaymentSection({
     );
   }
 
+  // Enhanced PayPal configuration to fix phone number country code issue
+  const paypalOptions = {
+    clientId: payPalClientId,
+    currency: "USD",
+    intent: "capture",
+    "enable-funding": "card,venmo,paylater",
+    "disable-funding": "",
+    components: "buttons,funding-eligibility",
+    // Don't set buyer-country or locale - let PayPal auto-detect based on user's actual location
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -237,7 +304,7 @@ export const PaymentSection = memo(function PaymentSection({
             </span>
           </div>
         ) : (
-          <PayPalScriptProvider options={{ clientId: payPalClientId }}>
+          <PayPalScriptProvider options={paypalOptions}>
             <PayPalLoader />
             <PayPalButtons
               createOrder={handleCreatePaypalOrder}
@@ -249,7 +316,10 @@ export const PaymentSection = memo(function PaymentSection({
                 color: "gold",
                 shape: "rect",
                 label: "pay",
+                height: 40,
               }}
+              // Remove any funding source restrictions
+              fundingSource={undefined}
             />
           </PayPalScriptProvider>
         )}
