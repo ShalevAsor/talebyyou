@@ -658,150 +658,6 @@ export async function generateBookFirstPageImage(
 //   }
 // }
 
-// export async function generateRemainingPageImages(
-//   bookId: string
-// ): Promise<ActionResult<string[]>> {
-//   try {
-//     // Get the book with all pages that need images
-//     const book = await prisma.book.findUnique({
-//       where: { id: bookId },
-//       include: {
-//         pages: {
-//           where: {
-//             type: PageType.IMAGE,
-//             imagePrompt: { not: null },
-//             imageUrl: null, // Only pages without images
-//           },
-//           orderBy: {
-//             pageNumber: "asc",
-//           },
-//         },
-//       },
-//     });
-
-//     if (!book) {
-//       return createErrorResult("Book not found");
-//     }
-
-//     if (book.pages.length === 0) {
-//       return createSuccessResult([]); // No pages need generation
-//     }
-
-//     if (!book.characterImageReference) {
-//       return createErrorResult("No character image reference found for book");
-//     }
-
-//     const generationIds: string[] = [];
-//     const errors: string[] = [];
-//     const batchSize = 3; // Generate 3 images at a time
-//     const delayBetweenBatches = 2000; // 2 seconds between batches
-
-//     logger.info(
-//       {
-//         bookId,
-//         totalPages: book.pages.length,
-//         batchSize,
-//         totalBatches: Math.ceil(book.pages.length / batchSize),
-//       },
-//       "Starting batched page image generation"
-//     );
-
-//     // Process pages in batches
-//     for (let i = 0; i < book.pages.length; i += batchSize) {
-//       const batch = book.pages.slice(i, i + batchSize);
-//       const batchNumber = Math.floor(i / batchSize) + 1;
-//       const totalBatches = Math.ceil(book.pages.length / batchSize);
-
-//       logger.info(
-//         {
-//           bookId,
-//           batchNumber,
-//           totalBatches,
-//           batchSize: batch.length,
-//           pageNumbers: batch.map((p) => p.pageNumber),
-//         },
-//         `Processing batch ${batchNumber}/${totalBatches}`
-//       );
-
-//       // Generate images for this batch (still sequential within batch for safety)
-//       for (const page of batch) {
-//         const result = await generateBookPageImage(
-//           bookId,
-//           page.id,
-//           book.characterImageReference
-//         );
-
-//         if (result.success) {
-//           generationIds.push(result.data);
-//           logger.info(
-//             {
-//               pageId: page.id,
-//               pageNumber: page.pageNumber,
-//               generationId: result.data,
-//             },
-//             "Page image generation started successfully"
-//           );
-//         } else {
-//           errors.push(`Page ${page.pageNumber}: ${result.error}`);
-//           logger.error(
-//             {
-//               pageId: page.id,
-//               pageNumber: page.pageNumber,
-//               error: result.error,
-//             },
-//             "Failed to generate image for page"
-//           );
-//         }
-//       }
-
-//       // Add delay between batches (except for the last batch)
-//       if (i + batchSize < book.pages.length) {
-//         logger.info(
-//           { bookId, batchNumber, delayMs: delayBetweenBatches },
-//           `Waiting ${delayBetweenBatches}ms before next batch`
-//         );
-//         await new Promise((resolve) =>
-//           setTimeout(resolve, delayBetweenBatches)
-//         );
-//       }
-//     }
-
-//     // Log final results
-//     logger.info(
-//       {
-//         bookId,
-//         successCount: generationIds.length,
-//         errorCount: errors.length,
-//         generationIds: generationIds.slice(0, 3), // Log first 3 IDs for reference
-//       },
-//       "Completed batched page image generation"
-//     );
-
-//     // If some generations failed but others succeeded, we still return the successful ones
-//     if (generationIds.length > 0) {
-//       if (errors.length > 0) {
-//         logger.warn(
-//           {
-//             bookId,
-//             successCount: generationIds.length,
-//             errorCount: errors.length,
-//             errors: errors.slice(0, 3), // Log first 3 errors
-//           },
-//           "Some page image generations failed"
-//         );
-//       }
-//       return createSuccessResult(generationIds);
-//     }
-
-//     // If all generations failed, return an error
-//     return createErrorResult(`Failed to generate images: ${errors.join("; ")}`);
-//   } catch (error) {
-//     logger.error({ error, bookId }, "Error generating remaining page images");
-//     return createErrorResult(
-//       error instanceof Error ? error.message : "Unknown error occurred"
-//     );
-//   }
-// }
 export async function generateRemainingPageImages(
   bookId: string
 ): Promise<ActionResult<string[]>> {
@@ -847,7 +703,7 @@ export async function generateRemainingPageImages(
         batchSize,
         totalBatches: Math.ceil(book.pages.length / batchSize),
       },
-      "🔧 MOCK MODE: Starting batched page image generation (no actual API calls)"
+      "Starting batched page image generation"
     );
 
     // Process pages in batches
@@ -864,38 +720,36 @@ export async function generateRemainingPageImages(
           batchSize: batch.length,
           pageNumbers: batch.map((p) => p.pageNumber),
         },
-        `🔧 MOCK: Processing batch ${batchNumber}/${totalBatches}`
+        `Processing batch ${batchNumber}/${totalBatches}`
       );
 
-      // MOCK: Simulate image generation for this batch
+      // Generate images for this batch (still sequential within batch for safety)
       for (const page of batch) {
-        // 🔧 MOCK: Generate fake generation ID instead of real API call
-        const mockGenerationId = `mock-gen-${Date.now()}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`;
+        const result = await generateBookPageImage(
+          bookId,
+          page.id,
+          book.characterImageReference
+        );
 
-        // 🔧 MOCK: Simulate success (you can add some failures for testing)
-        const mockSuccess = Math.random() > 0.1; // 90% success rate for testing
-
-        if (mockSuccess) {
-          generationIds.push(mockGenerationId);
+        if (result.success) {
+          generationIds.push(result.data);
           logger.info(
             {
               pageId: page.id,
               pageNumber: page.pageNumber,
-              generationId: mockGenerationId,
+              generationId: result.data,
             },
-            "🔧 MOCK: Page image generation started successfully (simulated)"
+            "Page image generation started successfully"
           );
         } else {
-          errors.push(`Page ${page.pageNumber}: Mock API error`);
+          errors.push(`Page ${page.pageNumber}: ${result.error}`);
           logger.error(
             {
               pageId: page.id,
               pageNumber: page.pageNumber,
-              error: "Mock API error",
+              error: result.error,
             },
-            "🔧 MOCK: Failed to generate image for page (simulated)"
+            "Failed to generate image for page"
           );
         }
       }
@@ -904,7 +758,7 @@ export async function generateRemainingPageImages(
       if (i + batchSize < book.pages.length) {
         logger.info(
           { bookId, batchNumber, delayMs: delayBetweenBatches },
-          `🔧 MOCK: Waiting ${delayBetweenBatches}ms before next batch`
+          `Waiting ${delayBetweenBatches}ms before next batch`
         );
         await new Promise((resolve) =>
           setTimeout(resolve, delayBetweenBatches)
@@ -920,7 +774,7 @@ export async function generateRemainingPageImages(
         errorCount: errors.length,
         generationIds: generationIds.slice(0, 3), // Log first 3 IDs for reference
       },
-      "🔧 MOCK: Completed batched page image generation (simulated)"
+      "Completed batched page image generation"
     );
 
     // If some generations failed but others succeeded, we still return the successful ones
@@ -933,7 +787,7 @@ export async function generateRemainingPageImages(
             errorCount: errors.length,
             errors: errors.slice(0, 3), // Log first 3 errors
           },
-          "🔧 MOCK: Some page image generations failed (simulated)"
+          "Some page image generations failed"
         );
       }
       return createSuccessResult(generationIds);
@@ -942,15 +796,161 @@ export async function generateRemainingPageImages(
     // If all generations failed, return an error
     return createErrorResult(`Failed to generate images: ${errors.join("; ")}`);
   } catch (error) {
-    logger.error(
-      { error, bookId },
-      "🔧 MOCK: Error generating remaining page images"
-    );
+    logger.error({ error, bookId }, "Error generating remaining page images");
     return createErrorResult(
       error instanceof Error ? error.message : "Unknown error occurred"
     );
   }
 }
+// export async function generateRemainingPageImages(
+//   bookId: string
+// ): Promise<ActionResult<string[]>> {
+//   try {
+//     // Get the book with all pages that need images
+//     const book = await prisma.book.findUnique({
+//       where: { id: bookId },
+//       include: {
+//         pages: {
+//           where: {
+//             type: PageType.IMAGE,
+//             imagePrompt: { not: null },
+//             imageUrl: null, // Only pages without images
+//           },
+//           orderBy: {
+//             pageNumber: "asc",
+//           },
+//         },
+//       },
+//     });
+
+//     if (!book) {
+//       return createErrorResult("Book not found");
+//     }
+
+//     if (book.pages.length === 0) {
+//       return createSuccessResult([]); // No pages need generation
+//     }
+
+//     if (!book.characterImageReference) {
+//       return createErrorResult("No character image reference found for book");
+//     }
+
+//     const generationIds: string[] = [];
+//     const errors: string[] = [];
+//     const batchSize = 3; // Generate 3 images at a time
+//     const delayBetweenBatches = 2000; // 2 seconds between batches
+
+//     logger.info(
+//       {
+//         bookId,
+//         totalPages: book.pages.length,
+//         batchSize,
+//         totalBatches: Math.ceil(book.pages.length / batchSize),
+//       },
+//       "🔧 MOCK MODE: Starting batched page image generation (no actual API calls)"
+//     );
+
+//     // Process pages in batches
+//     for (let i = 0; i < book.pages.length; i += batchSize) {
+//       const batch = book.pages.slice(i, i + batchSize);
+//       const batchNumber = Math.floor(i / batchSize) + 1;
+//       const totalBatches = Math.ceil(book.pages.length / batchSize);
+
+//       logger.info(
+//         {
+//           bookId,
+//           batchNumber,
+//           totalBatches,
+//           batchSize: batch.length,
+//           pageNumbers: batch.map((p) => p.pageNumber),
+//         },
+//         `🔧 MOCK: Processing batch ${batchNumber}/${totalBatches}`
+//       );
+
+//       // MOCK: Simulate image generation for this batch
+//       for (const page of batch) {
+//         // 🔧 MOCK: Generate fake generation ID instead of real API call
+//         const mockGenerationId = `mock-gen-${Date.now()}-${Math.random()
+//           .toString(36)
+//           .substr(2, 9)}`;
+
+//         // 🔧 MOCK: Simulate success (you can add some failures for testing)
+//         const mockSuccess = Math.random() > 0.1; // 90% success rate for testing
+
+//         if (mockSuccess) {
+//           generationIds.push(mockGenerationId);
+//           logger.info(
+//             {
+//               pageId: page.id,
+//               pageNumber: page.pageNumber,
+//               generationId: mockGenerationId,
+//             },
+//             "🔧 MOCK: Page image generation started successfully (simulated)"
+//           );
+//         } else {
+//           errors.push(`Page ${page.pageNumber}: Mock API error`);
+//           logger.error(
+//             {
+//               pageId: page.id,
+//               pageNumber: page.pageNumber,
+//               error: "Mock API error",
+//             },
+//             "🔧 MOCK: Failed to generate image for page (simulated)"
+//           );
+//         }
+//       }
+
+//       // Add delay between batches (except for the last batch)
+//       if (i + batchSize < book.pages.length) {
+//         logger.info(
+//           { bookId, batchNumber, delayMs: delayBetweenBatches },
+//           `🔧 MOCK: Waiting ${delayBetweenBatches}ms before next batch`
+//         );
+//         await new Promise((resolve) =>
+//           setTimeout(resolve, delayBetweenBatches)
+//         );
+//       }
+//     }
+
+//     // Log final results
+//     logger.info(
+//       {
+//         bookId,
+//         successCount: generationIds.length,
+//         errorCount: errors.length,
+//         generationIds: generationIds.slice(0, 3), // Log first 3 IDs for reference
+//       },
+//       "🔧 MOCK: Completed batched page image generation (simulated)"
+//     );
+
+//     // If some generations failed but others succeeded, we still return the successful ones
+//     if (generationIds.length > 0) {
+//       if (errors.length > 0) {
+//         logger.warn(
+//           {
+//             bookId,
+//             successCount: generationIds.length,
+//             errorCount: errors.length,
+//             errors: errors.slice(0, 3), // Log first 3 errors
+//           },
+//           "🔧 MOCK: Some page image generations failed (simulated)"
+//         );
+//       }
+//       return createSuccessResult(generationIds);
+//     }
+
+//     // If all generations failed, return an error
+//     return createErrorResult(`Failed to generate images: ${errors.join("; ")}`);
+//   } catch (error) {
+//     logger.error(
+//       { error, bookId },
+//       "🔧 MOCK: Error generating remaining page images"
+//     );
+//     return createErrorResult(
+//       error instanceof Error ? error.message : "Unknown error occurred"
+//     );
+//   }
+// }
 /**
  * Deletes a character image from Leonardo AI
  * @param imageId The Leonardo AI image ID to delete
