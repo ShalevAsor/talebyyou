@@ -269,6 +269,7 @@ import { paypal } from "@/services/payment/paypal-service";
 import { revalidatePath } from "next/cache";
 import { generateRemainingPageImages } from "./image-actions";
 import { sendOrderConfirmationEmail } from "./email-actions";
+import { CreatePayPalOrderData, PayPalCaptureResponse } from "@/types/payment";
 
 /**
  * Create a PayPal order for a given order in our system
@@ -298,13 +299,28 @@ export async function createPayPalOrder(orderId: string): Promise<string> {
       throw new Error("Order is not in PENDING status");
     }
     // const paypalOrder = await paypal.createOrder(Number(order.totalPrice));
-    const paypalOrder = await paypal.createOrder({
+    const orderData: CreatePayPalOrderData = {
       price: Number(0.69),
       orderNumber: order.orderNumber,
-      bookTitle: order.book.title,
+      bookTitle: order.book?.title,
       productType: order.productType,
       quantity: order.quantity,
-    });
+    };
+
+    // Add shipping for physical books
+    if (order.productType === ProductType.BOOK && order.street1) {
+      orderData.shipping = {
+        name: order.name!,
+        street1: order.street1,
+        street2: order.street2 || undefined,
+        city: order.city!,
+        state_code: order.state_code || undefined,
+        postcode: order.postcode!,
+        country: order.country!,
+      };
+    }
+
+    const paypalOrder = await paypal.createOrder(orderData);
 
     // Save the PayPal order ID to our order
     await prisma.order.update({
@@ -346,7 +362,9 @@ export async function capturePayPalOrder(
       logger.error({ orderId }, "Order not found when capturing payment");
       throw new Error("Order not found");
     }
-    const captureData = await paypal.createPayment(paypalOrderId);
+    const captureData: PayPalCaptureResponse = await paypal.createPayment(
+      paypalOrderId
+    );
 
     if (!captureData) {
       logger.error({ paypalOrderId }, "No capture data returned from PayPal");

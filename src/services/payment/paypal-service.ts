@@ -84,18 +84,47 @@ import {
   PAYPAL_CLIENT_ID,
   PAYPAL_CLIENT_SECRET,
 } from "@/constants/payment";
-
+import {
+  CreatePayPalOrderData,
+  PayPalOrderResponse,
+  PayPalCaptureResponse,
+  PayPalPurchaseUnit,
+} from "@/types/payment";
+import { ProductType } from "@prisma/client";
 const base = PAYPAL_API_URL || "https://api-m.sandbox.paypal.com";
 
 export const paypal = {
-  createOrder: async function createOrder(orderData: {
-    price: number;
-    orderNumber: string;
-    bookTitle?: string;
-    productType?: string;
-    quantity?: number;
-  }) {
+  createOrder: async function createOrder(
+    orderData: CreatePayPalOrderData
+  ): Promise<PayPalOrderResponse> {
     const access_token = await generateAccessToken();
+
+    const purchaseUnit: PayPalPurchaseUnit = {
+      reference_id: orderData.orderNumber,
+      description: `Order #${orderData.orderNumber} - ${
+        orderData.bookTitle || "Custom Book"
+      }`,
+      custom_id: orderData.orderNumber,
+      amount: {
+        currency_code: "USD",
+        value: orderData.price.toString(),
+      },
+    };
+
+    // Add shipping for physical books
+    if (orderData.shipping && orderData.productType === ProductType.BOOK) {
+      purchaseUnit.shipping = {
+        name: { full_name: orderData.shipping.name },
+        address: {
+          address_line_1: orderData.shipping.street1,
+          address_line_2: orderData.shipping.street2 || undefined,
+          locality: orderData.shipping.city,
+          region: orderData.shipping.state_code,
+          postal_code: orderData.shipping.postcode,
+          country_code: orderData.shipping.country,
+        },
+      };
+    }
 
     const response = await fetch(base + "/v2/checkout/orders", {
       method: "POST",
@@ -105,25 +134,16 @@ export const paypal = {
       },
       body: JSON.stringify({
         intent: "CAPTURE",
-        purchase_units: [
-          {
-            reference_id: orderData.orderNumber, // Your order number
-            description: `Order #${orderData.orderNumber} - ${
-              orderData.bookTitle || "Custom Book"
-            }`,
-            custom_id: orderData.orderNumber, // Also add as custom_id
-            amount: {
-              currency_code: "USD",
-              value: orderData.price.toString(),
-            },
-          },
-        ],
+        purchase_units: [purchaseUnit],
         payment_source: {
           paypal: {
             experience_context: {
-              shipping_preference: "NO_SHIPPING",
+              shipping_preference:
+                orderData.productType === ProductType.BOOK
+                  ? "SET_PROVIDED_ADDRESS"
+                  : "NO_SHIPPING",
               user_action: "PAY_NOW",
-              brand_name: "TaleByYou", // Your actual brand name
+              brand_name: "TaleByYou",
             },
           },
         },
@@ -132,7 +152,9 @@ export const paypal = {
 
     return handleResponse(response);
   },
-  createPayment: async function createPayment(paypalOrderId: string) {
+  createPayment: async function createPayment(
+    paypalOrderId: string
+  ): Promise<PayPalCaptureResponse> {
     const access_token = await generateAccessToken();
     const response = await fetch(
       `${base}/v2/checkout/orders/${paypalOrderId}/capture`,
