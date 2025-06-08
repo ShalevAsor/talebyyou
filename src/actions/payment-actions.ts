@@ -299,7 +299,7 @@ export async function createPayPalOrder(orderId: string): Promise<string> {
     }
     // const paypalOrder = await paypal.createOrder(Number(order.totalPrice));
     const paypalOrder = await paypal.createOrder({
-      price: Number(2.69),
+      price: Number(0.69),
       orderNumber: order.orderNumber,
       bookTitle: order.book.title,
       productType: order.productType,
