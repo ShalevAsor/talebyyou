@@ -118,8 +118,8 @@ export const paypal = {
         address: {
           address_line_1: orderData.shipping.street1,
           address_line_2: orderData.shipping.street2 || undefined,
-          locality: orderData.shipping.city,
-          region: orderData.shipping.state_code,
+          admin_area_2: orderData.shipping.city, // PayPal uses admin_area_2 for city
+          admin_area_1: orderData.shipping.state_code, // PayPal uses admin_area_1 for state
           postal_code: orderData.shipping.postcode,
           country_code: orderData.shipping.country,
         },

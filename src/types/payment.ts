@@ -76,8 +76,8 @@ export interface PayPalPurchaseUnit {
     address: {
       address_line_1: string;
       address_line_2?: string;
-      locality: string;
-      region?: string;
+      admin_area_2: string; // City
+      admin_area_1?: string; // State/Province
       postal_code: string;
       country_code: string;
     };
