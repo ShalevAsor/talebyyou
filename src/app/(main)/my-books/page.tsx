@@ -4,11 +4,12 @@ import { getUserBooks } from "@/actions/book-actions";
 import {
   getGuestSessionBooks,
   checkGuestBookLimit,
+  attemptGuestMigration,
 } from "@/actions/guest-actions";
 import { ErrorAlert, Loading } from "@/components/common";
 import { MyBooksContent } from "@/components/my-books/MyBooksContent";
 import PageHeader from "@/components/layout/PageHeader";
-import { checkUserBookLimit } from "@/actions/user-actions";
+import { checkUserBookLimit, getUserByClerkId } from "@/actions/user-actions";
 import { createMetadata, siteConfig } from "@/config/site";
 import { logger } from "@/lib/logger";
 // Force this page to be dynamic (not statically generated)
@@ -35,6 +36,32 @@ export default async function MyBooksPage() {
   try {
     const { userId } = await auth();
 
+    // If user is signed in, attempt migration first
+    let migrationMessage: string | undefined;
+    if (userId) {
+      try {
+        const user = await getUserByClerkId(userId);
+        if (user) {
+          const migrationResult = await attemptGuestMigration(user.id);
+          if (
+            migrationResult.success &&
+            migrationResult.data.migratedCount > 0
+          ) {
+            migrationMessage = migrationResult.data.message;
+            logger.info(
+              {
+                userId: user.id,
+                migratedCount: migrationResult.data.migratedCount,
+              },
+              "Guest books migrated successfully"
+            );
+          }
+        }
+      } catch (error) {
+        logger.error({ error, userId }, "Error during migration attempt");
+        // Don't fail the page load if migration fails
+      }
+    }
     // Fetch books and check limits in parallel
     const [booksResult, limitResult] = await Promise.all([
       userId ? getUserBooks() : getGuestSessionBooks(),
@@ -64,6 +91,13 @@ export default async function MyBooksPage() {
           description="Manage your collection of customized books. View, edit, order, and keep track of the books you've created."
         />
 
+        {migrationMessage && (
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-4">
+            <div className="bg-green-50 border border-green-200 rounded-md p-4">
+              <p className="text-green-800">{migrationMessage}</p>
+            </div>
+          </div>
+        )}
         {/* Display error if any */}
         {bookError && <ErrorAlert message={bookError} />}
         {limitError && <ErrorAlert message={limitError} />}

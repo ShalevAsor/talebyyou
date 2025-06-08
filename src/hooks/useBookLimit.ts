@@ -1,38 +1,3 @@
-// import { useQuery } from "@tanstack/react-query";
-// import { checkGuestBookLimit } from "@/actions/guest-actions";
-// import { checkUserBookLimit } from "@/actions/user-actions";
-// import { BOOK_CREATION_LIMIT } from "@/constants/bookConstants";
-// import { useAuth } from "@clerk/nextjs";
-
-// export function useBookLimit() {
-//   const { userId } = useAuth();
-
-//   const { data, isLoading, error } = useQuery({
-//     queryKey: ["bookLimit", !!userId], // Include userId in the query key
-//     queryFn: async () => {
-//       // Call the appropriate limit check function based on authentication status
-//       const result = userId
-//         ? await checkUserBookLimit()
-//         : await checkGuestBookLimit();
-
-//       if (!result.success) {
-//         throw new Error(result.error);
-//       }
-
-//       return result.data;
-//     },
-//     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-//   });
-
-//   return {
-//     canCreate: data?.canCreate ?? true,
-//     remainingBooks: data?.remainingBooks ?? BOOK_CREATION_LIMIT,
-//     totalCreated: data?.totalCreated ?? 0,
-//     message: data?.message,
-//     isLoading,
-//     error,
-//   };
-// }
 import { useQuery } from "@tanstack/react-query";
 import { checkGuestBookLimit } from "@/actions/guest-actions";
 import { checkUserBookLimit } from "@/actions/user-actions";

@@ -1,4 +1,3 @@
-// // src/components/my-books/MyBooksContent.tsx
 // "use client";
 
 // import React from "react";
@@ -20,6 +19,9 @@
 //   isGuest: boolean;
 // }
 
+// /**
+//  * Component to display user's book collection with limiting information
+//  */
 // export function MyBooksContent({
 //   initialBooks,
 //   limitInfo,
@@ -46,6 +48,8 @@
 //             </AlertDescription>
 //           </Alert>
 //         )}
+
+//         {/* Guest Account Notice */}
 //         {isGuest && (
 //           <div className="">
 //             <p className="mt-2 text-md text-gray-600">
@@ -71,6 +75,10 @@
 //             <h3 className="text-xl font-semibold text-gray-900 mb-2">
 //               {"You haven't created any books yet"}
 //             </h3>
+//             <p className="text-gray-500 mb-4">
+//               Start by browsing our templates and creating your first
+//               personalized book
+//             </p>
 //             <Button asChild>
 //               <Link href="/library">{"Browse Collection"}</Link>
 //             </Button>

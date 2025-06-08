@@ -1,4 +1,3 @@
-// // src/app/api/webhooks/clerk/route.ts
 // import { verifyWebhook } from "@clerk/nextjs/webhooks";
 // import {
 //   createUser,
@@ -10,6 +9,12 @@
 // import { migrateGuestSessionToUser } from "@/actions/guest-actions";
 
 // export async function POST(req: Request) {
+//   console.log(
+//     "=== ORIGINAL WEBHOOK CALLED AT:",
+//     new Date().toISOString(),
+//     "==="
+//   );
+
 //   try {
 //     console.log("=== WEBHOOK ENV DEBUG ===");
 //     console.log("CLERK_SECRET_KEY:", !!process.env.CLERK_SECRET_KEY);
@@ -155,7 +160,7 @@
 //       case "session.created": {
 //         if (evt.type === "session.created") {
 //           // Type narrowing for TypeScript
-//           const { id: clerkId } = evt.data;
+//           const { user_id: clerkId } = evt.data;
 
 //           // Make sure clerkId is defined
 //           if (!clerkId) {
@@ -209,16 +214,8 @@
 //     return new Response("Error verifying webhook", { status: 400 });
 //   }
 // }
-// src/app/api/webhooks/clerk/route.ts
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
-import {
-  createUser,
-  updateUser,
-  deleteUser,
-  getUserByClerkId,
-} from "@/actions/user-actions";
-import { logger } from "@/lib/logger";
-import { migrateGuestSessionToUser } from "@/actions/guest-actions";
+import { createUser, updateUser, deleteUser } from "@/actions/user-actions";
 
 export async function POST(req: Request) {
   console.log(
@@ -358,44 +355,6 @@ export async function POST(req: Request) {
             });
           } catch (error) {
             console.error("Error deleting user:", error);
-            return new Response(
-              JSON.stringify({ success: false, error: "Database error" }),
-              {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-              }
-            );
-          }
-        }
-        break;
-      }
-      case "session.created": {
-        if (evt.type === "session.created") {
-          // Type narrowing for TypeScript
-          const { user_id: clerkId } = evt.data;
-
-          // Make sure clerkId is defined
-          if (!clerkId) {
-            console.error("No Clerk ID found for deleted user");
-            return new Response("Missing Clerk ID", { status: 400 });
-          }
-          // get user from database
-          const user = await getUserByClerkId(clerkId);
-          if (!user) {
-            console.error("User not found in database");
-            return new Response("User not found", { status: 400 });
-          }
-          try {
-            await migrateGuestSessionToUser(user.id);
-            return new Response(JSON.stringify({ success: true }), {
-              status: 200,
-              headers: { "Content-Type": "application/json" },
-            });
-          } catch (migrationError) {
-            logger.error(
-              { error: migrationError, userId: user.id },
-              "Error migrating guest books to user account"
-            );
             return new Response(
               JSON.stringify({ success: false, error: "Database error" }),
               {

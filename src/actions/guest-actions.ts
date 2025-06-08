@@ -355,15 +355,6 @@ export async function checkGuestBookLimit(): Promise<
 
     // If session doesn't exist or is expired, guest can create books
     if (!session || new Date() > session.expiresAt) {
-      // Clear the invalid cookie if it exists
-      if (sessionCookie) {
-        logger.debug(
-          { sessionId: sessionCookie.value },
-          "Session expired or not found, clearing cookie"
-        );
-        cookieStore.delete(SESSION_COOKIE_NAME);
-      }
-
       return createSuccessResult({
         canCreate: true,
         remainingBooks: BOOK_CREATION_LIMIT,
@@ -535,6 +526,116 @@ export async function cleanupExpiredGuestSessions(): Promise<
     return createSuccessResult({ cleanedCount: result.count });
   } catch (error) {
     logger.error({ error }, "Error cleaning up expired guest sessions");
+    return createErrorResult(
+      error instanceof Error ? error.message : "Unknown error occurred"
+    );
+  }
+}
+
+// Add this to your guest-actions.ts file
+
+/**
+ * Server-side migration that can access httpOnly cookies
+ * Called when a user signs up and lands on my-books page
+ */
+export async function attemptGuestMigration(
+  userId: string
+): Promise<ActionResult<{ migratedCount: number; message?: string }>> {
+  try {
+    // Validate the user ID
+    if (!userId) {
+      return createErrorResult("Invalid user ID");
+    }
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      return createErrorResult(`User with ID ${userId} not found`);
+    }
+
+    // Get the current guest session from httpOnly cookie
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+
+    // If no session cookie exists, nothing to migrate
+    if (!sessionCookie) {
+      logger.debug({ userId }, "No guest session found, nothing to migrate");
+      return createSuccessResult({
+        migratedCount: 0,
+        message: "No guest session found",
+      });
+    }
+
+    // Find the guest session with its books
+    const session = await prisma.guestSession.findUnique({
+      where: { sessionId: sessionCookie.value },
+      include: { books: true },
+    });
+
+    // If session doesn't exist or is expired, or has no books, nothing to migrate
+    if (
+      !session ||
+      new Date() > session.expiresAt ||
+      session.books.length === 0
+    ) {
+      // Clean up the invalid cookie if it exists
+      if (sessionCookie) {
+        logger.debug(
+          { sessionId: sessionCookie.value },
+          "Session expired or not found or has no books, clearing cookie"
+        );
+      }
+
+      return createSuccessResult({
+        migratedCount: 0,
+        message:
+          session?.books.length === 0
+            ? "No books to migrate"
+            : "Session expired",
+      });
+    }
+
+    // Transfer all books from guest session to user account
+    // Use a transaction to ensure all books are migrated or none
+    const bookIds = session.books.map((book) => book.id);
+
+    await prisma.$transaction(async (tx) => {
+      // Update all books in the session to belong to the user
+      await tx.book.updateMany({
+        where: {
+          id: { in: bookIds },
+        },
+        data: {
+          userId: userId,
+          guestSessionId: null,
+        },
+      });
+
+      // Delete the guest session
+      await tx.guestSession.delete({
+        where: { id: session.id },
+      });
+    });
+
+    logger.info(
+      {
+        userId,
+        sessionId: session.sessionId,
+        migratedCount: bookIds.length,
+      },
+      "Successfully migrated books from guest session to user account"
+    );
+
+    return createSuccessResult({
+      migratedCount: bookIds.length,
+      message: `Successfully migrated ${bookIds.length} books to your account`,
+    });
+  } catch (error) {
+    logger.error({ error, userId }, "Error migrating guest session to user");
     return createErrorResult(
       error instanceof Error ? error.message : "Unknown error occurred"
     );

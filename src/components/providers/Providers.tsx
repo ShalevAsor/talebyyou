@@ -13,6 +13,7 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
     <QueryClientProvider client={queryClient}>
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
