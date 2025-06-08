@@ -4,7 +4,6 @@ export const COUNTRY_OPTIONS = [
   { value: "CA", label: "Canada" },
   { value: "UK", label: "United Kingdom" },
   { value: "AU", label: "Australia" },
-  { value: "IL", label: "Israel" },
 ];
 
 // US States options for state selection

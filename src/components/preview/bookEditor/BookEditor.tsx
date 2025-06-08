@@ -428,7 +428,7 @@ const BookEditor: React.FC = () => {
             onSave={handleSaveCoverDedication}
             onCancel={handleCancelEdit}
             placeholder="Enter a dedication message..."
-            maxLength={150}
+            maxLength={100}
             textType="dedication"
           />
         </div>
