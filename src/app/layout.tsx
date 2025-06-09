@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers/Providers";
 import { createMetadata, siteConfig } from "@/config/site";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
           <Providers>
             {children}
             <SpeedInsights />
+            <Analytics />
           </Providers>
         </body>
       </html>
