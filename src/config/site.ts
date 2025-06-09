@@ -14,7 +14,7 @@ export const siteConfig = {
   },
   creator: "TaleByYou Team",
   keywords: [
-    // Core product terms
+    // 🎯 Core product terms (keep existing)
     "personalized children's books",
     "custom children's books",
     "personalized books for kids",
@@ -22,8 +22,10 @@ export const siteConfig = {
     "children's books with child's name",
     "custom characters",
     "custom illustrations",
+    "tale by you",
+    "talebyyou",
 
-    // Long-tail keywords (what people actually search)
+    // 📚 Long-tail keywords (expanded)
     "personalized books for kids",
     "custom storybooks with photos",
     "children's book gifts",
@@ -35,15 +37,133 @@ export const siteConfig = {
     "custom baby books",
     "personalized gift books",
 
-    // Brand and variations
-    "tale by you",
-    "talebyyou",
+    // 🎁 Gift-giving scenarios (NEW)
+    "unique gifts for kids",
+    "personalized gifts for children",
+    "custom books for toddlers",
+    "baby shower gift books",
+    "first birthday book gifts",
+    "godparent gifts personalized",
+    "baby christening gifts",
+    "new baby gifts custom",
+    "personalized books for twins",
+    "sibling books custom",
 
-    // Occasion-based keywords
+    // 👨‍👩‍👧‍👦 Parent pain points & benefits (NEW)
+    "encourage reading in children",
+    "reluctant reader books",
+    "build reading confidence",
+    "make child love reading",
+    "reading motivation for kids",
+    "boost self-esteem children",
+    "child sees themselves in books",
+    "representation in children's books",
+    "diverse children's books",
+    "inclusive storybooks",
+
+    // 🎂 Age-specific terms (NEW)
+    "books for 2 year olds",
+    "books for 3 year olds",
+    "books for 4 year olds",
+    "books for 5 year olds",
+    "preschool books personalized",
+    "kindergarten books custom",
+    "toddler books with names",
+    "baby books personalized",
+    "early reader books custom",
+
+    // 🎭 Character & customization (NEW)
+    "create book character online",
+    "child avatar books",
+    "photo books for kids",
+    "turn child into book character",
+    "custom book illustrations",
+    "personalized character books",
+    "kids book with child's photo",
+
+    // 🎓 Educational & developmental (NEW)
+    "educational children's books",
+    "learning books for kids",
+    "social emotional learning books",
+    "confidence building books",
+    "books about friendship",
+    "books about starting school",
+    "potty training books personalized",
+    "bedtime routine books",
+    "books for anxious children",
+
+    // 🏆 Competitor comparison (NEW)
+    "better than shutterfly books",
+    "alternative to wonderbly",
+    "custom books like hooray heroes",
+    "personalized books vs generic",
+    "unique children's books online",
+
+    // 🌍 Format & delivery options (NEW)
+    "digital children's books",
+    "printable kids books",
+    "instant download books",
+    "shipped personalized books",
+    "hardcover custom books",
+    "paperback personalized books",
+    "ebook personalized children",
+
+    // 📅 Seasonal & occasions (expanded)
     "birthday book gifts",
     "christmas books for kids",
     "holiday children's books",
     "graduation gifts for kids",
+    "back to school books",
+    "valentine's day kids books",
+    "easter books for children",
+    "halloween books personalized",
+    "thanksgiving books custom",
+    "summer reading books",
+
+    // 👥 Buyer personas (NEW)
+    "grandparent gifts for grandchildren",
+    "aunt uncle gifts for niece nephew",
+    "godparent gift ideas",
+    "teacher gifts for students",
+    "daycare books personalized",
+    "preschool teacher gifts",
+
+    // 🏠 Location & service terms (NEW)
+    "online book creator",
+    "worldwide shipping books",
+    "fast delivery children's books",
+    "international shipping custom books",
+    "print on demand children's books",
+
+    // 💡 Problem-solving terms (NEW)
+    "books for picky readers",
+    "engage reluctant readers",
+    "screen time alternative kids",
+    "offline activities children",
+    "family bonding activities",
+    "bedtime struggles solutions",
+    "reading time ideas",
+
+    // 🎨 Creative & artistic terms (NEW)
+    "illustrated children's books",
+    "picture books personalized",
+    "storytelling for kids",
+    "creative writing children",
+    "imagination books kids",
+    "fantasy books personalized",
+    "adventure books custom",
+
+    // 📱 Tech-savvy parent terms (NEW)
+    "create books on phone",
+    "mobile book creator",
+    "easy book customization",
+    "drag and drop book maker",
+    "user-friendly book design",
+    "quick book creation",
+
+    // Brand and variations (keep existing)
+    "tale by you",
+    "talebyyou",
   ],
   business: {
     type: "Creative Services",
