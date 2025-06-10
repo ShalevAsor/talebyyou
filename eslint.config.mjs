@@ -42,6 +42,14 @@ const eslintConfig = [
           forbid: [">", "}"], // Only forbid > and }, allow apostrophes
         },
       ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ];
