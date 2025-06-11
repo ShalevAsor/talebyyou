@@ -310,6 +310,9 @@ export function createMetadata({
     robots: noIndex ? "noindex, nofollow" : "index, follow",
     category: "Children's Books",
     classification: "Creative Services",
+    other: {
+      "p:domain_verify": "e64f90388c1e484cdce3fd4ad4a82de4",
+    },
 
     // Include alternates if provided
     ...(Object.keys(alternates).length > 0 ? { alternates } : {}),
