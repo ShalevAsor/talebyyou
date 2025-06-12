@@ -239,6 +239,7 @@ export function createMetadata({
   noIndex = false,
   alternates = {}, // Add this new parameter
   type = "website", // Allow different page types
+  other = {},
 } = {}) {
   const displayTitle = title
     ? `${title} | ${siteConfig.name}`
@@ -312,6 +313,7 @@ export function createMetadata({
     classification: "Creative Services",
     other: {
       "p:domain_verify": "e64f90388c1e484cdce3fd4ad4a82de4",
+      ...other,
     },
 
     // Include alternates if provided

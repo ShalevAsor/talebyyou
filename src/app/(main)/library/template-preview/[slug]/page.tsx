@@ -299,6 +299,12 @@ export async function generateMetadata({ params }: TemplatePreviewPageProps) {
       alternates: {
         canonical: `${siteConfig.url}/library/template-preview/${slug}`,
       },
+      other: {
+        // ADD THESE - Rich Pin product tags
+        "product:price:amount": "34.99",
+        "product:price:currency": "USD",
+        "product:availability": "in stock",
+      },
     });
   } catch (error) {
     logger.error(
