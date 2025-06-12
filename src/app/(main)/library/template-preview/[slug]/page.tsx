@@ -299,6 +299,7 @@ export async function generateMetadata({ params }: TemplatePreviewPageProps) {
       alternates: {
         canonical: `${siteConfig.url}/library/template-preview/${slug}`,
       },
+      type: "product",
       other: {
         // ADD THESE - Rich Pin product tags
         "product:price:amount": "34.99",

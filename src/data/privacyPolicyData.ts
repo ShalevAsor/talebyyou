@@ -126,6 +126,30 @@ Your information may be processed in the United States and other countries where
 We do not use tracking, analytics, or marketing cookies. Disabling cookies in your browser may prevent the website from working properly.`,
   },
   {
+    id: "pinterest-analytics",
+    title: "Pinterest Analytics",
+    content: `We use Pinterest Tag to measure the effectiveness of our Pinterest marketing and to provide personalized advertising experiences.
+  
+  Pinterest Analytics collects:
+  • How you interact with our Pinterest content
+  • Pages you visit after clicking our Pinterest pins
+  • Actions you take on our website (viewing templates, customizations, purchases)
+  • Device and browser information
+  
+  This helps us:
+  • Understand which Pinterest content drives traffic to our site
+  • Show relevant ads to people who have visited our website
+  • Measure return on advertising investment
+  • Improve our Pinterest marketing strategy
+  
+  You can control Pinterest data collection by:
+  • Adjusting your Pinterest privacy settings at pinterest.com/settings/privacy
+  • Using browser settings to block tracking pixels
+  • Opting out of personalized ads in your Pinterest account
+  
+  For more information about Pinterest's data practices, visit Pinterest's Privacy Policy at policy.pinterest.com/privacy-policy.`,
+  },
+  {
     id: "california-privacy-rights",
     title: "California Privacy Rights (CCPA)",
     content: `California residents have additional rights including:
