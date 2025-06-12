@@ -188,6 +188,7 @@ import {
 import { toast } from "react-toastify";
 import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useOrderStore } from "@/store/useOrderStore";
 
 interface PaymentSectionProps {
   orderId: string;
@@ -205,7 +206,7 @@ export const PaymentSection = memo(function PaymentSection({
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const router = useRouter();
-
+  const { totalCost, quantity } = useOrderStore();
   // Create PayPal order when user clicks payment button
   const handleCreatePaypalOrder = useCallback(async () => {
     try {
@@ -228,7 +229,14 @@ export const PaymentSection = memo(function PaymentSection({
         setPaymentError(null);
 
         await capturePayPalOrder(orderId, data.orderID);
-
+        if (typeof window !== "undefined" && window.pintrk) {
+          window.pintrk("track", "checkout", {
+            event_id: `purchase_${orderId}`,
+            value: parseFloat(totalCost || "0"),
+            order_quantity: quantity || 1,
+            currency: "USD",
+          });
+        }
         toast.success(
           "Payment successful! You'll receive a confirmation email shortly."
         );
@@ -243,7 +251,7 @@ export const PaymentSection = memo(function PaymentSection({
         setIsProcessingPayment(false);
       }
     },
-    [orderId, router]
+    [orderId, router, quantity, totalCost]
   );
 
   if (!orderId) {

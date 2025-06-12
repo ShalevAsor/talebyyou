@@ -1,10 +1,9 @@
-// Create this file: /src/components/templates/BookTemplatePreviewClient.tsx
-
 "use client";
 
 import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
 import { BookTemplateFull } from "@/types/book"; // Adjust import path as needed
+import { useEffect } from "react";
 
 // Now this works because we're in a client component
 const BookTemplatePreview = dynamic(
@@ -27,5 +26,13 @@ interface BookTemplatePreviewClientProps {
 export default function BookTemplatePreviewClient({
   bookTemplate,
 }: BookTemplatePreviewClientProps) {
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.pintrk) {
+      window.pintrk("track", "pagevisit", {
+        event_id: `template_view_${bookTemplate.slug}`,
+        property: bookTemplate.title,
+      });
+    }
+  }, [bookTemplate.slug, bookTemplate.title]);
   return <BookTemplatePreview bookTemplate={bookTemplate} />;
 }
