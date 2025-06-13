@@ -29,6 +29,11 @@ export const navigationItems = [
     label: "Blog",
     description: "Tips, ideas & inspiration for personalized books",
   },
+  {
+    href: "/about",
+    label: "About Us",
+    description: "Check our story",
+  },
 ];
 
 export const adminNavigationItem = {
