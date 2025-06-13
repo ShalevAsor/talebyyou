@@ -230,7 +230,7 @@ export const PaymentSection = memo(function PaymentSection({
       const orderValue = totalCost ? parseFloat(totalCost) : 29.99;
 
       window.gtag("event", "conversion", {
-        send_to: "AW-17197907343/z0r8CIOy69kaEI_7zIhA",
+        send_to: "AW-17197907343/7167727875",
         value: orderValue,
         currency: "USD",
         transaction_id: orderId,
