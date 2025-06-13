@@ -206,7 +206,6 @@ export const PaymentSection = memo(function PaymentSection({
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const router = useRouter();
-  const { totalCost, quantity } = useOrderStore();
   // Create PayPal order when user clicks payment button
   const handleCreatePaypalOrder = useCallback(async () => {
     try {
@@ -221,6 +220,33 @@ export const PaymentSection = memo(function PaymentSection({
     }
   }, [orderId]);
 
+  const { quantity, totalCost } = useOrderStore();
+
+  // Function to track Google Ads conversion
+  const trackConversion = useCallback(() => {
+    // Check if gtag is available (Google Ads script loaded)
+    if (typeof window !== "undefined" && window.gtag) {
+      // Convert totalCost string to number, fallback to 29.99
+      const orderValue = totalCost ? parseFloat(totalCost) : 29.99;
+
+      window.gtag("event", "conversion", {
+        send_to: "AW-17197907343/z0r8CIOy69kaEI_7zIhA",
+        value: orderValue,
+        currency: "USD",
+        transaction_id: orderId,
+      });
+
+      console.log("Google Ads conversion tracked:", {
+        orderId,
+        quantity,
+        value: orderValue,
+        totalCost,
+      });
+    } else {
+      console.warn("Google Ads gtag not available for conversion tracking");
+    }
+  }, [orderId, quantity, totalCost]);
+
   // Process payment when user approves PayPal order
   const handleApprovePaypalOrder = useCallback(
     async (data: { orderID: string }) => {
@@ -229,14 +255,8 @@ export const PaymentSection = memo(function PaymentSection({
         setPaymentError(null);
 
         await capturePayPalOrder(orderId, data.orderID);
-        if (typeof window !== "undefined" && window.pintrk) {
-          window.pintrk("track", "checkout", {
-            event_id: `purchase_${orderId}`,
-            value: parseFloat(totalCost || "0"),
-            order_quantity: quantity || 1,
-            currency: "USD",
-          });
-        }
+        // Track Google Ads conversion after successful payment
+        trackConversion();
         toast.success(
           "Payment successful! You'll receive a confirmation email shortly."
         );
@@ -251,7 +271,7 @@ export const PaymentSection = memo(function PaymentSection({
         setIsProcessingPayment(false);
       }
     },
-    [orderId, router, quantity, totalCost]
+    [orderId, router, trackConversion]
   );
 
   if (!orderId) {

@@ -3,16 +3,15 @@ export {};
 // Create a type for the roles
 export type Roles = "store_admin" | "Member";
 
-// Pinterest tracking function type
-type PinterestTrack = (
-  action: "track",
-  event: "pagevisit" | "checkout",
-  data: {
-    event_id: string;
-    property?: string;
+// Google Ads gtag function type
+type GtagFunction = (
+  command: "event",
+  action: string,
+  parameters: {
+    send_to: string;
     value?: number;
-    order_quantity?: number;
     currency?: string;
+    transaction_id?: string;
   }
 ) => void;
 
@@ -23,8 +22,8 @@ declare global {
     };
   }
 
-  // Add Pinterest to window
+  // Add Google Ads gtag to window
   interface Window {
-    pintrk?: PinterestTrack;
+    gtag?: GtagFunction;
   }
 }

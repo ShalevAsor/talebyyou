@@ -70,6 +70,18 @@ const BookPreviewClient: React.FC<BookPreviewClientProps> = ({
     };
   }, [reset]);
 
+  // Track "Started Customization" conversion - add this anywhere after line 20
+  useEffect(() => {
+    // Simple conversion tracking - no logic changes
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "conversion", {
+        send_to: "AW-17197907343/7248482110",
+        value: 5.0,
+        currency: "USD",
+      });
+    }
+  }, []);
+
   // Handle save and order with navigation in the component
   const handleSaveAndOrder = async () => {
     if (!bookPreview) {
