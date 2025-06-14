@@ -188,7 +188,9 @@ import {
 import { toast } from "react-toastify";
 import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import { trackPurchase } from "@/utils/metaTracking";
+import { useOrderStore } from "@/store/useOrderStore";
+import { ProductType } from "@prisma/client";
 interface PaymentSectionProps {
   orderId: string;
   payPalClientId: string;
@@ -205,6 +207,8 @@ export const PaymentSection = memo(function PaymentSection({
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const router = useRouter();
+  const { productType, totalCost, currentBookId } = useOrderStore();
+
   // Create PayPal order when user clicks payment button
   const handleCreatePaypalOrder = useCallback(async () => {
     try {
@@ -227,7 +231,15 @@ export const PaymentSection = memo(function PaymentSection({
         setPaymentError(null);
 
         await capturePayPalOrder(orderId, data.orderID);
-
+        // 🎯 Track Purchase event - we need book data for this
+        // You'll need to pass book data as props or get it from store
+        trackPurchase({
+          orderId: orderId,
+          bookId: currentBookId || "NoId",
+          productType: productType || ProductType.BOOK,
+          value: parseFloat(totalCost || "34.99"),
+          quantity: 1,
+        });
         toast.success(
           "Payment successful! You'll receive a confirmation email shortly."
         );
@@ -242,7 +254,7 @@ export const PaymentSection = memo(function PaymentSection({
         setIsProcessingPayment(false);
       }
     },
-    [orderId, router]
+    [orderId, router, currentBookId, productType, totalCost]
   );
 
   if (!orderId) {
