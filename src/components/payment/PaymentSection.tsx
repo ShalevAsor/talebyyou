@@ -194,6 +194,7 @@ import { ProductType } from "@prisma/client";
 interface PaymentSectionProps {
   orderId: string;
   payPalClientId: string;
+  bookTitle: string;
 }
 
 /**
@@ -203,6 +204,7 @@ interface PaymentSectionProps {
 export const PaymentSection = memo(function PaymentSection({
   orderId,
   payPalClientId,
+  bookTitle,
 }: PaymentSectionProps) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
@@ -236,6 +238,7 @@ export const PaymentSection = memo(function PaymentSection({
         trackPurchase({
           orderId: orderId,
           bookId: currentBookId || "NoId",
+          bookTitle,
           productType: productType || ProductType.BOOK,
           value: parseFloat(totalCost || "34.99"),
           quantity: 1,

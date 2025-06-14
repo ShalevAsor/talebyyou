@@ -68,6 +68,7 @@ export const trackInitiateCheckout = (orderData: {
 export const trackPurchase = (purchaseData: {
   orderId: string;
   bookId: string;
+  bookTitle: string;
   productType: "BOOK" | "EBOOK";
   value: number;
   quantity?: number;
@@ -77,6 +78,7 @@ export const trackPurchase = (purchaseData: {
   window.fbq!("track", "Purchase", {
     content_type: "product",
     content_ids: [purchaseData.bookId],
+    content_name: purchaseData.bookTitle,
     content_category:
       purchaseData.productType === "BOOK" ? "Physical Book" : "Digital Book",
     value: purchaseData.value,
@@ -87,6 +89,7 @@ export const trackPurchase = (purchaseData: {
 
   console.log(
     "📊 Meta Pixel: Purchase tracked for",
+    purchaseData.bookTitle,
     "Order:",
     purchaseData.orderId
   );

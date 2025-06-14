@@ -914,6 +914,7 @@ export function OrderContent({
               <PaymentSection
                 orderId={orderId}
                 payPalClientId={payPalClientId}
+                bookTitle={book.title}
               />
             </div>
           )}
