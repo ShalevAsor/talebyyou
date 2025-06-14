@@ -5,6 +5,7 @@ import { BookTemplateFull } from "@/types/book";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Clock, Users } from "lucide-react";
+import { trackViewContent } from "@/utils/metaTracking";
 
 interface LibraryBookTemplateCardProps {
   template: BookTemplateFull;
@@ -32,7 +33,14 @@ export const LibraryBookTemplateCard: React.FC<
       (1000 * 60 * 60 * 24)
   );
   const isNewTemplate = daysSinceCreated <= 7;
-
+  // Handle click on preview button - track ViewContent
+  const handlePreviewClick = () => {
+    trackViewContent({
+      id: template.id,
+      title: template.title,
+      price: 34.99,
+    });
+  };
   return (
     <article
       className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-indigo-300 hover:shadow-lg transition-all duration-300 flex flex-col h-full group"
@@ -114,7 +122,7 @@ export const LibraryBookTemplateCard: React.FC<
           )}
         </div>
 
-        {/* Action Button - Always at Bottom */}
+        {/* Action Button  */}
         <div className="mt-auto">
           <Button
             asChild
@@ -124,6 +132,7 @@ export const LibraryBookTemplateCard: React.FC<
               href={`/library/template-preview/${template.slug}`}
               aria-label={`Preview ${template.title}`}
               className="flex items-center justify-center gap-2"
+              onClick={handlePreviewClick}
             >
               <Eye className="w-4 h-4" />
               <span className="font-medium">Preview</span>

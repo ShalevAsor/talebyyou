@@ -3,17 +3,31 @@ export {};
 // Create a type for the roles
 export type Roles = "store_admin" | "Member";
 
-// Google Ads gtag function type
-type GtagFunction = (
-  command: "event",
-  action: string,
-  parameters: {
-    send_to: string;
-    value?: number;
-    currency?: string;
-    transaction_id?: string;
-  }
-) => void;
+// Meta Pixel fbq function types
+interface MetaPixelParameters {
+  content_type?: string;
+  content_ids?: string[];
+  content_name?: string;
+  content_category?: string;
+  value?: number;
+  currency?: string;
+  num_items?: number;
+  transaction_id?: string;
+}
+
+type MetaPixelFunction = {
+  (
+    command: "track",
+    eventName: "ViewContent" | "InitiateCheckout" | "Purchase" | "Lead",
+    parameters?: MetaPixelParameters
+  ): void;
+  (
+    command: "trackCustom",
+    eventName: string,
+    parameters?: MetaPixelParameters
+  ): void;
+  (command: "init", pixelId: string): void;
+};
 
 declare global {
   interface CustomJwtSessionClaims {
@@ -22,8 +36,8 @@ declare global {
     };
   }
 
-  // Add Google Ads gtag to window
+  // Add Meta Pixel fbq to window
   interface Window {
-    gtag?: GtagFunction;
+    fbq?: MetaPixelFunction;
   }
 }
