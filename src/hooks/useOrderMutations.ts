@@ -307,14 +307,6 @@ export function useOrderMutation(options?: UseOrderMutationOptions) {
     formData: CheckoutFormData,
     quantity: number = 1
   ) => {
-    // 🐛 DEBUG: Log quantity at function entry
-    console.log("🐛 [createOrder] Function called with:", {
-      bookId,
-      quantity,
-      productType: formData.productType,
-      timestamp: new Date().toISOString(),
-    });
-
     setIsCreating(true);
     setCreateOrderError(null);
 
@@ -324,26 +316,8 @@ export function useOrderMutation(options?: UseOrderMutationOptions) {
         throw new Error("Product type is missing from form data");
       }
 
-      // 🐛 DEBUG: Log before calling createOrRecoverOrder
-      console.log("🐛 [createOrder] About to call createOrRecoverOrder with:", {
-        formData: {
-          productType: formData.productType,
-          customerEmail: formData.customerEmail,
-          // Add other relevant form fields you want to see
-        },
-        bookId,
-        quantity,
-      });
-
       // Use the new function that handles both creating and recovering orders
       const result = await createOrRecoverOrder(formData, bookId, quantity);
-
-      // 🐛 DEBUG: Log the result from createOrRecoverOrder
-      console.log("🐛 [createOrder] createOrRecoverOrder result:", {
-        success: result.success,
-        data: result.success ? result.data : null,
-        error: result.success ? null : result.error,
-      });
 
       if (result.success) {
         const orderId = result.data;

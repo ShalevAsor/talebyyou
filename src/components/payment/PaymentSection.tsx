@@ -257,7 +257,7 @@ export const PaymentSection = memo(function PaymentSection({
         setIsProcessingPayment(false);
       }
     },
-    [orderId, router, currentBookId, productType, totalCost]
+    [orderId, router, currentBookId, productType, totalCost, bookTitle]
   );
 
   if (!orderId) {
