@@ -475,6 +475,7 @@ import { mapFormToShippingAddress } from "@/utils/orderUtils";
 import { calculatePrintJobCost } from "@/actions/print-actions";
 import { usePricing } from "@/hooks/usePricing";
 import { getPricingDetails } from "@/utils/orderUtils";
+import { trackInitiateCheckout } from "@/utils/metaTracking";
 
 interface OrderContentProps {
   book: BookFull;
@@ -498,6 +499,7 @@ export function OrderContent({
   // Get order state from Zustand store
   const {
     step,
+    totalCost,
     productType,
     formData,
     orderId,
@@ -622,6 +624,14 @@ export function OrderContent({
       );
       setTotalCost(pricingDetails.totalPrice.toFixed(2));
     }
+    // 🎯 Track InitiateCheckout event
+    trackInitiateCheckout({
+      bookId: book.id,
+      bookTitle: book.title,
+      productType: data.productType,
+      value: Number(totalCost),
+      quantity: quantity,
+    });
 
     // Create or update the order, passing the quantity from the store
     if (orderId) {
