@@ -188,7 +188,6 @@ import {
 import { toast } from "react-toastify";
 import { Loader2, AlertCircle, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useOrderStore } from "@/store/useOrderStore";
 
 interface PaymentSectionProps {
   orderId: string;
@@ -220,33 +219,6 @@ export const PaymentSection = memo(function PaymentSection({
     }
   }, [orderId]);
 
-  const { quantity, totalCost } = useOrderStore();
-
-  // Function to track Google Ads conversion
-  const trackConversion = useCallback(() => {
-    // Check if gtag is available (Google Ads script loaded)
-    if (typeof window !== "undefined" && window.gtag) {
-      // Convert totalCost string to number, fallback to 29.99
-      const orderValue = totalCost ? parseFloat(totalCost) : 29.99;
-
-      window.gtag("event", "conversion", {
-        send_to: "AW-17197907343/7167727875",
-        value: orderValue,
-        currency: "USD",
-        transaction_id: orderId,
-      });
-
-      console.log("Google Ads conversion tracked:", {
-        orderId,
-        quantity,
-        value: orderValue,
-        totalCost,
-      });
-    } else {
-      console.warn("Google Ads gtag not available for conversion tracking");
-    }
-  }, [orderId, quantity, totalCost]);
-
   // Process payment when user approves PayPal order
   const handleApprovePaypalOrder = useCallback(
     async (data: { orderID: string }) => {
@@ -255,8 +227,7 @@ export const PaymentSection = memo(function PaymentSection({
         setPaymentError(null);
 
         await capturePayPalOrder(orderId, data.orderID);
-        // Track Google Ads conversion after successful payment
-        trackConversion();
+
         toast.success(
           "Payment successful! You'll receive a confirmation email shortly."
         );
@@ -271,7 +242,7 @@ export const PaymentSection = memo(function PaymentSection({
         setIsProcessingPayment(false);
       }
     },
-    [orderId, router, trackConversion]
+    [orderId, router]
   );
 
   if (!orderId) {
