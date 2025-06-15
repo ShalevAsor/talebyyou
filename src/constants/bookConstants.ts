@@ -1,4 +1,4 @@
-export const BOOK_CREATION_LIMIT = 8;
+export const BOOK_CREATION_LIMIT = 2;
 
 export const BOOK_PRICES = {
   physical: 34.99,
