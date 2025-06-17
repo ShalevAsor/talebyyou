@@ -1,15 +1,23 @@
-/**
- * Type definitions related to navigation
- */
+// types/navigation.ts
+
+export interface DropdownItem {
+  href: string;
+  label: string;
+  description: string;
+}
+
 export interface NavigationItem {
   href: string;
   label: string;
-  description?: string;
+  description: string;
+  isDropdown?: boolean;
+  dropdownItems?: DropdownItem[];
 }
 
 export interface NavLinksProps {
   isMobile?: boolean;
   className?: string;
+  onMobileMenuClose?: () => void;
 }
 
 export interface AuthSectionProps {

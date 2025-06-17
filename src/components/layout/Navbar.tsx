@@ -1,21 +1,27 @@
 "use client";
 
 import { useState, useCallback, memo } from "react";
-import TaleByYouLogo from "./Logo";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { NavLinks } from "./NavLinks";
 import { AuthSection } from "./AuthSection";
-import { MobileNavbar } from "./MobileNavbar";
 import { generateStructuredData } from "@/config/site";
+import { NavLogo } from "./NavLogo";
 
 /**
  * Main navigation bar component
- * Responsive design with desktop and mobile layouts
+ * Modern responsive design with gradient logo and smooth animations
  */
 export const Navbar: React.FC = memo(() => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSetMobileMenu = useCallback((open: boolean) => {
     setMobileMenuOpen(open);
+  }, []);
+
+  // Function to close mobile menu - passed to NavLinks
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
   }, []);
 
   // Create structured data for the site navigation
@@ -41,36 +47,64 @@ export const Navbar: React.FC = memo(() => {
   });
 
   return (
-    <header
-      className="w-full border-b bg-white sticky top-0 z-50"
-      role="banner"
-    >
+    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(navigationSchema),
         }}
       />
-      <div className=" px-4 mx-auto">
-        <div className="flex h-16 items-center justify-between">
-          {/* Left: Logo */}
-          <TaleByYouLogo isNavbar={true} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo Section */}
+          <NavLogo />
 
-          {/* Center: Navigation Links (desktop only) */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
+          {/* Desktop Navigation Links */}
+          <div className="hidden lg:flex items-center space-x-8">
             <NavLinks />
           </div>
 
-          {/* Right: Auth Section (desktop only) */}
-          <div className="hidden md:block">
+          {/* Desktop Auth Section */}
+          <div className="hidden lg:flex items-center space-x-4">
             <AuthSection />
           </div>
 
-          {/* Mobile Menu */}
-          <MobileNavbar open={mobileMenuOpen} setOpen={handleSetMobileMenu} />
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleSetMobileMenu(!mobileMenuOpen)}
+              className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
+              aria-label="Toggle menu"
+            >
+              {!mobileMenuOpen ? (
+                <Menu className="h-6 w-6" />
+              ) : (
+                <X className="h-6 w-6" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
-    </header>
+
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200">
+          <div className="px-4 py-4 space-y-4">
+            {/* Navigation Links - Pass closeMobileMenu function */}
+            <div className="space-y-2">
+              <NavLinks isMobile onMobileMenuClose={closeMobileMenu} />
+            </div>
+
+            {/* Mobile Auth Section */}
+            <div className="pt-4 border-t border-gray-200">
+              <AuthSection isMobile />
+            </div>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 });
 
