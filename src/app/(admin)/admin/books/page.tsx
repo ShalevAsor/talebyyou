@@ -1,11 +1,43 @@
-export default async function BooksAdminPage() {
+// src/app/(admin)/admin/books/page.tsx
+import { BooksStats } from "@/components/admin/books/BooksStats";
+import { BooksClient } from "@/components/admin/books/BooksClient";
+import { getBooksStats } from "@/actions/book-actions";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+
+export default async function BooksPage() {
+  // Fetch real books statistics
+  const statsResult = await getBooksStats();
+
+  // Handle error case
+  if (!statsResult.success) {
+    return (
+      <div className="p-6">
+        <h2 className="text-3xl font-bold tracking-tight mb-6">
+          Books Management
+        </h2>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{statsResult.error}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
-    <article className="flex flex-col gap-4 rounded-lg bg-gray-200">
-      <h1 className="text-2xl font-bold">Books</h1>
-      {/* Books Count */}
-      <div className="flex ">Books Count: {30}</div>
-      {/* Books Search by id */}
-      {/* Book card for search result */}
-    </article>
+    <div className="p-6">
+      <h2 className="text-3xl font-bold tracking-tight mb-6">
+        Books Management
+      </h2>
+
+      <div className="space-y-6">
+        {/* Books Stats */}
+        <BooksStats booksStatsData={statsResult.data} />
+
+        {/* Search and Results */}
+        <BooksClient />
+      </div>
+    </div>
   );
 }

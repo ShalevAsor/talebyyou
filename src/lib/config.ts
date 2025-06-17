@@ -58,6 +58,7 @@ const config = {
     CLIENT_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     IS_DEVELOPMENT: isDevelopment,
     IS_PRODUCTION: isProduction,
+    MAINTENANCE_MODE: process.env.MAINTENANCE_MODE === "true",
   },
 
   // Database Configuration

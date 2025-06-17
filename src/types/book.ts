@@ -12,6 +12,8 @@ import {
   TemplatePageContent,
   Order,
   PrintJob,
+  GuestSession,
+  User,
 } from "@prisma/client";
 
 /***
@@ -107,6 +109,63 @@ export interface BookLimitResult {
   totalCreated: number;
   message?: string;
 }
+
+export interface BooksStatsData {
+  totalBooks: number;
+  booksByStatus: {
+    customizing: number;
+    ordered: number;
+    readyForPrinting: number;
+    completed: number;
+  };
+  recentBooks: number; // created in last 7 days
+  guestBooks: number;
+  userBooks: number;
+}
+
+export interface BookSearchResult {
+  id: string;
+  title: string;
+  status: BookStatus;
+  createdAt: Date;
+  updatedAt: Date;
+  // User info (could be from User or Order)
+  userEmail?: string;
+  userName?: string;
+  userId?: string;
+  isGuest: boolean;
+  // Order info if available
+  orderNumber?: string;
+  orderId?: string;
+  // Template info
+  templateName?: string;
+}
+
+export interface BookSearchFilters {
+  searchType: "bookId" | "userEmail" | "orderNumber" | "bookTitle";
+  searchQuery: string;
+  status?: BookStatus;
+  dateRange?: {
+    from: string;
+    to: string;
+  };
+}
+
+export type BookAdmin = Book & {
+  pages: Page[];
+  character: Character | null;
+  template: BookTemplate & {
+    genres: Genre[];
+  };
+  imageGenerations: ImageGeneration[];
+  order: Order | null;
+  printJob: PrintJob | null;
+  user: Pick<User, "id" | "email" | "firstName" | "lastName"> | null;
+  guestSession: Pick<
+    GuestSession,
+    "id" | "sessionId" | "lastActive" | "createdAt" | "expiresAt"
+  > | null;
+};
 
 // Re-export enums for convenience
 export { BookStatus, PageType, GenerationStatus, ImageType };
