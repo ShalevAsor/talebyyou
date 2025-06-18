@@ -5,6 +5,7 @@ import { IoSparklesSharp } from "react-icons/io5";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import HeroStats from "./HeroStats";
+import PricingDisplay from "../common/PricingDisplay";
 
 export default function Hero() {
   return (
@@ -65,6 +66,9 @@ export default function Hero() {
                 </Link>
               </Button>
             </div>
+
+            {/* Add pricing here */}
+            <PricingDisplay variant="hero" showDiscount={true} />
 
             {/* Enhanced Stats Component */}
             <HeroStats />

@@ -3,6 +3,7 @@ import { GenreFilter } from "../templates/GenreFilter";
 import { Loading } from "@/components/common";
 import { Genre } from "@prisma/client";
 import { FiFilter } from "react-icons/fi";
+import PricingDisplay from "../common/PricingDisplay";
 
 interface LibrarySidebarProps {
   genres: Genre[];
@@ -53,6 +54,14 @@ const LibrarySidebar: React.FC<LibrarySidebarProps> = ({
           selectedGenres={selectedGenres}
           onFilterChange={onFilterChange}
         />
+
+        {/* Pricing Section */}
+        <div className="border-t border-gray-200 pt-6">
+          <h3 className="text-sm font-medium text-gray-900 mb-3">
+            Our Pricing
+          </h3>
+          <PricingDisplay variant="library" showDiscount={true} />
+        </div>
       </div>
     </aside>
   );
