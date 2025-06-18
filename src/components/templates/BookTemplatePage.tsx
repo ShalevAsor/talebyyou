@@ -116,9 +116,10 @@ const BookTemplatePage = React.forwardRef<
                   src={imageUrl}
                   alt={`Illustration for page ${pageNumber}`}
                   fill
-                  sizes="(max-width: 768px) 100vw, 400px"
+                  sizes="(max-width: 640px) 280px, (max-width: 768px) 300px, 400px"
                   style={{ objectFit: "fill" }}
-                  priority={pageNumber <= 2} // Only prioritize first few pages
+                  quality={75}
+                  priority={pageNumber <= 1} // Only prioritize cover page
                 />
               </div>
             ) : (

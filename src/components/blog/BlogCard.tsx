@@ -37,7 +37,9 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
               alt={`Featured image for ${post.title}`}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 320px, (max-width: 1200px) 400px, 350px" // More specific pixel values
+              quality={75} // Add quality control
+              loading="lazy" // Add lazy loading for blog cards
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">

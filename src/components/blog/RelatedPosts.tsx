@@ -47,6 +47,8 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    quality={75} // Add quality control
+                    loading="lazy" // Add lazy loading if not above the fold
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">

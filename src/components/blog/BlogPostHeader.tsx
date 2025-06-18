@@ -107,6 +107,8 @@ export default function BlogPostHeader({ post }: BlogPostHeaderProps) {
                 width={1200}
                 height={600}
                 className="w-full h-64 lg:h-96 object-cover"
+                sizes="(max-width: 768px) 100vw, 1200px" // Add responsive sizes
+                quality={75} // Add quality control
                 priority
               />
             </div>

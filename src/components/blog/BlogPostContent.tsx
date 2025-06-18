@@ -78,6 +78,8 @@ export default function BlogPostContent({ content }: BlogPostContentProps) {
                 width={800}
                 height={400}
                 className="rounded-lg shadow-lg w-full object-cover"
+                sizes="(max-width: 768px) 100vw, 800px" // Add responsive sizes
+                quality={75} // Add quality control
                 loading="lazy"
               />
               {alt && (

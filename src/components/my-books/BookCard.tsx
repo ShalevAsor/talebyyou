@@ -1092,8 +1092,8 @@ export function BookCard({ book }: BookCardProps) {
                 fill
                 sizes="96px"
                 className="object-cover"
-                priority={false}
                 loading="lazy"
+                quality={75}
               />
             ) : (
               <div

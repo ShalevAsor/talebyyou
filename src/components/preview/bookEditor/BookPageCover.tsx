@@ -64,7 +64,7 @@ const BookPageCover = React.forwardRef<HTMLDivElement, BookPageCoverProps>(
               className="z-0"
               priority
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
-              quality={85}
+              quality={75}
             />
 
             {/* Edit image button - only show in edit mode */}

@@ -28,11 +28,11 @@ const BookTemplateCoverPage = React.forwardRef<
             src={coverImage}
             alt="Book cover illustration"
             fill
-            sizes="(max-width: 768px) 100vw, 400px"
+            sizes="(max-width: 640px) 280px, (max-width: 768px) 300px, 400px" // More specific sizes
             style={{ objectFit: "fill" }}
             className="z-0"
             priority
-            loading="eager"
+            quality={75}
           />
         </div>
       )}

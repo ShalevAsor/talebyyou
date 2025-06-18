@@ -171,8 +171,9 @@ const BookPage = React.forwardRef<HTMLDivElement, BookPageProps>(
                 alt={`Illustration for page ${pageNumber}`}
                 fill
                 style={{ objectFit: "cover" }}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
-                quality={85}
+                sizes="(max-width: 640px) 320px, (max-width: 1024px) 400px, 500px"
+                quality={75}
+                loading="lazy"
               />
 
               {/* Edit image button - only show in edit mode */}

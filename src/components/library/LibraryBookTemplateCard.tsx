@@ -56,7 +56,7 @@ export const LibraryBookTemplateCard: React.FC<
           height={160}
           className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
           sizes="120px"
-          priority={false}
+          quality={75}
         />
 
         {/* New Template Badge */}
