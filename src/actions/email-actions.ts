@@ -8,6 +8,7 @@ import {
   createErrorResult,
 } from "@/types/actions";
 import config from "@/lib/config";
+import { ContactCategory } from "@/schemas/contact-schema";
 
 /**
  * Sends a welcome email to a new user
@@ -165,7 +166,7 @@ export async function sendOrderConfirmationEmail(
 export async function sendContactFormEmail(
   name: string,
   email: string,
-  category: string,
+  category: ContactCategory,
   subject: string,
   message: string,
   orderNumber?: string

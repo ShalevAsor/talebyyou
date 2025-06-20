@@ -616,11 +616,12 @@ describe("EmailService", () => {
       expect(mockSendMail).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
-          from: '"TaleByYou" <support@talebyyou.com>',
+          from: '"TaleByYou" <orders@talebyyou.com>', // ✅ CHANGE: was support, now orders
           to: "user@example.com",
           bcc: "admin@talebyyou.com",
           subject: "Problem with my order",
           html: "<p>Contact confirmation template</p>",
+          replyTo: "orders@talebyyou.com", // ✅ ADD: this line was missing
         })
       );
     });
