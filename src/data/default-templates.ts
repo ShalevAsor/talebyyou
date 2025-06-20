@@ -743,7 +743,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         content:
           "[CHILD_NAME] was playing dress-up in [HIS_HER] room when [HE_SHE] found a beautiful tiara hidden in an old jewelry box. The moment [HE_SHE] put it on, the tiara began to sparkle with magical light! Suddenly, [CHILD_NAME]'s clothes transformed into a gorgeous princess gown, and [HE_SHE] felt very special indeed. 'I think this tiara is magic!' [HE_SHE] whispered in wonder.",
         imagePrompt:
-          "In bedroom putting on sparkling tiara that glows with light, clothes transforming into princess gown, looking in mirror with wonder",
+          "In princess room wearing a sparkling tiara that glows with light and an elegant princess gown, looking in mirror with delight",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
       },
       {
