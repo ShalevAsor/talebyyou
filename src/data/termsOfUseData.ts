@@ -5,7 +5,7 @@
 
 import { siteConfig } from "@/config/site";
 
-export const termsLastUpdated = "May 22, 2025";
+export const termsLastUpdated = "June 20, 2025";
 
 // Main terms sections
 export const termsOfUseSections = [
@@ -89,6 +89,37 @@ We reserve the right to review all content and refuse to process orders that vio
 Processing Times: AI image generation typically completes within minutes. If you experience any delays or issues with processing, please contact our support team. Physical books are printed and shipped through Lulu xPress.
 
 Payment Terms: Payment must be received before order processing begins. All prices are in USD unless otherwise specified. You are responsible for all applicable taxes and fees.`,
+  },
+  {
+    id: "order-completion-requirements",
+    title: "Order Completion Requirements (Printed Books)",
+    content: `Print Process Completion: For physical book orders, payment alone does not guarantee book delivery. After payment, customers must complete the final print authorization process by:
+    
+    • Reviewing and confirming their final book design
+
+    • Selecting preferred images for all remaining pages
+
+    • Making any final text or content adjustments
+
+    • Clicking the “Print Book” button to authorize production
+    
+    Incomplete Orders: If a customer fails to complete the print authorization process within a reasonable timeframe after payment, the order will be considered abandoned. In such cases:
+    
+
+    • The order will be automatically cancelled
+
+    • We cannot guarantee book delivery or printing
+
+    • No refunds will be provided for abandoned orders, as AI image generation costs have already been incurred regardless of printing completion
+
+    • All generated content and book data may be permanently deleted after a period determined at our sole discretion
+
+    • Customers may receive email reminders before deletion, but this is not guaranteed
+    
+
+    Customer Responsibility: It is the customer’s responsibility to complete the entire order process, including final print authorization. ${siteConfig.name} is not liable for orders that remain incomplete due to customer inaction.
+    
+    Grace Period: We may, at our sole discretion, extend the completion deadline for customers who contact us before any deadline expires.`,
   },
   {
     id: "book-previews-and-final-products",

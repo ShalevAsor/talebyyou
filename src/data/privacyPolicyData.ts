@@ -5,7 +5,7 @@
 
 import { siteConfig } from "@/config/site";
 
-export const privacyPolicyLastUpdated = "May 22, 2025";
+export const privacyPolicyLastUpdated = "June 20, 2025";
 
 // Main privacy policy sections
 export const privacyPolicySections = [
@@ -65,6 +65,8 @@ Usage Data: Basic website usage, IP address, browser information`,
 
 • AWS (secure data storage)
 
+• Meta/Facebook (advertising analytics and retargeting)
+
 We never sell your personal information to third parties.`,
   },
   {
@@ -83,7 +85,10 @@ However, no method of electronic storage is 100% secure. While we strive to prot
 
 • Book content: Until you request deletion
 
-• Guest sessions: 30 days if no order is placed`,
+• Guest sessions: 30 days if no order is placed
+
+• Incomplete orders: For paid orders where customers do not complete the final print authorization process, all book content, generated images, and associated data may be permanently deleted after a period determined at our sole discretion, without prior notice
+`,
   },
   {
     id: "your-rights",
@@ -123,31 +128,33 @@ Your information may be processed in the United States and other countries where
 
 • Security cookies: To protect against fraud and unauthorized access
 
+• Meta Pixel: For advertising measurement and personalized ads
+
 We do not use tracking, analytics, or marketing cookies. Disabling cookies in your browser may prevent the website from working properly.`,
   },
   {
-    id: "pinterest-analytics",
-    title: "Pinterest Analytics",
-    content: `We use Pinterest Tag to measure the effectiveness of our Pinterest marketing and to provide personalized advertising experiences.
-  
-  Pinterest Analytics collects:
-  • How you interact with our Pinterest content
-  • Pages you visit after clicking our Pinterest pins
-  • Actions you take on our website (viewing templates, customizations, purchases)
-  • Device and browser information
-  
-  This helps us:
-  • Understand which Pinterest content drives traffic to our site
-  • Show relevant ads to people who have visited our website
-  • Measure return on advertising investment
-  • Improve our Pinterest marketing strategy
-  
-  You can control Pinterest data collection by:
-  • Adjusting your Pinterest privacy settings at pinterest.com/settings/privacy
-  • Using browser settings to block tracking pixels
-  • Opting out of personalized ads in your Pinterest account
-  
-  For more information about Pinterest's data practices, visit Pinterest's Privacy Policy at policy.pinterest.com/privacy-policy.`,
+    id: "meta-pixel-analytics",
+    title: "Meta Pixel Analytics",
+    content: `We use Meta Pixel to measure the effectiveness of our Meta/Facebook marketing and to provide personalized advertising experiences.\n
+    
+    Meta Pixel collects:\n
+    • How you interact with our website content\n
+    • Pages you visit on our site\n
+    • Actions you take on our website (viewing templates, customizations, purchases)\n
+    • Device and browser information\n
+    
+    This helps us:
+    • Understand which Meta/Facebook content drives traffic to our site\n
+    • Show relevant ads to people who have visited our website\n
+    • Measure return on advertising investment\n
+    • Improve our Meta/Facebook marketing strategy\n
+    
+    You can control Meta Pixel data collection by:\n
+    • Adjusting your Facebook privacy settings at facebook.com/settings/ads\n
+    • Using browser settings to block tracking pixels\n
+    • Opting out of personalized ads in your Facebook account\n
+    
+    For more information about Meta's data practices, visit Meta's Privacy Policy at facebook.com/privacy/policy.`,
   },
   {
     id: "california-privacy-rights",
