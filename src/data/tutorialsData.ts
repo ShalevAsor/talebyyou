@@ -37,13 +37,13 @@ export const tutorialsData: Tutorial[] = [
     thumbnail: "/images/thumbnails/mq1.webp",
     duration: "3:31",
   },
-  {
-    id: "ordering-printing",
-    title: "How to Order & Print Your Personalized Book",
-    description:
-      "Complete the process by learning how to review, order, and receive your beautifully printed personalized children's book. Understand pricing options, shipping choices, digital vs physical formats, and what happens after you place your order.",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Placeholder - update with real URL
-    thumbnail: "/images/placeholders/tutorial-ordering.jpg",
-    duration: "4:28",
-  },
+  // {
+  //   id: "ordering-printing",
+  //   title: "How to Order & Print Your Personalized Book",
+  //   description:
+  //     "Complete the process by learning how to review, order, and receive your beautifully printed personalized children's book. Understand pricing options, shipping choices, digital vs physical formats, and what happens after you place your order.",
+  //   videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Placeholder - update with real URL
+  //   thumbnail: "/images/placeholders/tutorial-ordering.jpg",
+  //   duration: "4:28",
+  // },
 ];
