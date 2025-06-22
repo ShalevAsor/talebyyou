@@ -6,29 +6,22 @@ import {
   createErrorResult,
   createSuccessResult,
 } from "@/types/actions";
-import { revalidatePath, unstable_cache } from "next/cache";
+import { revalidatePath } from "next/cache";
 
-export const getGenres = unstable_cache(
-  async (): Promise<ActionResult<Genre[]>> => {
-    try {
-      const genres = await prisma.genre.findMany({
-        orderBy: {
-          name: "asc",
-        },
-      });
+export async function getGenres(): Promise<ActionResult<Genre[]>> {
+  try {
+    const genres = await prisma.genre.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
 
-      return createSuccessResult(genres);
-    } catch (error) {
-      console.error("Failed to fetch genres:", error);
-      return createErrorResult(
-        "Failed to load genres. Please try again later."
-      );
-    }
-  },
-  ["all-genres"],
-
-  { tags: ["genres"], revalidate: 3600 }
-);
+    return createSuccessResult(genres);
+  } catch (error) {
+    console.error("Failed to fetch genres:", error);
+    return createErrorResult("Failed to load genres. Please try again later.");
+  }
+}
 
 /**
  * Analyze genre usage without deleting anything
