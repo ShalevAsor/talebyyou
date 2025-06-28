@@ -66,7 +66,12 @@ export function createBookFromTemplate(
       pageNumber: index * 2 + 4, // start from 3, odd numbers for image pages
       type: PageType.IMAGE,
       textContent: null, // Image pages don't have text content
-      imagePrompt: enhanceImagePrompt(templatePage.imagePrompt, characterData),
+      imagePrompt: enhanceImagePrompt(
+        templatePage.imagePrompt,
+        characterData,
+        template.consistentOutfit,
+        templatePage.pageOutfit
+      ),
     };
 
     // Add both pages to the book
@@ -78,7 +83,11 @@ export function createBookFromTemplate(
     title: template.title, // Could be personalized if desired
     status: BookStatus.CUSTOMIZING,
     pageCount: template.pageCount + BOOK_DEFAULT_PAGES, // Double the page count (text + image pages) , add default pages
-    coverPrompt: enhanceImagePrompt(template.coverPrompt, characterData),
+    coverPrompt: enhanceImagePrompt(
+      template.coverPrompt,
+      characterData,
+      template.consistentOutfit
+    ),
     pages: pages,
     templateId: template.id,
     userId: userId,
@@ -136,11 +145,15 @@ function personalizeText(text: string, characterData: CharacterData): string {
  *
  * @param basePrompt The base image prompt from the template
  * @param characterData The character customization data
+ * @param consistentOutfit Optional outfit to maintain throughout the book
+ * @param pageOutfit Optional page-specific outfit (takes priority)
  * @returns Enhanced image prompt with character details
  */
 function enhanceImagePrompt(
   basePrompt: string,
-  characterData: CharacterData
+  characterData: CharacterData,
+  consistentOutfit?: string | null,
+  pageOutfit?: string | null
 ): string {
   // Build character description first
   const traits: string[] = [];
@@ -165,6 +178,12 @@ function enhanceImagePrompt(
 
   if (characterData.wearingGlasses) {
     traits.push("wearing glasses");
+  }
+  // Page outfit takes priority over template consistent outfit
+  if (pageOutfit) {
+    traits.push(`wearing ${pageOutfit}`);
+  } else if (consistentOutfit) {
+    traits.push(`wearing ${consistentOutfit}`);
   }
 
   // Combine traits with base prompt

@@ -12,6 +12,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "girl",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 8,
     genres: ["Adventure", "Educational"],
@@ -23,6 +24,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "By window looking outside, packing backpack with map and teddy bear, smiling",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -31,6 +33,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking at New York skyline and Statue of Liberty, yellow taxis nearby, pointing excitedly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -39,6 +42,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In Paris eating croissant, Eiffel Tower and artists painting in background",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -47,6 +51,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "With umbrella in London rain, Big Ben, red bus, and royal guard nearby, looking curious",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -55,6 +60,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking near Egyptian pyramids and Sphinx in desert landscape, hand shielding eyes",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -63,6 +69,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "On red bridge in Japanese garden with cherry blossoms and Mount Fuji, holding origami",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -71,6 +78,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking on Great Wall of China with green hills and panda eating bamboo, smiling",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -79,6 +87,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Dancing at Brazilian carnival with Christ the Redeemer statue visible, arms raised",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -87,6 +96,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In Australian outback with kangaroos and koala, Sydney Opera House visible, trying boomerang",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -95,6 +105,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "On safari in Africa watching elephants, giraffes and lions in grassland, looking amazed",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -103,6 +114,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In snowy Alaska watching Northern Lights with sled dog nearby, catching snowflakes",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -111,6 +123,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting on hill under starry night sky looking thoughtful with backpack, smiling peacefully",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -119,6 +132,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "At home showing collection of world souvenirs and opening adventure scrapbook, excited expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -132,6 +146,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "boy",
+    consistentOutfit: "colorful diving suit",
     minAge: 5,
     maxAge: 12,
     genres: ["Adventure", "Educational"],
@@ -143,6 +158,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing on a sunny beach, wearing colorful diving suit, looking at ocean with excited expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -151,6 +167,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Underwater just below surface, surrounded by bubbles, arms outstretched,peaceful and curious expression, clear blue water",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -159,6 +176,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Underwater near rocky area, looking at small red crab on sandy sea floor, pointing with interest,  with curiosity and joyful smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -167,6 +185,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Underwater in open water, looking at large silver fish swimming nearby, expression of wonder",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -175,6 +194,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swimming underwater near large sea turtle, both moving through calm blue water, reaching out hand, with peaceful and curious expression, smiling softly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -183,6 +203,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Underwater watching jellyfish float nearby, jellyfish glowing softly,  maintaining safe distance with cautious but fascinated expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -191,6 +212,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Floating near vibrant coral reef, surrounded by colorful small fish, clownfish in anemone nearby, expression of wonder and excitement",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -199,6 +221,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Discovering old treasure chest on ocean floor, partially covered by sand and seaweed, small fish swimming around, reaching toward chest thrilled and excited expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -207,6 +230,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swimming underwater near playful sea lion diving off rock, surrounded by bubbles, laughing with pure joy and delight",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -215,6 +239,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swimming underwater next to playful dolphin, dolphin swimming alongside, bubbles rising, expression of pure happiness and joy, biggest smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -223,6 +248,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swimming in deep blue water near massive whale, whale moving peacefully with large tail visible, expression of awe and reverence, mouth slightly open in amazement",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -231,6 +257,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Underwater looking up toward light, swimming toward surface, ocean calm and darker, thoughtful and peaceful expression, slight smile of contentment",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -239,6 +266,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing on beach at sunset, wet and smiling widely with satisfaction and happiness, looking back at sea with grateful expression, colorful sky, footprints visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -252,6 +280,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "boy",
+    consistentOutfit: null,
     minAge: 4,
     maxAge: 12,
     genres: ["Adventure", "Science Fiction"],
@@ -263,6 +292,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking out bedroom window at starry night sky, pointing up at stars, excited expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -271,6 +301,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting in cardboard rocket ship with foil decorations, wearing space helmet, arms raised in celebration",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -279,6 +310,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Inside rocket ship looking through window at purple planet ahead, pressing colorful control buttons, wide-eyed with wonder",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -287,6 +319,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Bouncing high on purple planet surface, collecting sparkly rocks, laughing with arms spread wide",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -295,6 +328,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "On orange glowing planet with fluffy golden space bunnies hopping around, eating orange berries, smiling warmly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -303,6 +337,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking on colorful rainbow clouds with rainbow birds flying overhead, stepping from cloud to cloud, peaceful smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -311,6 +346,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In crystal flower garden with flowers that look like bells, holding a special crystal flower, listening peacefully",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -319,6 +355,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Hopping between glowing floating space rocks, each rock lighting up different colors, arms out for balance, having fun",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -327,6 +364,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting in field of smiling flowers with happy faces, laughing together, holding a glowing magic seed",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -335,6 +373,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Watching upward flowing waterfalls with flying fish with butterfly wings, catching sparkling water in hands, amazed expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -343,6 +382,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Riding on bright glowing comet through space, looking back at colorful planets, surrounded by glittering space dust, content smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
 
       {
@@ -352,6 +392,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Inside rocket ship approaching Earth, looking through window at home below, holding treasure bag full of colorful space souvenirs, excited to return",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -360,6 +401,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing by cardboard rocket in garage at evening, looking up at stars through open door, holding crystal flower, peaceful satisfied expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -373,6 +415,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "girl",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 7,
     genres: ["Adventure", "Fantasy"],
@@ -384,6 +427,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Discovering small wooden gate behind sunflowers in garden, pushing gate open curiously, sunlight shining through",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -392,6 +436,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Entering magical garden with rows of colorful vegetables and flowers, smiling tomato waving hello, amazed expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -400,6 +445,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Meeting smiling carrot popping from soil and three singing peas in pod, lettuce dancing nearby, kneeling down to greet them",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -408,6 +454,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking through garden with tall corn stalks swaying, rolling pumpkins playing, holding hands of small cucumber that looks thirsty",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -416,6 +463,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Using sparkly watering can with glowing blue water, vegetables growing taller as water touches them, all vegetables cheering happily",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -424,6 +472,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Surrounded by colorful talking flowers, smelling roses and daisies, looking up at tall wise sunflower, making a wish",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -432,6 +481,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing in shower of golden sparkles around blooming flowers, roses growing bigger, daisies spinning, sunflower beaming brightly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -440,6 +490,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Picking red berries from tall bush for family of mice in tiny overalls, mice giving finger hugs, berry bush full of fruit",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -448,6 +499,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Gently pulling weeds from between vegetables with help from smiling radish, other vegetables watching and encouraging, working together",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -456,6 +508,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Garden now clean and beautiful with all vegetables and flowers sparkling in sunshine, earthworms saying hello, everyone celebrating together",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -464,6 +517,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting in circle with all garden friends at harvest party, surrounded by apples, berries and herbs, everyone smiling and celebrating",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -472,6 +526,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sunset in garden with all friends gathered around, receiving special glowing seed from wise sunflower, warm orange and pink sky",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -480,6 +535,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking away from garden gate waving goodbye, seed glowing in pocket, regular garden visible through gate, peaceful evening smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -493,6 +549,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "boy",
+    consistentOutfit: null,
     minAge: 4,
     maxAge: 9,
     genres: ["Adventure", "Educational"],
@@ -504,6 +561,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking out bedroom window at birds and squirrels, then rushing outside toward bushes, concerned helpful expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -512,6 +570,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Kneeling behind red rose bushes holding tiny orange kitten with green eyes, kitten purring in gentle hands, caring expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
 
       {
@@ -521,6 +580,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing and looking at wooden bulletin board with bright colorful 'Found Kitten' poster attached, small orange kitten sitting at the bottom of the post rubbing against it, at the Park",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -529,6 +589,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In park looking up at tall oak tree with worried mama bird on branch, baby bird on ground, small crowd watching, determined expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -537,6 +598,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Climbing oak tree carefully with baby bird in one hand, placing bird gently in nest with siblings, mama bird nearby, people clapping below",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -545,6 +607,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Answering phone call from neighbor, looking out window at rain, getting ready to help with rescue mission, confident helpful expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -553,6 +616,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting under porch with bowl of milk and blankets, three golden puppies with muddy paws approaching cautiously, speaking gently",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -561,6 +625,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Loading happy puppies into car with Mr. Pete, driving to reunion with worried family, children hugging returned puppies, grateful smiles",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -569,6 +634,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Watching baby rabbits in garden from inside house window, mama rabbit returning at sunset, baby rabbits gathered together, patient observation",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -577,6 +643,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Building small protective fence around rabbit nest in garden, baby rabbits safe inside, watching from window as mama rabbit visits, caring supervision",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -585,6 +652,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Montage of helping turtle cross street, guiding duck family to pond, and freeing squirrel from fence, animals looking grateful and trusting",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -593,6 +661,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In bedroom surrounded by thank-you cards and animal photos on walls, looking at collection of rescue memories, proud satisfied smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -601,6 +670,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking out bedroom window at sunset, seeing all rescued animals happy in their homes, kitten on windowsill, birds flying, rabbits hopping, peaceful satisfied expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -614,6 +684,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "girl",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 8,
     genres: ["Adventure", "Fantasy"],
@@ -625,6 +696,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking down cobblestone street toward small bakery, looking through window at floating cupcakes, nose lifted to smell wonderful scents, amazed expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -633,6 +705,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Entering magical bakery with mixing bowls stirring themselves, dancing measuring cups, rolling pin working alone, meeting kind elderly baker with flour in hair",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -641,6 +714,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Wearing sparkly star-covered apron, smiling chocolate chip cookie hopping over to say hello, Grandma Rose tying apron strings, magical sparkles around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -649,6 +723,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Surrounded by laughing cinnamon rolls, singing muffins, donuts playing ring toss, and dancing gingerbread people, watching with delight and laughter",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -657,6 +732,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Stirring glowing golden muffin batter in bowl, pouring into muffin cups with heart shapes appearing on top, Grandma Rose watching proudly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -665,6 +741,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Comforting sad plain birthday cake, gathering rainbow sprinkles, candy flowers, and colorful icing tubes from bakery shelves, determined helpful expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -673,6 +750,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Decorating spinning birthday cake with colorful icing and candy flowers, other bakery treats watching and cheering in background, focused artistic expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -681,6 +759,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Catching flying muffins with tiny golden wings, muffins floating around kitchen, laughing while gently guiding them to cooling rack, Grandma Rose helping",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -689,6 +768,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Arranging soft towels like beds for tired bread loaves, bread family sleeping peacefully with little puff sounds, caring for them like pets, gentle nurturing expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -697,6 +777,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Teaching cupcakes to fly in formation, helping shy pie gain confidence, cookies practicing jokes nearby, all treats looking happier, warm encouraging scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -705,6 +786,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Surrounded by all bakery treats saying goodbye, gingerbread people dancing, muffins singing, getting frosting hug from birthday cake, warm farewell scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -713,6 +795,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Receiving bag of sparkling magic flour from Grandma Rose, flour glittering like stardust, holding it close to heart, grateful warm expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -721,6 +804,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking home at sunset with magic flour in pocket, looking back at bakery with treats waving from window, waving goodbye, excited anticipation for return visit",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -734,6 +818,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "girl",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 8,
     genres: ["Adventure", "Fantasy"],
@@ -745,6 +830,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In princess room wearing a sparkling tiara that glows with light and an elegant princess gown, looking in mirror with delight",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -753,6 +839,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking out window at enchanted kingdom with pink castle, colorful butterflies flying, flowers waving, stepping through window in princess dress",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -761,6 +848,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking on colorful stone path toward pink castle, meeting white unicorn with silver mane, unicorn bowing respectfully, princess smiling warmly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -769,6 +857,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Riding on unicorn's back through field of colorful singing flowers, crystal lake with rainbow fish visible, peaceful exploration scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -777,6 +866,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Kneeling beside three crying baby rabbits with mama rabbit, prickly bush with ball visible inside, caring concerned expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -785,6 +875,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Using magic wand to move prickly branches, ball rolling out safely, baby rabbits jumping with joy and hugging princess legs, mama rabbit smiling",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -793,6 +884,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In royal garden with talking roses looking wilted, examining broken fountain with fallen leaves blocking spout, thinking carefully about solution",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -801,6 +893,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Clearing leaves from fountain, water spraying up like diamonds in sunlight, roses blooming brighter and cheering, satisfied helpful smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -809,6 +902,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Talking with worried bird family about their fallen nest, pointing toward empty decorative birdhouse near castle, birds looking hopeful",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -817,6 +911,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Helping bird family arrange flower petals and twigs in new birdhouse, baby birds chirping happily inside, parent birds singing gratefully",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -825,6 +920,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "At castle celebration with all animal friends, wearing flower crown from rabbits, surrounded by singing birds and fragrant roses, joyful party scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -833,6 +929,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Hugging Luna goodbye at bedroom window, carefully removing sparkling tiara, placing it gently back in jewelry box, peaceful goodnight scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -841,6 +938,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking out window in regular clothes, seeing Luna waving from behind clouds, magic kingdom fading away, peaceful smile knowing adventure awaits tomorrow",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -854,6 +952,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "boy",
+    consistentOutfit: null,
     minAge: 4,
     maxAge: 9,
     genres: ["Adventure", "Sport"],
@@ -865,6 +964,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking out window at playground, putting on sneakers by front door, excited energetic expression, sunny day visible outside",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -873,6 +973,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Learning to dribble soccer ball on grass field, ball rolling away, chasing after it with determination, coach watching encouragingly",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -881,6 +982,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Kicking soccer ball toward goal posts, ball going in, jumping up with arms raised in celebration, crowd cheering in background",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
 
       {
@@ -890,6 +992,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing in shallow end of swimming pool wearing green swim shirt and swim shorts, water up to waist, happy peaceful expression, clear blue pool water",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -898,6 +1001,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swimming in pool looking up at clouds, relaxed peaceful expression, water sparkling in sunlight around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -906,6 +1010,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Holding tennis racket hitting ball against practice wall, focused concentration expression, tennis court setting with net visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -914,6 +1019,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Dribbling orange basketball toward kid-sized hoop, taking shot with ball going through net, excited celebration expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -922,6 +1028,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Jogging on park path with other kids in background, breathing fresh air, smiling while running at comfortable pace, trees and grass around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -930,6 +1037,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swinging across monkey bars with determined expression, then balancing on balance beam with arms out for stability, playground equipment around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
 
       {
@@ -939,6 +1047,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing on sports field holding relay baton with big thumbs up gesture, encouraging smile and happy team spirit expression, sports equipment visible around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -947,6 +1056,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Montage of different sports activities showing improvement, flexing arm muscles proudly, surrounded by various sports equipment, confident happy expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -955,6 +1065,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Wearing medal at sports celebration, posing proudly with coach, other kids celebrating in background, certificate or trophy visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -963,6 +1074,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In bedroom looking at medal on dresser surrounded by sports equipment, planning next day's activities, satisfied accomplished expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -976,6 +1088,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "girl",
+    consistentOutfit: null,
     minAge: 4,
     maxAge: 8,
     genres: ["Adventure", "Educational"],
@@ -987,6 +1100,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Putting on hiking boots and packing backpack with water bottle, holding magnifying glass, looking toward forest, excited preparation",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -995,6 +1109,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking between two tall oak trees onto forest path, looking up at branches, listening to bird sounds, peaceful wonder expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -1003,6 +1118,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting quietly on fallen log watching squirrel family playing in tree branches above, finger to lips in quiet gesture, squirrels jumping playfully",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -1011,6 +1127,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Kneeling by clear stream using magnifying glass to examine water, tiny fish visible swimming, water insects on surface, rocks and flowing water",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -1019,6 +1136,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Collecting colorful autumn leaves from forest floor, holding up red and yellow leaves to examine them, collection bag nearby, scientist expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -1027,6 +1145,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing at edge of sunny meadow watching rabbit family eating clover, baby rabbits with fluffy tails, one rabbit looking up, peaceful quiet moment",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -1035,6 +1154,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Looking up at bird nest in pine tree through magnifying glass, mama robin feeding baby birds with open beaks, tree branches framing scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -1043,6 +1163,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Carefully walking across fallen tree log bridge over small gully, arms out for balance, discovering colorful wildflowers and interesting rocks on other side",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -1051,6 +1172,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing next to enormous tree trunk with arms stretched trying to reach around it, looking up at tall branches, hand touching bark respectfully",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -1059,6 +1181,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Watching ladybug on finger with magnifying glass, butterflies flying around wildflowers, ants carrying food, close-up nature observation",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -1067,6 +1190,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting on moss eating snacks, sharing crackers with chattering chipmunks nearby, sunlight filtering through leaves, responsible picnic scene",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -1075,6 +1199,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Picking up litter and putting it in backpack, making promise gesture to forest, leaves rustling in trees, caring responsible expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -1083,6 +1208,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Walking home on forest path at golden hour, backpack full of leaf collection, looking back at forest with happy memories, planning return visit",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -1096,6 +1222,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "boy",
+    consistentOutfit: null,
     minAge: 5,
     maxAge: 15,
     genres: ["Adventure", "Science Fiction"],
@@ -1107,6 +1234,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In dusty attic discovering time machine under old sheet, machine with colorful buttons and spinning gears, looking amazed and happy",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -1115,6 +1243,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing in front of medieval castle with tall towers and colorful flags, wearing tunic and boots, time machine visible nearby, amazed expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -1123,6 +1252,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In castle courtyard with friendly knight holding wooden practice sword, watching knight demonstrate training, peaceful medieval setting with horses nearby",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -1131,6 +1261,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "On pirate ship deck with friendly pirate captain and colorful parrot, learning to tie sailor knots, bright blue ocean and treasure map visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -1139,6 +1270,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "On tropical island digging up treasure chest full of golden coins, palm trees in background, sharing tropical fruits, happy",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
 
       {
@@ -1148,6 +1280,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing next to small friendly dinosaur same size as child, both smiling happily, cute dinosaur with big eyes eating colorful flowers, sunny prehistoric garden setting",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -1156,6 +1289,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Playing with baby dinosaurs by warm lagoon, throwing soft fruits, baby dinosaurs splashing in water, mama dinosaurs watching peacefully nearby",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -1164,6 +1298,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In Wild West town with wooden buildings, riding gentle horse with kind sheriff, watching cowboy demonstrate lasso tricks, peaceful frontier setting",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -1172,6 +1307,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In space station with large windows showing Earth and stars, meeting friendly robot named Beep, people in silver clothes floating by, space garden visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -1180,6 +1316,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In zero-gravity garden with floating vegetables, wearing magnetic boots walking on ceiling, catching floating juice bubbles, space plants around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -1188,6 +1325,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Near golden pyramids decorating pottery with Egyptian patterns, learning hieroglyphs on stone tablet, friendly people in colorful Egyptian clothes helping",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -1196,6 +1334,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing by time machine thinking about all adventures, smiling, seeing glimpses of different time periods in thought bubbles around head, wise thoughtful expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -1204,6 +1343,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Back in attic next to time machine, looking at collection of small souvenirs from different time periods in hands, satisfied adventurous smile",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -1217,6 +1357,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "girl",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 8,
     genres: ["Adventure", "Educational"],
@@ -1228,6 +1369,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Discovering music room filled with piano, drums, guitar and various instruments, looking around with wonder and excitement, instruments gleaming in sunlight",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -1236,6 +1378,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting at piano bench pressing on the keyboards, listening carefully to different notes, musical notes floating above piano, concentrated happy expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -1244,6 +1387,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Playing colorful drum set with drumsticks, different sized drums around, keeping rhythm with big smile, drumsticks in both hands mid-beat",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -1252,6 +1396,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Holding guitar carefully and plucking strings, colorful music instruction book open on stand nearby showing guitar finger positions, concentrating and learning",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -1260,6 +1405,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Standing alone, singing while holding microphone close to mouth, looking up at colorful musical notes poster on wall, hand gestures showing high and low notes, joyful singing expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -1268,6 +1414,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Dancing around room holding tambourine up in air, shaking it with joyful expression, musical notes and movement lines showing dance and rhythm",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -1276,6 +1423,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Holding violin under chin with bow, concentrating hard on making music, violin strings visible and bow in motion",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -1284,6 +1432,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Surrounded by various percussion instruments including wooden blocks, triangle, and maracas, playing multiple instruments at once, rhythm and joy in movement",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -1292,6 +1441,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Playing recorder with fingers covering holes, blowing gently into instrument, music sheet with simple songs nearby, focused concentration",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -1300,6 +1450,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Holding conductor's baton conducting imaginary orchestra, arms raised gracefully, pretending to lead musicians, confident leadership expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -1308,6 +1459,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Playing piano for arrangement of stuffed animals sitting as audience, mid-performance with confident expression, music room setting with various instruments visible",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -1316,6 +1468,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Sitting in music room surrounded by all instruments, listening to sounds of nature through window, peaceful understanding expression, musical notes floating around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -1324,6 +1477,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Playing gentle lullaby on piano for family in evening, family listening peacefully, warm home setting, satisfied musician expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },
@@ -1337,6 +1491,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
     coverImage: "/images/placeholders/book-template-placeholder.jpg",
     published: false,
     characterGender: "boy",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 7,
     genres: ["Adventure", "Fantasy"],
@@ -1348,6 +1503,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Lying in cozy bed with soft blankets and teddy bear, eyes closing peacefully, moonlight streaming through window, comfortable bedroom setting",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 2,
@@ -1356,6 +1512,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Floating gently above bed in magical bedroom with soft glowing light, everything sparkling with dream magic, peaceful floating expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 3,
@@ -1364,6 +1521,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Flying through sky with arms spread wide, bouncing on pink and blue cotton candy clouds, joyful expression with wind in hair",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 4,
@@ -1372,6 +1530,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Meeting fluffy white cloud sheep with gentle smile, riding on sheep's soft woolly back through dream sky, magical sparkles around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 5,
@@ -1380,6 +1539,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In magical forest with rainbow-leaved trees, meeting glowing purple rabbits and talking silver squirrels, large golden butterflies fluttering around peacefully",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 6,
@@ -1388,6 +1548,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Swimming underwater with sparkling jewel-like fish and gentle singing dolphins, breathing easily underwater, warm crystal-clear water around",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 7,
@@ -1396,6 +1557,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Inside pearl palace with kind dream mermaid showing treasure chests filled with glowing dreams, colorful pearl walls and flowing mermaid hair",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 8,
@@ -1404,6 +1566,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Bouncing high on marshmallow landscape with giant friendly gummy bears, eating colorful dream candy, everything soft and bouncy",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 9,
@@ -1412,6 +1575,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "In magical library with flying books and fairy tale characters coming to life, dragons reading to unicorns, wise owls organizing floating books",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 10,
@@ -1420,6 +1584,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Painting with glowing liquid starlight in dream art studio, created flowers and clay animals coming to life and dancing around room",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 11,
@@ -1428,6 +1593,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "At farewell party with all dream friends including cloud sheep, dolphins, mermaid and magical creatures, soap bubble balloons floating around, joyful celebration",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 12,
@@ -1436,6 +1602,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Floating gently back toward cozy bedroom as dream world fades softly around, peaceful transition from dream to waking, serene expression",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
       {
         pageNumber: 13,
@@ -1444,30 +1611,7 @@ export const defaultTemplates: BookTemplateCreateData[] = [
         imagePrompt:
           "Waking up peacefully in bed with morning sunlight, holding smiling teddy bear, remembering dream adventure with happy expression, cozy bedroom",
         imageUrl: "/images/placeholders/book-template-placeholder.jpg",
-      },
-    ],
-  },
-  {
-    title: "Test template",
-    description:
-      "Journey into the magical world of dreams! Your child discovers that dreams can take you anywhere and let you be anything you want to be. From flying through cotton candy clouds to swimming with friendly dream creatures, this enchanting bedtime story shows that imagination has no limits. With gentle adventures and peaceful dream sequences, this story helps children see sleep and dreams as exciting adventures rather than something to fear. Perfect for sweet dreams ages 3-7.",
-    pageCount: 2, // 13 text/image pairs
-    coverPrompt:
-      "Floating peacefully on fluffy cloud wearing pajamas, surrounded by gentle glowing stars and dream bubbles, serene sleeping expression",
-    coverImage: "/images/placeholders/book-template-placeholder.jpg",
-    published: false,
-    characterGender: "boy",
-    minAge: 3,
-    maxAge: 7,
-    genres: ["Science Fiction", "Sport"],
-    pages: [
-      {
-        pageNumber: 1,
-        content:
-          "Every night when [CHILD_NAME] went to bed, [HE_SHE] wondered what dreams would come. [HIS_HER] cozy bedroom felt safe and warm under the soft blankets. As [HE_SHE] closed [HIS_HER] eyes and listened to the gentle night sounds, [CHILD_NAME] began to drift off to sleep. 'I hope I have a wonderful adventure tonight,' [HE_SHE] whispered softly to [HIS_HER] teddy bear.",
-        imagePrompt:
-          "Lying in cozy bed with soft blankets and teddy bear, eyes closing peacefully, moonlight streaming through window, comfortable bedroom setting",
-        imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: null,
       },
     ],
   },

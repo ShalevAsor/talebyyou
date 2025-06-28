@@ -19,50 +19,27 @@ import {
   BookTemplatePageCreateData,
 } from "@/types/book";
 import { Genre } from "@prisma/client";
-import { z } from "zod";
 import { GenreSelector } from "./GenreSelector";
 import { generateSlug } from "@/utils/slugUtils";
 import { toast } from "react-toastify";
+import {
+  templateSchema,
+  type TemplateFormData,
+  type TemplatePageFormData,
+} from "@/schemas/template-schema";
 
-// Define the schema
-const templatePageSchema = z.object({
-  pageNumber: z.number().min(1),
-  content: z.string().min(5, "Content must be at least 5 characters"),
-  imagePrompt: z
-    .string()
-    .min(10, "Image prompt must be at least 10 characters"),
-  imageUrl: z.string(),
-});
-
-const templateSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  pageCount: z.number().min(1, "Book must have at least 1 page"),
-  coverPrompt: z
-    .string()
-    .min(10, "Cover prompt must be at least 10 characters"),
-  coverImage: z.string(),
-  published: z.boolean(),
-  minAge: z.number().min(0),
-  maxAge: z.number().min(0),
-  characterGender: z.enum(["boy", "girl"], {
-    required_error: "Please select a character gender",
-    invalid_type_error: "Character gender must be either 'boy' or 'girl'",
-  }),
-  genres: z.array(z.string()).min(1, "Select at least one genre"),
-  pages: z.array(templatePageSchema).min(1, "Add at least one page"),
-});
-
-const defaultPage: BookTemplatePageCreateData = {
+// Default page template
+const defaultPage: TemplatePageFormData = {
   pageNumber: 1,
   content: "",
   imagePrompt: "",
   imageUrl: "/images/placeholders/book-template-placeholder.jpg",
+  pageOutfit: null,
 };
 
 interface BookTemplateFormProps {
   genres: Genre[];
-  initialData?: Partial<BookTemplateCreateData>;
+  initialData?: Partial<TemplateFormData>;
 }
 
 export default function BookTemplateForm({
@@ -77,7 +54,7 @@ export default function BookTemplateForm({
     type: "success" | "error";
   } | null>(null);
 
-  const defaultValues: BookTemplateCreateData = {
+  const defaultValues: TemplateFormData = {
     title: initialData?.title || "",
     description: initialData?.description || "",
     pageCount: initialData?.pageCount || 1,
@@ -89,6 +66,7 @@ export default function BookTemplateForm({
     characterGender: initialData?.characterGender || "boy",
     minAge: initialData?.minAge || 0,
     maxAge: initialData?.maxAge || 8,
+    consistentOutfit: initialData?.consistentOutfit || null,
     genres: initialData?.genres || [],
     pages: initialData?.pages || [{ ...defaultPage }],
   };
@@ -100,7 +78,7 @@ export default function BookTemplateForm({
     formState: { errors },
     watch,
     setValue,
-  } = useForm<BookTemplateCreateData>({
+  } = useForm<TemplateFormData>({
     resolver: zodResolver(templateSchema),
     defaultValues,
   });
@@ -130,9 +108,10 @@ export default function BookTemplateForm({
     }
   };
 
-  const onSubmit = async (data: BookTemplateCreateData) => {
+  const onSubmit = async (data: TemplateFormData) => {
     console.log("Form submitted!");
 
+    // Convert TemplateFormData to BookTemplateCreateData for the action
     const validPages: BookTemplatePageCreateData[] = data.pages.map(
       (page, index) => ({
         pageNumber: index + 1,
@@ -140,11 +119,22 @@ export default function BookTemplateForm({
         imagePrompt: page.imagePrompt,
         imageUrl:
           page.imageUrl || "/images/placeholders/book-template-placeholder.jpg",
+        pageOutfit: page.pageOutfit || null,
       })
     );
 
     const templateData: BookTemplateCreateData = {
-      ...data,
+      title: data.title,
+      description: data.description,
+      pageCount: data.pageCount,
+      coverPrompt: data.coverPrompt,
+      coverImage: data.coverImage,
+      published: data.published,
+      characterGender: data.characterGender,
+      consistentOutfit: data.consistentOutfit || null,
+      minAge: data.minAge,
+      maxAge: data.maxAge,
+      genres: data.genres,
       pages: validPages,
     };
 
@@ -260,6 +250,28 @@ export default function BookTemplateForm({
                 {errors.coverPrompt && (
                   <p className="text-sm text-red-500">
                     {errors.coverPrompt.message}
+                  </p>
+                )}
+              </div>
+
+              {/* NEW: Consistent Outfit Field */}
+              <div className="space-y-2">
+                <Label htmlFor="consistentOutfit">
+                  Consistent Outfit (Optional)
+                </Label>
+                <Input
+                  id="consistentOutfit"
+                  {...register("consistentOutfit")}
+                  placeholder="e.g., colorful diving suit, space helmet, winter coat"
+                />
+                <p className="text-sm text-gray-500">
+                  If specified, the character will wear this outfit throughout
+                  the entire book. Leave empty to allow outfit variety based on
+                  story context.
+                </p>
+                {errors.consistentOutfit && (
+                  <p className="text-sm text-red-500">
+                    {errors.consistentOutfit.message}
                   </p>
                 )}
               </div>
@@ -427,6 +439,25 @@ export default function BookTemplateForm({
                     </div>
 
                     <div className="space-y-2">
+                      <Label htmlFor={`pages.${index}.pageOutfit`}>
+                        Page-Specific Outfit (Optional)
+                      </Label>
+                      <Input
+                        id={`pages.${index}.pageOutfit`}
+                        {...register(`pages.${index}.pageOutfit`)}
+                        placeholder="e.g., desert explorer outfit (overrides template outfit)"
+                      />
+                      <p className="text-xs text-gray-500">
+                        Leave empty to use template's consistent outfit
+                      </p>
+                      {errors.pages?.[index]?.pageOutfit && (
+                        <p className="text-sm text-red-500">
+                          {errors.pages[index]?.pageOutfit?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor={`pages.${index}.imageUrl`}>
                         Image URL
                       </Label>
@@ -494,6 +525,9 @@ export default function BookTemplateForm({
                     Ages {watch("minAge")}-{watch("maxAge")} •{" "}
                     {watch("pageCount")} pages • Character:{" "}
                     {watch("characterGender")}
+                    {watch("consistentOutfit") && (
+                      <> • Outfit: {watch("consistentOutfit")}</>
+                    )}
                   </div>
 
                   <div className="mt-4 p-4 bg-gray-50 rounded">
@@ -540,6 +574,11 @@ export default function BookTemplateForm({
                     {errors.characterGender && (
                       <li>
                         Character Gender: {errors.characterGender.message}
+                      </li>
+                    )}
+                    {errors.consistentOutfit && (
+                      <li>
+                        Consistent Outfit: {errors.consistentOutfit.message}
                       </li>
                     )}
                     {errors.genres && <li>Genres: {errors.genres.message}</li>}

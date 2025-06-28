@@ -9,10 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X } from "lucide-react";
 import { Genre } from "@prisma/client";
-import { BookTemplateCreateData } from "@/types/book";
+import { TemplateFormData } from "@/schemas/template-schema";
 
 interface GenreSelectorProps {
-  control: Control<BookTemplateCreateData>;
+  control: Control<TemplateFormData>;
   initialGenres: Genre[];
   value: string[];
   onChange: (genres: string[]) => void;

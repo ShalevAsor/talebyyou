@@ -99,6 +99,7 @@ model BookTemplate {
   published      Boolean   
   coverImage     String         
   coverPrompt    String
+  consistentOutfit String?  // If provided, the character will wear the same outfit in every page
   characterGender String     @default("boy")
   minAge         Int         @default(3)  // Minimum recommended age
   maxAge         Int         @default(8)  // Maximum recommended age
@@ -115,6 +116,7 @@ model TemplatePageContent {
   content      String       // The default text content
   imagePrompt  String       // The default prompt used to generate the image
   imageUrl     String      // The image displayed on the book template preview 
+  pageOutfit   String?    // The outfit the character will wear in this page
   templateId   String
   template     BookTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
   createdAt    DateTime     @default(now())

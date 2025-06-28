@@ -17,6 +17,7 @@ import {
   uploadTemplateImageToS3,
 } from "@/services/aws/s3-service";
 import { cleanupTempFile } from "@/utils/fileUtils";
+import { TemplateFormData } from "@/schemas/template-schema";
 
 /**
  * Get book template by id
@@ -252,6 +253,7 @@ export async function seedBookTemplates(): Promise<ActionResult<string>> {
               content: page.content,
               imagePrompt: page.imagePrompt,
               imageUrl: page.imageUrl,
+              pageOutfit: page.pageOutfit || null,
               templateId: bookTemplate.id,
             },
           });
@@ -359,6 +361,7 @@ export async function createBookTemplate(
           content: page.content,
           imagePrompt: page.imagePrompt,
           imageUrl: "/images/placeholders/book-template-placeholder.jpg", // Default placeholder
+          pageOutfit: page.pageOutfit || null,
           templateId: template.id,
         },
       });
@@ -907,6 +910,125 @@ export async function updateTemplateGenres(
     console.error("Error updating template genres:", error);
     return createErrorResult(
       `Failed to update genres: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
+
+/**
+ * Updates an existing book template
+ * @param templateId - ID of the template to update
+ * @param data - Template update data
+ * @returns ActionResult with success/error information
+ */
+export async function updateBookTemplate(
+  templateId: string,
+  data: TemplateFormData
+): Promise<ActionResult<string>> {
+  try {
+    // First check if template exists
+    const existingTemplate = await prisma.bookTemplate.findUnique({
+      where: { id: templateId },
+      include: {
+        genres: true,
+        pages: {
+          orderBy: { pageNumber: "asc" },
+        },
+      },
+    });
+
+    if (!existingTemplate) {
+      return createErrorResult("Template not found");
+    }
+
+    // Generate new slug if title changed
+    let slug = existingTemplate.slug;
+    if (data.title !== existingTemplate.title) {
+      const baseSlug = generateSlug(data.title);
+      slug = await ensureUniqueSlug(baseSlug, templateId);
+    }
+
+    // Handle genres - find or create all genres
+    const genrePromises = data.genres.map(async (genreName) => {
+      return await prisma.genre.upsert({
+        where: { name: genreName },
+        update: { name: genreName },
+        create: { name: genreName },
+      });
+    });
+
+    const genres = await Promise.all(genrePromises);
+
+    // Update the template in a transaction
+    await prisma.$transaction(async (tx) => {
+      // Delete existing pages
+      await tx.templatePageContent.deleteMany({
+        where: { templateId },
+      });
+
+      // Update the template
+      await tx.bookTemplate.update({
+        where: { id: templateId },
+        data: {
+          title: data.title,
+          slug,
+          description: data.description,
+          pageCount: data.pageCount,
+          coverPrompt: data.coverPrompt,
+          published: data.published,
+          characterGender: data.characterGender,
+          minAge: data.minAge,
+          maxAge: data.maxAge,
+          consistentOutfit: data.consistentOutfit,
+          genres: {
+            set: [], // Clear existing genre connections
+            connect: genres.map((genre) => ({ id: genre.id })),
+          },
+        },
+      });
+
+      // Create new pages
+      const pagePromises = data.pages.map(async (page) => {
+        return await tx.templatePageContent.create({
+          data: {
+            pageNumber: page.pageNumber,
+            content: page.content,
+            imagePrompt: page.imagePrompt,
+            imageUrl:
+              page.imageUrl ||
+              "/images/placeholders/book-template-placeholder.jpg",
+            pageOutfit: page.pageOutfit || null,
+            templateId,
+          },
+        });
+      });
+
+      await Promise.all(pagePromises);
+    });
+
+    // Revalidate paths
+    revalidatePath("/library");
+    revalidatePath("/admin/templates");
+    revalidatePath(`/admin/templates/${slug}/edit`);
+    revalidatePath(`/library/template-preview/${slug}`);
+
+    return createSuccessResult(
+      templateId,
+      `Template "${data.title}" updated successfully`
+    );
+  } catch (error) {
+    console.error("Error updating book template:", error);
+
+    // Handle specific errors
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return createErrorResult("A template with this title already exists");
+      }
+    }
+
+    return createErrorResult(
+      `Failed to update template: ${
         error instanceof Error ? error.message : "Unknown error"
       }`
     );
