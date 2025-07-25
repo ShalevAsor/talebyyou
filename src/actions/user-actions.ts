@@ -1,22 +1,23 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { BookStatus, User } from "@prisma/client";
+
+import { BOOK_CREATION_LIMIT } from "@/constants/bookConstants";
 import { logger } from "@/lib/logger";
+import prisma from "@/lib/prisma";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
-
-import { auth } from "@clerk/nextjs/server";
-import { sendWelcomeEmail } from "./email-actions";
-import { BookStatus, User } from "@prisma/client";
 import { BookLimitResult } from "@/types/book";
-import { BOOK_CREATION_LIMIT } from "@/constants/bookConstants";
+
+import { sendWelcomeEmail } from "./email-actions";
+
 /**
- * Gets the current user from the database based on Clerk authentication
+ * Gets the current authenticated user
  * If the user is not authenticated, returns null
- * If the user exists in Clerk but not in the database, returns null
  *
  * @returns The user object or null if not authenticated/not found
  */
@@ -25,9 +26,8 @@ export async function getCurrentUser() {
     // Get the current authentication session from Clerk
     const { userId } = await auth();
 
-    // If no userId, user is not authenticated
     if (!userId) {
-      logger.debug("getCurrentUser: No user authenticated");
+      logger.debug("User not authenticated");
       return null;
     }
 
@@ -40,12 +40,12 @@ export async function getCurrentUser() {
 
     if (!user) {
       logger.debug(
-        `getCurrentUser: User with clerkId ${userId} not found in database`
+        { clerkId: userId },
+        "User with clerkId not found in database"
       );
       return null;
     }
 
-    logger.debug(`getCurrentUser: Found user ${user.id}`);
     return user;
   } catch (error) {
     logger.error({ error }, "Error getting current user");
@@ -59,10 +59,10 @@ export async function getCurrentUser() {
 export async function getUserByClerkId(clerkId: string): Promise<User | null> {
   try {
     if (!clerkId) {
-      logger.debug("getCurrentUser: No user authenticated");
+      logger.debug("User not authenticated");
       return null;
     }
-    // Find the user in our database based on Clerk ID
+
     const user = await prisma.user.findUnique({
       where: {
         clerkId,
