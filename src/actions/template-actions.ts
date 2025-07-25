@@ -1,27 +1,23 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import {
-  ActionResult,
-  createSuccessResult,
-  createErrorResult,
-} from "@/types/actions";
 import { Genre, Prisma } from "@prisma/client";
-import { defaultTemplates } from "@/data/default-templates";
-import { BookTemplateCreateData, BookTemplateFull } from "@/types/book";
 import { revalidatePath } from "next/cache";
-import { generateSlug } from "@/utils/slugUtils";
+
+import { defaultTemplates } from "@/data/default-templates";
+import prisma from "@/lib/prisma";
+import { TemplateFormData } from "@/schemas/template-schema";
 import {
   deleteTemplateImagesFromS3,
   getTemplateImagesFromS3,
-  uploadTemplateImageToS3,
 } from "@/services/aws/s3-service";
-import { cleanupTempFile } from "@/utils/fileUtils";
-import { TemplateFormData } from "@/schemas/template-schema";
+import {
+  ActionResult,
+  createErrorResult,
+  createSuccessResult,
+} from "@/types/actions";
+import { BookTemplateCreateData, BookTemplateFull } from "@/types/book";
+import { generateSlug } from "@/utils/slugUtils";
 
-/**
- * Get book template by id
- */
 export async function getBookTemplateById(
   id: string
 ): Promise<ActionResult<BookTemplateFull>> {
@@ -49,9 +45,6 @@ export async function getBookTemplateById(
   }
 }
 
-/**
- * Get book template by slug
- */
 export async function getBookTemplateBySlug(
   slug: string
 ): Promise<ActionResult<BookTemplateFull>> {
@@ -137,7 +130,7 @@ export async function getAllBookTemplates(options?: {
 }
 
 /**
- * Ensure a template slug is unique
+ * Ensures a template slug is unique by appending a counter if needed
  */
 async function ensureUniqueSlug(
   baseSlug: string,
@@ -289,9 +282,7 @@ export async function seedBookTemplates(): Promise<ActionResult<string>> {
     );
   }
 }
-/**
- * Removes all book templates from the database
- */
+
 export async function removeAllBookTemplates(): Promise<
   ActionResult<{ count: number }>
 > {
@@ -340,7 +331,7 @@ export async function createBookTemplate(
     const template = await prisma.bookTemplate.create({
       data: {
         title: data.title,
-        slug, // Add slug
+        slug,
         description: data.description,
         pageCount: data.pageCount,
         coverPrompt: data.coverPrompt,
@@ -482,15 +473,12 @@ export async function toggleTemplatePublished(
   templateId: string
 ): Promise<ActionResult<{ id: string; published: boolean }>> {
   try {
-    console.log("[Server] Toggling published status for template:", templateId);
-
-    // Find the current template
+    // get the template
     const template = await prisma.bookTemplate.findUnique({
       where: { id: templateId },
       select: { id: true, published: true, title: true, slug: true },
     });
 
-    // Check if template exists
     if (!template) {
       console.log("template not found for ID:", templateId);
       return createErrorResult("Template not found");
@@ -509,14 +497,6 @@ export async function toggleTemplatePublished(
         id: true,
         published: true,
       },
-    });
-
-    // Log the result
-    console.log("[Server] Template published status updated:", {
-      id: updatedTemplate.id,
-      title: template.title,
-      oldStatus: currentPublishedStatus,
-      newStatus: updatedTemplate.published,
     });
 
     // Revalidate relevant paths to update the UI
@@ -539,199 +519,6 @@ export async function toggleTemplatePublished(
 }
 
 /**
- * Upload a template image to S3
- */
-export async function uploadTemplateImage(
-  filePath: string,
-  templateId: string,
-  imageName: string
-): Promise<ActionResult<string>> {
-  try {
-    // First get the template to get its slug
-    const template = await prisma.bookTemplate.findUnique({
-      where: { id: templateId },
-      select: { slug: true },
-    });
-
-    if (!template || !template.slug) {
-      return createErrorResult("Template not found or no slug assigned");
-    }
-
-    // Upload to S3
-    const imageUrl = await uploadTemplateImageToS3(
-      filePath,
-      template.slug,
-      imageName
-    );
-
-    if (!imageUrl) {
-      return createErrorResult("Failed to upload image to S3");
-    }
-
-    return createSuccessResult(imageUrl);
-  } catch (error) {
-    console.error("Error uploading template image:", error);
-    return createErrorResult("Failed to upload template image");
-  }
-}
-
-/**
- * Updates a template page image by uploading to S3 and updating the database
- * @param templateId ID of the template
- * @param pageNumber Page number to update (0 for cover image)
- * @param tempFilePath Path to the temporary file on server
- * @returns ActionResult with the updated image URL
- */
-export async function updateTemplateImageFromPath(
-  templateId: string,
-  pageNumber: number,
-  tempFilePath: string
-): Promise<ActionResult<string>> {
-  try {
-    // Get the template to get the slug
-    const template = await prisma.bookTemplate.findUnique({
-      where: { id: templateId },
-      select: { slug: true },
-    });
-
-    if (!template || !template.slug) {
-      return createErrorResult("Template not found or has no slug");
-    }
-
-    // Determine image name based on page number
-    const imageName = pageNumber === 0 ? "cover.jpg" : `page${pageNumber}.jpg`;
-
-    // Upload image to S3 using the file path (just like your PDF upload)
-    const imageUrl = await uploadTemplateImageToS3(
-      tempFilePath, // Pass the file path, not buffer
-      template.slug,
-      imageName
-    );
-
-    if (!imageUrl) {
-      return createErrorResult("Failed to upload image to S3");
-    }
-
-    // Update the image URL in the database
-    if (pageNumber === 0) {
-      // Update cover image
-      await prisma.bookTemplate.update({
-        where: { id: templateId },
-        data: { coverImage: imageUrl },
-      });
-    } else {
-      // Update page image
-      const updateResult = await prisma.templatePageContent.updateMany({
-        where: {
-          templateId,
-          pageNumber,
-        },
-        data: { imageUrl },
-      });
-
-      if (updateResult.count === 0) {
-        return createErrorResult(
-          `No page found with number ${pageNumber} for this template`
-        );
-      }
-    }
-
-    // Clean up temp file (just like your PDF cleanup)
-    cleanupTempFile(tempFilePath);
-
-    // Revalidate paths
-    revalidatePath("/library");
-    revalidatePath("/admin/templates");
-    revalidatePath(`/library/template-preview/${template.slug}`);
-
-    return createSuccessResult(imageUrl, "Image updated successfully");
-  } catch (error) {
-    // Make sure to clean up temp file even on error
-    cleanupTempFile(tempFilePath);
-
-    console.error("Error updating template image:", error);
-    return createErrorResult(
-      `Failed to update image: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-  }
-}
-
-export async function updateTemplateImageFromBuffer(
-  templateId: string,
-  pageNumber: number,
-  buffer: Buffer,
-  fileName: string,
-  mimeType: string
-): Promise<ActionResult<string>> {
-  try {
-    // Get the template to get the slug
-    const template = await prisma.bookTemplate.findUnique({
-      where: { id: templateId },
-      select: { slug: true },
-    });
-
-    if (!template || !template.slug) {
-      return createErrorResult("Template not found or has no slug");
-    }
-
-    // Determine image name based on page number
-    const imageName = pageNumber === 0 ? "cover.jpg" : `page${pageNumber}.jpg`;
-
-    // Upload image to S3 using buffer directly - no temp file needed
-    const imageUrl = await uploadTemplateImageToS3(
-      buffer, // Pass the buffer directly
-      template.slug,
-      imageName,
-      mimeType
-    );
-
-    if (!imageUrl) {
-      return createErrorResult("Failed to upload image to S3");
-    }
-
-    // Update the image URL in the database
-    if (pageNumber === 0) {
-      // Update cover image
-      await prisma.bookTemplate.update({
-        where: { id: templateId },
-        data: { coverImage: imageUrl },
-      });
-    } else {
-      // Update page image
-      const updateResult = await prisma.templatePageContent.updateMany({
-        where: {
-          templateId,
-          pageNumber,
-        },
-        data: { imageUrl },
-      });
-
-      if (updateResult.count === 0) {
-        return createErrorResult(
-          `No page found with number ${pageNumber} for this template`
-        );
-      }
-    }
-
-    // Revalidate paths
-    revalidatePath("/library");
-    revalidatePath("/admin/templates");
-    revalidatePath(`/library/template-preview/${template.slug}`);
-
-    return createSuccessResult(imageUrl, "Image updated successfully");
-  } catch (error) {
-    console.error("Error updating template image:", error);
-    return createErrorResult(
-      `Failed to update image: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-  }
-}
-
-/**
  * Updates a template image URL in the database
  * @param templateIdOrSlug - The template ID or slug
  * @param imageUrl - The new image URL to set
@@ -744,13 +531,7 @@ export async function updateTemplateImageUrl(
   target: "cover" | string // page ID or "cover"
 ): Promise<ActionResult<{ message: string }>> {
   try {
-    console.log("Updating template image:", {
-      templateIdOrSlug,
-      target,
-      imageUrl,
-    });
-
-    // First, find the template by ID or slug
+    // find the template by ID or slug
     const template = await prisma.bookTemplate.findFirst({
       where: {
         OR: [{ id: templateIdOrSlug }, { slug: templateIdOrSlug }],
