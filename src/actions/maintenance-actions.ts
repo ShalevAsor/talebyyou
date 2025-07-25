@@ -1,11 +1,12 @@
 "use server";
 
-import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+
+import prisma from "@/lib/prisma";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
 
 // Configuration keys for maintenance

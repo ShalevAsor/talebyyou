@@ -1,12 +1,13 @@
 "use server";
 import { Genre } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
 import prisma from "@/lib/prisma";
 import {
   ActionResult,
   createErrorResult,
   createSuccessResult,
 } from "@/types/actions";
-import { revalidatePath } from "next/cache";
 
 export async function getGenres(): Promise<ActionResult<Genre[]>> {
   try {

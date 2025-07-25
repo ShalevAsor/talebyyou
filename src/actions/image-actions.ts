@@ -1,19 +1,19 @@
 "use server";
+import { GenerationStatus, ImageType, PageType } from "@prisma/client";
+
+import { logger } from "@/lib/logger";
+import prisma from "@/lib/prisma";
+import { leonardoImageService } from "@/services/image/image-generation-service";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
-import { logger } from "@/lib/logger";
-
-import prisma from "@/lib/prisma";
 import {
   BookImageGenerationsStatus,
   ImageGenerationFull,
   ImageMetadata,
 } from "@/types/image";
-import { GenerationStatus, ImageType, PageType } from "@prisma/client";
-import { leonardoImageService } from "@/services/image/image-generation-service";
 
 /**
  * Get the image generation by id
@@ -58,7 +58,7 @@ export async function processCompletedGeneration(
     }
     const imageGeneration = imageGenerationResult.data;
 
-    // 2. IDEMPOTENCY CHECK - If already complete, return success without processing
+    // 2. If already complete, return success without processing
     if (imageGeneration.status === GenerationStatus.COMPLETE) {
       logger.info(
         {
@@ -71,7 +71,7 @@ export async function processCompletedGeneration(
       return createSuccessResult(undefined);
     }
 
-    // 3. Mark the generation as completed (with atomic update)
+    // 3. Mark the generation as completed
     const updatedGeneration = await prisma.imageGeneration.update({
       where: {
         id: imageGeneration.id,

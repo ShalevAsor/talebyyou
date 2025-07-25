@@ -1,14 +1,15 @@
 "use server";
 
 import { ProductType } from "@prisma/client";
+
+import config from "@/lib/config";
+import { ContactCategory } from "@/schemas/contact-schema";
 import { getEmailService } from "@/services/email/email-service";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
-import config from "@/lib/config";
-import { ContactCategory } from "@/schemas/contact-schema";
 
 /**
  * Sends a welcome email to a new user
