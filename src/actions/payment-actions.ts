@@ -1,18 +1,20 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { OrderStatus, ProductType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
 import { logger } from "@/lib/logger";
+import prisma from "@/lib/prisma";
+import { paypal } from "@/services/payment/paypal-service";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
-import { OrderStatus, ProductType } from "@prisma/client";
-import { paypal } from "@/services/payment/paypal-service";
-import { revalidatePath } from "next/cache";
-import { generateRemainingPageImages } from "./image-actions";
-import { sendOrderConfirmationEmail } from "./email-actions";
 import { CreatePayPalOrderData, PayPalCaptureResponse } from "@/types/payment";
+
+import { sendOrderConfirmationEmail } from "./email-actions";
+import { generateRemainingPageImages } from "./image-actions";
 
 /**
  * Create a PayPal order for a given order in our system

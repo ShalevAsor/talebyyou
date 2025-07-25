@@ -1,11 +1,12 @@
 "use server";
 
-import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+
+import prisma from "@/lib/prisma";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
 import {
   BOOK_PRICES,
@@ -367,21 +368,5 @@ export async function updateDiscountBanner({
   } catch (error) {
     console.error("Failed to update banner settings:", error);
     return createErrorResult("Failed to update banner settings");
-  }
-}
-
-/**
- * Helper function to check if discount is currently active (for use in pricing calculations)
- */
-export async function getActiveDiscount(): Promise<DiscountConfig | null> {
-  try {
-    const result = await getPricingStatus();
-    if (result.success && result.data.isDiscountActive) {
-      return result.data.discount;
-    }
-    return null;
-  } catch (error) {
-    console.error("Failed to get active discount:", error);
-    return null;
   }
 }
