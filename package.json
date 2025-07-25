@@ -95,6 +95,7 @@
     "@types/react-easy-crop": "^1.16.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.0",
+    "eslint-plugin-import": "^2.32.0",
     "jest": "^29.7.0",
     "pino-pretty": "^13.0.0",
     "prisma": "^6.6.0",

@@ -1,15 +1,16 @@
 "use server";
-import { createBookFromTemplate } from "@/services/book/book-creation-service";
+import { BookStatus, Prisma, ProductType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
+import { logger } from "@/lib/logger";
+import prisma from "@/lib/prisma";
 import { CharacterData } from "@/schemas/character-schema";
+import { createBookFromTemplate } from "@/services/book/book-creation-service";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
-import prisma from "@/lib/prisma";
-import { BookStatus, Prisma, ProductType } from "@prisma/client";
-import { getCurrentUser } from "./user-actions";
-import { logger } from "@/lib/logger";
 import {
   BookAdmin,
   BookFull,
@@ -17,20 +18,308 @@ import {
   BookSearchResult,
   BooksStatsData,
 } from "@/types/book";
-import { revalidatePath } from "next/cache";
+import { getTotalImagesCost } from "@/utils/orderUtils";
 import { serializeBook, serializeBooks } from "@/utils/serializers";
+
 import { getEbookDownloadUrl } from "./ebook-actions";
 import { sendBookCompletionEmail } from "./email-actions";
+import { checkGuestBookLimit } from "./guest-actions";
 import {
   clearCharacterImageReference,
   deleteCharacterImage,
+  generateBookPageImage,
 } from "./image-actions";
-import { checkGuestBookLimit } from "./guest-actions";
-import { getTotalImagesCost } from "@/utils/orderUtils";
+import { getCurrentUser } from "./user-actions";
 
 /**
- * Server action to create a personalized book from a template
- * Supports both authenticated and anonymous users
+ * Gets a book by its ID with all related data (pages, template, character)
+ *
+ * @param id The ID of the book to retrieve
+ * @returns The book with its pages, template information, and character data
+ */
+
+export async function getBookById(id: string): Promise<ActionResult<BookFull>> {
+  try {
+    logger.debug({ bookId: id }, "Fetching book details");
+
+    // Fetch the book with its pages, template, and character
+    const book = await prisma.book.findUnique({
+      where: { id },
+      include: {
+        pages: {
+          orderBy: { pageNumber: "asc" },
+        },
+        template: {
+          include: {
+            genres: true,
+          },
+        },
+        character: true,
+        order: true,
+      },
+    });
+
+    if (!book) {
+      logger.warn({ bookId: id }, "Book not found");
+      return createErrorResult("Book not found");
+    }
+
+    logger.debug(
+      {
+        bookId: id,
+        title: book.title,
+        pageCount: book.pages.length,
+        status: book.status,
+        hasCharacter: !!book.character,
+      },
+      "Book fetched successfully"
+    );
+
+    // Serialize the book to handle Decimal values
+    const serializedBook = serializeBook(book);
+
+    return createSuccessResult(serializedBook as BookFull);
+  } catch (error) {
+    logger.error({ error, bookId: id }, "Error fetching book");
+    return createErrorResult(
+      error instanceof Error ? error.message : "Unknown error occurred"
+    );
+  }
+}
+
+/**
+ * Gets all books for the current user
+ *
+ * @returns books with their pages, character, and template info
+ */
+export async function getUserBooks(): Promise<ActionResult<BookFull[]>> {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user?.id) {
+      return createErrorResult("User not authenticated");
+    }
+
+    const books = await prisma.book.findMany({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        order: true,
+        printJob: true,
+        pages: {
+          orderBy: { pageNumber: "asc" },
+        },
+        template: {
+          include: {
+            genres: true,
+          },
+        },
+        character: true,
+        imageGenerations: {
+          orderBy: { createdAt: "desc" },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    logger.debug(
+      { userId: user.id, bookCount: books.length },
+      "Retrieved user books"
+    );
+    const serializedBooks = serializeBooks(books);
+    return createSuccessResult(serializedBooks as BookFull[]);
+  } catch (error) {
+    logger.error({ error }, "Failed to fetch user books");
+    return createErrorResult(
+      error instanceof Error ? error.message : "Failed to fetch user books"
+    );
+  }
+}
+
+/**
+ * Get book by ID with ALL relations for admin use
+ * @param id - Book ID
+ * @returns ActionResult with BookAdmin (includes all relations)
+ */
+export async function getBookByIdAdmin(
+  id: string
+): Promise<ActionResult<BookAdmin>> {
+  try {
+    logger.debug({ bookId: id }, "Fetching book details for admin");
+
+    const book = await prisma.book.findUnique({
+      where: { id },
+      include: {
+        pages: {
+          orderBy: { pageNumber: "asc" },
+        },
+        template: {
+          include: {
+            genres: true,
+          },
+        },
+        character: true,
+        order: true,
+        printJob: true,
+        imageGenerations: {
+          orderBy: { createdAt: "desc" },
+        },
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        guestSession: {
+          select: {
+            id: true,
+            sessionId: true,
+            lastActive: true,
+            createdAt: true,
+            expiresAt: true,
+          },
+        },
+      },
+    });
+
+    if (!book) {
+      logger.warn({ bookId: id }, "Book not found");
+      return createErrorResult("Book not found");
+    }
+
+    logger.debug(
+      {
+        bookId: id,
+        title: book.title,
+        pageCount: book.pages.length,
+        status: book.status,
+        hasCharacter: !!book.character,
+        hasOrder: !!book.order,
+        hasUser: !!book.user,
+        isGuest: !!book.guestSession,
+      },
+      "Book fetched for admin"
+    );
+
+    // Serialize the book to handle Decimal and Date values
+    const serializedBook = serializeBook(book);
+
+    return createSuccessResult(serializedBook as BookAdmin);
+  } catch (error) {
+    logger.error({ error, bookId: id }, "Error fetching book for admin");
+    return createErrorResult(
+      error instanceof Error ? error.message : "Unknown error occurred"
+    );
+  }
+}
+
+/**
+ * Gets books statistics for admin dashboard
+ * @returns ActionResult with books statistics data
+ */
+export async function getBooksStats(): Promise<ActionResult<BooksStatsData>> {
+  try {
+    logger.debug("Fetching books statistics");
+
+    // Get total books count
+    const totalBooks = await prisma.book.count();
+
+    // Get books count by status
+    const booksByStatus = await prisma.book.groupBy({
+      by: ["status"],
+      _count: {
+        status: true,
+      },
+    });
+
+    // Initialize all possible statuses to ensure consistent data structure
+    const statusCounts = {
+      customizing: 0,
+      ordered: 0,
+      readyForPrinting: 0,
+      completed: 0,
+    };
+
+    booksByStatus.forEach((item) => {
+      switch (item.status) {
+        case BookStatus.CUSTOMIZING:
+          statusCounts.customizing = item._count.status;
+          break;
+        case BookStatus.ORDERED:
+          statusCounts.ordered = item._count.status;
+          break;
+        case BookStatus.READY_FOR_PRINTING:
+          statusCounts.readyForPrinting = item._count.status;
+          break;
+        case BookStatus.COMPLETED:
+          statusCounts.completed = item._count.status;
+          break;
+      }
+    });
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const recentBooks = await prisma.book.count({
+      where: {
+        createdAt: {
+          gte: sevenDaysAgo,
+        },
+      },
+    });
+
+    const guestBooks = await prisma.book.count({
+      where: {
+        userId: null,
+      },
+    });
+
+    const userBooks = await prisma.book.count({
+      where: {
+        userId: {
+          not: null,
+        },
+      },
+    });
+
+    const statsData: BooksStatsData = {
+      totalBooks,
+      booksByStatus: statusCounts,
+      recentBooks,
+      guestBooks,
+      userBooks,
+    };
+
+    logger.debug(
+      {
+        totalBooks,
+        recentBooks,
+        guestBooks,
+        userBooks,
+        statusCounts,
+      },
+      "Books statistics fetched successfully"
+    );
+
+    return createSuccessResult(statsData);
+  } catch (error) {
+    logger.error({ error }, "Error fetching books statistics");
+    return createErrorResult(
+      error instanceof Error
+        ? error.message
+        : "Failed to fetch books statistics"
+    );
+  }
+}
+
+/**
+ * create a personalized book from a template
+ * Supports both authenticated and guest users
  *
  * @param templateId The ID of the book template to use
  * @param characterData The character customization data
@@ -43,11 +332,9 @@ export async function createPersonalizedBook(
   characterImageReference?: string
 ): Promise<ActionResult<string>> {
   try {
-    // Try to get the current user - will be null for anonymous users
     const user = await getCurrentUser();
 
-    // Check book creation limit using the new guest session system
-    // We only need to check this for anonymous users
+    // Check book creation limit for guest users
     if (!user) {
       const limitCheck = await checkGuestBookLimit();
 
@@ -69,7 +356,6 @@ export async function createPersonalizedBook(
       }
     }
 
-    // Set userId - will be null for anonymous users
     const userId = user?.id || null;
 
     logger.info(
@@ -82,7 +368,6 @@ export async function createPersonalizedBook(
       "Creating personalized book"
     );
 
-    // Fetch the complete book template with its pages
     const template = await prisma.bookTemplate.findUnique({
       where: { id: templateId },
       include: {
@@ -98,7 +383,7 @@ export async function createPersonalizedBook(
       return createErrorResult("Book template not found");
     }
 
-    // Use the book creation service to generate the book data
+    // Use book creation service to generate the book data
     const bookData = createBookFromTemplate(
       template,
       characterData,
@@ -115,10 +400,8 @@ export async function createPersonalizedBook(
       },
       "Book data generated"
     );
-    console.log("created book with ", bookData.pageCount);
-    // Create the book record in the database using a transaction
+
     const book = await prisma.$transaction(async (tx) => {
-      // Create the book record - importantly, userId can be null for anonymous users
       const newBook = await tx.book.create({
         data: {
           title: bookData.title,
@@ -126,7 +409,7 @@ export async function createPersonalizedBook(
           pageCount: bookData.pageCount,
           coverPrompt: bookData.coverPrompt,
           templateId: bookData.templateId,
-          userId: userId, // This can be null for anonymous users
+          userId: userId,
           characterImageReference: characterImageReference || null,
         },
       });
@@ -139,7 +422,6 @@ export async function createPersonalizedBook(
         "Created book record"
       );
 
-      // Create the character record
       await tx.character.create({
         data: {
           name: characterData.name,
@@ -162,7 +444,6 @@ export async function createPersonalizedBook(
         "Created character record"
       );
 
-      // Create the page records with updated structure for text/image pages
       for (const page of bookData.pages) {
         await tx.page.create({
           data: {
@@ -205,115 +486,6 @@ export async function createPersonalizedBook(
 }
 
 /**
- * Gets a book by its ID with all related data (pages, template, character)
- *
- * @param id The ID of the book to retrieve
- * @returns The book with its pages, template information, and character data
- */
-
-export async function getBookById(id: string): Promise<ActionResult<BookFull>> {
-  try {
-    logger.debug({ bookId: id }, "Fetching book details");
-
-    // Fetch the book with its pages, template, and character
-    const book = await prisma.book.findUnique({
-      where: { id },
-      include: {
-        pages: {
-          orderBy: { pageNumber: "asc" },
-        },
-        template: {
-          include: {
-            genres: true,
-          },
-        },
-        character: true,
-        order: true,
-      },
-    });
-
-    // If book not found, return an error
-    if (!book) {
-      logger.warn({ bookId: id }, "Book not found");
-      return createErrorResult("Book not found");
-    }
-
-    logger.debug(
-      {
-        bookId: id,
-        title: book.title,
-        pageCount: book.pages.length,
-        status: book.status,
-        hasCharacter: !!book.character,
-      },
-      "Book found"
-    );
-
-    // Serialize the book to handle Decimal values
-    const serializedBook = serializeBook(book);
-
-    // Use an explicit type cast here to ensure correct typing
-    return createSuccessResult(serializedBook as BookFull);
-  } catch (error) {
-    logger.error({ error, bookId: id }, "Error fetching book");
-    return createErrorResult(
-      error instanceof Error ? error.message : "Unknown error occurred"
-    );
-  }
-}
-
-/**
- * Gets all books for the current user
- * Returns books with their pages, character, and template info
- */
-export async function getUserBooks(): Promise<ActionResult<BookFull[]>> {
-  try {
-    const user = await getCurrentUser();
-
-    if (!user?.id) {
-      return createErrorResult("User not authenticated");
-    }
-
-    const books = await prisma.book.findMany({
-      where: {
-        userId: user.id,
-      },
-      include: {
-        order: true,
-        printJob: true,
-        pages: {
-          orderBy: { pageNumber: "asc" },
-        },
-        template: {
-          include: {
-            genres: true,
-          },
-        },
-        character: true,
-        imageGenerations: {
-          orderBy: { createdAt: "desc" },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    logger.debug(
-      { userId: user.id, bookCount: books.length },
-      "Retrieved user books"
-    );
-    const serializedBooks = serializeBooks(books);
-    return createSuccessResult(serializedBooks as BookFull[]);
-  } catch (error) {
-    logger.error({ error }, "Error fetching user books");
-    return createErrorResult(
-      error instanceof Error ? error.message : "Failed to fetch user books"
-    );
-  }
-}
-
-/**
  * Updates all book details based on the BookFull object
  *
  * @param book The complete book object with all updates
@@ -350,13 +522,11 @@ export async function updateBookDetails(
           textContent: page.textContent,
           imageUrl: page.imageUrl,
           imageOptions: page.imageOptions,
-          // Only include these if they're defined
           ...(page.imagePrompt && { imagePrompt: page.imagePrompt }),
         },
       });
     }
 
-    // If character data exists and needs to be updated
     if (book.character) {
       await prisma.character.update({
         where: { id: book.character.id },
@@ -372,7 +542,7 @@ export async function updateBookDetails(
         },
       });
     }
-    // ✅ ADD: If book is being marked as READY_FOR_PRINTING, calculate and set image costs
+    // If book is being marked as READY_FOR_PRINTING, calculate and set image costs
     if (book.status === BookStatus.READY_FOR_PRINTING) {
       // Get all image generations for this book
       const imageGenerations = await prisma.imageGeneration.findMany({
@@ -456,7 +626,7 @@ export async function completeBookAndSendEmail(
   bookId: string
 ): Promise<ActionResult<null>> {
   try {
-    // 1. Fetch the book with user information
+    // Fetch the book with user information
     const book = await prisma.book.findUnique({
       where: { id: bookId },
       include: {
@@ -469,7 +639,7 @@ export async function completeBookAndSendEmail(
       return createErrorResult(`Book with ID ${bookId} not found`);
     }
 
-    // 2. Delete character image if it exists
+    // Delete character image if it exists
     if (book.characterImageReference) {
       logger.info(
         { bookId, imageId: book.characterImageReference },
@@ -492,12 +662,12 @@ export async function completeBookAndSendEmail(
         // Log the error but continue with the process
         logger.warn(
           { error: deleteResult.error, imageId: book.characterImageReference },
-          "Failed to delete character image, continuing with book completion anyway"
+          "Failed to delete character image, continuing with book completion"
         );
       }
     }
 
-    // 2. Generate the download URL for the book
+    // Generate the download URL for the book
     const downloadResult = await getEbookDownloadUrl(bookId);
 
     if (!downloadResult.success) {
@@ -505,7 +675,7 @@ export async function completeBookAndSendEmail(
         downloadResult.error || "Failed to generate download URL"
       );
     }
-    // 3. Extract user information
+    // Extract user information
     const fullName = (
       book.order?.name || `${book.user?.firstName} ${book.user?.lastName}`
     ).trim();
@@ -514,16 +684,15 @@ export async function completeBookAndSendEmail(
     if (!email) {
       return createErrorResult("User email not found, cannot send email");
     }
-    // 4. Send the completion email
+    // Send the completion email
     await sendBookCompletionEmail(
       email,
-      fullName || "Valued Customer", // Fallback if name is blank
+      fullName || "Valued Customer",
       book.title,
       book.order?.productType as ProductType,
       downloadResult.data
     );
 
-    // 5. Return success
     return createSuccessResult(
       null,
       "Book marked as complete and notification email sent"
@@ -532,179 +701,6 @@ export async function completeBookAndSendEmail(
     console.error("Error in completeBookAndSendEmail:", error);
     return createErrorResult(
       error instanceof Error ? error.message : "Unknown error completing book"
-    );
-  }
-}
-
-/**
- * Deletes a book and all its related data
- * This is used when image generation fails and we need to clean up
- *
- * @param id The ID of the book to delete
- * @returns ActionResult indicating success or failure
- */
-export async function deleteBook(id: string): Promise<ActionResult<null>> {
-  try {
-    logger.debug(
-      { bookId: id },
-      "Attempting to delete book due to image generation failure"
-    );
-
-    // Use a transaction to ensure all related records are deleted
-    await prisma.$transaction(async (tx) => {
-      // First, check if the book exists
-      const book = await tx.book.findUnique({
-        where: { id },
-        include: {
-          pages: true,
-          character: true,
-          imageGenerations: true,
-        },
-      });
-
-      if (!book) {
-        logger.warn({ bookId: id }, "Book not found during deletion attempt");
-        return; // Exit the transaction without error
-      }
-
-      // Delete related imageGenerations
-      if (book.imageGenerations.length > 0) {
-        await tx.imageGeneration.deleteMany({
-          where: { bookId: id },
-        });
-        logger.debug({ bookId: id }, "Deleted related image generations");
-      }
-
-      // Delete related pages
-      if (book.pages.length > 0) {
-        await tx.page.deleteMany({
-          where: { bookId: id },
-        });
-        logger.debug({ bookId: id }, "Deleted related pages");
-      }
-
-      // Delete character if it exists
-      if (book.character) {
-        await tx.character.delete({
-          where: { bookId: id },
-        });
-        logger.debug({ bookId: id }, "Deleted related character");
-      }
-
-      // Delete the book itself
-      await tx.book.delete({
-        where: { id },
-      });
-
-      logger.info({ bookId: id }, "Successfully deleted book");
-    });
-
-    return createSuccessResult(null, "Book successfully deleted");
-  } catch (error) {
-    logger.error({ error, bookId: id }, "Error deleting book");
-    return createErrorResult(
-      error instanceof Error ? error.message : "Failed to delete book"
-    );
-  }
-}
-
-/**
- * Gets books statistics for admin dashboard
- * @returns ActionResult with books statistics data
- */
-export async function getBooksStats(): Promise<ActionResult<BooksStatsData>> {
-  try {
-    logger.debug("Fetching books statistics");
-
-    // Get total books count
-    const totalBooks = await prisma.book.count();
-
-    // Get books count by status
-    const booksByStatus = await prisma.book.groupBy({
-      by: ["status"],
-      _count: {
-        status: true,
-      },
-    });
-
-    // Convert array to object for easier access
-    const statusCounts = {
-      customizing: 0,
-      ordered: 0,
-      readyForPrinting: 0,
-      completed: 0,
-    };
-
-    booksByStatus.forEach((item) => {
-      switch (item.status) {
-        case BookStatus.CUSTOMIZING:
-          statusCounts.customizing = item._count.status;
-          break;
-        case BookStatus.ORDERED:
-          statusCounts.ordered = item._count.status;
-          break;
-        case BookStatus.READY_FOR_PRINTING:
-          statusCounts.readyForPrinting = item._count.status;
-          break;
-        case BookStatus.COMPLETED:
-          statusCounts.completed = item._count.status;
-          break;
-      }
-    });
-
-    // Get recent books (last 7 days)
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    const recentBooks = await prisma.book.count({
-      where: {
-        createdAt: {
-          gte: sevenDaysAgo,
-        },
-      },
-    });
-
-    // Get guest vs user books
-    const guestBooks = await prisma.book.count({
-      where: {
-        userId: null,
-      },
-    });
-
-    const userBooks = await prisma.book.count({
-      where: {
-        userId: {
-          not: null,
-        },
-      },
-    });
-
-    const statsData: BooksStatsData = {
-      totalBooks,
-      booksByStatus: statusCounts,
-      recentBooks,
-      guestBooks,
-      userBooks,
-    };
-
-    logger.debug(
-      {
-        totalBooks,
-        recentBooks,
-        guestBooks,
-        userBooks,
-        statusCounts,
-      },
-      "Books statistics fetched successfully"
-    );
-
-    return createSuccessResult(statsData);
-  } catch (error) {
-    logger.error({ error }, "Error fetching books statistics");
-    return createErrorResult(
-      error instanceof Error
-        ? error.message
-        : "Failed to fetch books statistics"
     );
   }
 }
@@ -855,87 +851,6 @@ export async function searchBooks(
     logger.error({ error, filters }, "Error searching books");
     return createErrorResult(
       error instanceof Error ? error.message : "Failed to search books"
-    );
-  }
-}
-
-/**
- * Get book by ID with ALL relations for admin use
- * @param id - Book ID
- * @returns ActionResult with BookAdmin (includes all relations)
- */
-export async function getBookByIdAdmin(
-  id: string
-): Promise<ActionResult<BookAdmin>> {
-  try {
-    logger.debug({ bookId: id }, "Fetching book details for admin");
-
-    // Fetch the book with ALL relations for admin
-    const book = await prisma.book.findUnique({
-      where: { id },
-      include: {
-        pages: {
-          orderBy: { pageNumber: "asc" },
-        },
-        template: {
-          include: {
-            genres: true,
-          },
-        },
-        character: true,
-        order: true,
-        printJob: true,
-        imageGenerations: {
-          orderBy: { createdAt: "desc" },
-        },
-        user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        guestSession: {
-          select: {
-            id: true,
-            sessionId: true,
-            lastActive: true,
-            createdAt: true,
-            expiresAt: true,
-          },
-        },
-      },
-    });
-
-    // If book not found, return an error
-    if (!book) {
-      logger.warn({ bookId: id }, "Book not found");
-      return createErrorResult("Book not found");
-    }
-
-    logger.debug(
-      {
-        bookId: id,
-        title: book.title,
-        pageCount: book.pages.length,
-        status: book.status,
-        hasCharacter: !!book.character,
-        hasOrder: !!book.order,
-        hasUser: !!book.user,
-        isGuest: !!book.guestSession,
-      },
-      "Book found for admin"
-    );
-
-    // Serialize the book to handle Decimal and Date values
-    const serializedBook = serializeBook(book);
-
-    return createSuccessResult(serializedBook as BookAdmin);
-  } catch (error) {
-    logger.error({ error, bookId: id }, "Error fetching book for admin");
-    return createErrorResult(
-      error instanceof Error ? error.message : "Unknown error occurred"
     );
   }
 }
@@ -1315,9 +1230,6 @@ export async function regeneratePageImage(
         data: { imagePrompt: newPrompt.trim() },
       });
     }
-
-    // Use your existing generateBookPageImage function
-    const { generateBookPageImage } = await import("@/actions/image-actions");
 
     const generationResult = await generateBookPageImage(
       page.book.id,
