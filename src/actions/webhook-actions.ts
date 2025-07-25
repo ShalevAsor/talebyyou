@@ -1,16 +1,18 @@
 // src/actions/webhook-actions.ts
 "use server";
 
-import { PrintJobStatusChangedPayload } from "@/types/print";
+import { OrderStatus, PrintJobStatus, Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+
 import { logger } from "@/lib/logger";
 import prisma from "@/lib/prisma";
-import { PrintJobStatus, OrderStatus, Prisma } from "@prisma/client";
 import {
   ActionResult,
-  createSuccessResult,
   createErrorResult,
+  createSuccessResult,
 } from "@/types/actions";
-import { revalidatePath } from "next/cache";
+import { PrintJobStatusChangedPayload } from "@/types/print";
+
 import { sendShippingConfirmationEmail } from "./email-actions";
 
 /**
@@ -63,8 +65,7 @@ export async function processWebhook(
     switch (luluStatus) {
       case "CREATED":
         logger.info(`Processing CREATED status for print job: ${printJob.id}`);
-        // This is the initial status, normally we've already set this
-        // TODO: Update status if needed
+        // This is the initial status, we already set this
         break;
 
       case "UNPAID":
