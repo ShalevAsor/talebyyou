@@ -130,6 +130,7 @@ export async function getAllBookTemplates(options?: {
     return createSuccessResult(templates);
   } catch (error) {
     console.error("Error fetching book templates:", error);
+    throw error;
     return createErrorResult("Failed to fetch book templates");
   }
 }
