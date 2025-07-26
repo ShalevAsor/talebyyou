@@ -1,18 +1,17 @@
-import React from "react";
 import {
   FaBookOpen,
-  FaPencilAlt,
+  FaCheck,
   FaEye,
-  FaShoppingCart,
+  FaFileDownload,
+  FaImage,
   FaPalette,
+  FaPencilAlt,
+  FaShoppingCart,
   FaStar,
   FaUser,
-  FaImage,
-  FaCheck,
-  FaFileDownload,
 } from "react-icons/fa";
+import { FiPrinter, FiType } from "react-icons/fi";
 import { IoSparkles } from "react-icons/io5";
-import { FiType, FiPrinter } from "react-icons/fi";
 
 export const howItWorksSteps = [
   {
