@@ -1,11 +1,12 @@
 // src/components/blog/BlogPostShare.tsx
 "use client";
 
+import { Check, Facebook, Link, Linkedin, Share2, Twitter } from "lucide-react";
 import { useState } from "react";
-import { Share2, Facebook, Twitter, Linkedin, Link, Check } from "lucide-react";
-import { BlogPost } from "@/types/blog";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { BlogPost } from "@/types/blog";
 
 interface BlogPostShareProps {
   post: BlogPost;

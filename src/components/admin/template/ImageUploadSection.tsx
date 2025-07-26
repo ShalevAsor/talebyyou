@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { AlertCircle, Image as ImageIcon, Loader2, Upload } from "lucide-react";
 import Image from "next/image";
+import { useRef, useState } from "react";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Loader2, Upload, Image as ImageIcon, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ImageUploadSectionProps {
   templateId: string;

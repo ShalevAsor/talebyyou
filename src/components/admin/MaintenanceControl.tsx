@@ -1,17 +1,18 @@
 "use client";
 
+import { AlertTriangle, Settings } from "lucide-react";
 import { useState } from "react";
+
 import {
   toggleMaintenanceMode,
   updateMaintenanceSettings,
 } from "@/actions/maintenance-actions";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Settings, AlertTriangle } from "lucide-react";
 
 interface MaintenanceControlProps {
   initialConfig: {

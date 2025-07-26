@@ -1,10 +1,11 @@
 // src/components/blog/BlogCard.tsx
-import Link from "next/link";
+import { ArrowRight, Calendar, Clock } from "lucide-react";
 import Image from "next/image";
-import { Clock, Calendar, ArrowRight } from "lucide-react";
-import { BlogPostCard } from "@/types/blog";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { BlogPostCard } from "@/types/blog";
 
 interface BlogCardProps {
   post: BlogPostCard;

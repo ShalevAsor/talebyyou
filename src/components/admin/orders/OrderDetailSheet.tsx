@@ -1,19 +1,20 @@
-import { useState } from "react";
-import { format } from "date-fns";
 import { Decimal } from "@prisma/client/runtime/library";
-import { OrderFull, OrderStatus } from "@/types/order";
-import { sendBookForPrinting } from "@/actions/print-actions";
+import { format } from "date-fns";
 import {
   Calendar,
-  CreditCard,
-  Truck,
   CheckCircle,
-  Printer,
+  CreditCard,
   ExternalLink,
   Loader2,
+  Printer,
+  Truck,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
+import { sendBookForPrinting } from "@/actions/print-actions";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   SheetClose,
   SheetContent,
@@ -22,7 +23,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { toast } from "react-toastify";
+import { OrderFull, OrderStatus } from "@/types/order";
 import { getStatusBadgeColor, getTotalImagesCost } from "@/utils/orderUtils";
 
 interface OrderDetailSheetProps {

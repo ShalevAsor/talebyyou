@@ -1,7 +1,13 @@
 // src/components/admin/template/DefaultTemplateSelector.tsx
 "use client";
 
+import { BookOpen, Import } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -9,11 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Import, BookOpen } from "lucide-react";
-import Image from "next/image";
 import { defaultTemplates } from "@/data/default-templates";
 import { BookTemplateCreateData } from "@/types/book";
 

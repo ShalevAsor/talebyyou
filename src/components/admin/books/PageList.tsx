@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { BookAdmin } from "@/types/book";
+
 import { PageCard } from "./PageCard";
 
 interface PagesListProps {

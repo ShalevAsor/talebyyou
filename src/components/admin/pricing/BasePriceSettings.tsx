@@ -1,15 +1,16 @@
 "use client";
 
+import { CheckCircle, DollarSign } from "lucide-react";
 import { useState } from "react";
-import { updateBasePrices } from "@/actions/pricing-actions";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { DollarSign, CheckCircle } from "lucide-react";
-import { PricingConfig } from "@/types/pricing";
 import { toast } from "react-toastify";
+
+import { updateBasePrices } from "@/actions/pricing-actions";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { usePricingMutations } from "@/hooks/usePricingMutations";
+import { PricingConfig } from "@/types/pricing";
 
 interface BasePriceSettingsProps {
   initialPricing: PricingConfig;

@@ -2,8 +2,9 @@
 "use client";
 
 import { Printer } from "lucide-react";
-import { OrderFull } from "@/types/order";
+
 import AdminActionDialog from "@/components/admin/AdminActionDialog";
+import { OrderFull } from "@/types/order";
 
 interface PrintQueueActionProps {
   printQueueOrders: OrderFull[];

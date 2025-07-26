@@ -1,11 +1,12 @@
 // src/components/admin/print-jobs/PrintJobStats.tsx
 "use client";
 
+import { Decimal } from "@prisma/client/runtime/library";
+import { AlertCircle, Clock, Printer, Truck } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PrintJobFull, PrintJobStatus } from "@/types/print";
-import { Printer, Truck, Clock, AlertCircle } from "lucide-react";
-import { Decimal } from "@prisma/client/runtime/library";
 
 type PrintJobStatistics = {
   totalPrintJobs: number;

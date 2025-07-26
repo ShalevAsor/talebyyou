@@ -1,17 +1,19 @@
 "use client";
 
+import { AlertTriangle, CheckCircle, Clock, Tag } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 import {
   toggleDiscount,
-  updateDiscountSettings,
   updateDiscountBanner,
+  updateDiscountSettings,
 } from "@/actions/pricing-actions";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -19,12 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Tag, AlertTriangle, CheckCircle, Clock } from "lucide-react";
-import { DiscountConfig } from "@/types/pricing";
-import { toast } from "react-toastify";
+import { Textarea } from "@/components/ui/textarea";
 import { usePricingMutations } from "@/hooks/usePricingMutations";
+import { DiscountConfig } from "@/types/pricing";
 
 interface DiscountManagementProps {
   initialDiscount: DiscountConfig;

@@ -1,15 +1,16 @@
 // src/components/admin/books/BookDetails.tsx
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Calendar,
-  User,
   FileText,
   Image as ImageIcon,
   Package,
+  User,
 } from "lucide-react";
 import Image from "next/image";
+import React from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookAdmin } from "@/types/book";
 
 interface BookDetailsProps {

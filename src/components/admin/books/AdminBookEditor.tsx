@@ -1,18 +1,19 @@
 "use client";
 
+import { BookOpen, Edit3, FileText, Save, X } from "lucide-react";
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import {
+  updateBookPageDedication,
+  updateBookTitle,
+} from "@/actions/book-actions";
+import { CoverPageCard } from "@/components/admin/books/CoverPageCard";
+import { PagesList } from "@/components/admin/books/PageList";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { BookOpen, FileText, Edit3, Save, X } from "lucide-react";
 import { BookAdmin } from "@/types/book";
-import { PagesList } from "@/components/admin/books/PageList";
-import { CoverPageCard } from "@/components/admin/books/CoverPageCard";
-import {
-  updateBookTitle,
-  updateBookPageDedication,
-} from "@/actions/book-actions";
 
 interface AdminBookEditorProps {
   book: BookAdmin;

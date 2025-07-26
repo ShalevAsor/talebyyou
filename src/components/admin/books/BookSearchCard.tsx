@@ -1,9 +1,10 @@
 // src/components/admin/books/BookSearchCard.tsx
-import React from "react";
-import { BookSearchResult } from "@/types/book";
-import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
+import React from "react";
+
+import { Button } from "@/components/ui/button";
+import { BookSearchResult } from "@/types/book";
 
 interface BookSearchCardProps {
   book: BookSearchResult;

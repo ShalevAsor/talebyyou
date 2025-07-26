@@ -1,9 +1,10 @@
-import Link from "next/link";
+import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
 import Image from "next/image";
-import { Calendar, Clock, ArrowLeft, User } from "lucide-react";
-import { BlogPost } from "@/types/blog";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { BlogPost } from "@/types/blog";
 
 interface BlogPostHeaderProps {
   post: BlogPost;

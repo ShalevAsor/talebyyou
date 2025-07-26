@@ -1,8 +1,10 @@
 // src/components/admin/template/TemplateManagementTools.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+
 import { GenreManagement } from "./GenreManagement";
 
 export function TemplateManagementTools() {

@@ -1,14 +1,11 @@
 // src/components/admin/print-jobs/PrintJobDetailSheet.tsx
-import { format } from "date-fns";
 import { Decimal } from "@prisma/client/runtime/library";
-import {
-  PrintJobFull,
-  FileValidationStatus,
-  PrintJobStatus,
-} from "@/types/print";
-import { Calendar, Printer, Truck, FileText, CreditCard } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { Calendar, CreditCard, FileText, Printer, Truck } from "lucide-react";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   SheetClose,
   SheetContent,
@@ -17,8 +14,12 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  FileValidationStatus,
+  PrintJobFull,
+  PrintJobStatus,
+} from "@/types/print";
 import { getStatusBadgeColor } from "@/utils/printUtils";
-import Link from "next/link";
 
 interface PrintJobDetailSheetProps {
   selectedPrintJob: PrintJobFull;

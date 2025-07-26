@@ -1,6 +1,7 @@
 // src/components/admin/books/BooksLoading.tsx
-import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+
+import { Card, CardContent } from "@/components/ui/card";
 
 export function BooksLoading() {
   return (

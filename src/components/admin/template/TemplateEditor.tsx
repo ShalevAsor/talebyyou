@@ -1,26 +1,27 @@
 // src/components/admin/template/TemplateEditor.tsx
 "use client";
 
-import { useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronLeft, Loader2, Plus, Save, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+
+import { updateBookTemplate } from "@/actions/template-actions";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Plus, Trash2, ChevronLeft, Save } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { BookTemplateFull } from "@/types/book";
-import { toast } from "react-toastify";
+import { Textarea } from "@/components/ui/textarea";
 import {
   templateSchema,
   type TemplateFormData,
 } from "@/schemas/template-schema";
-import { updateBookTemplate } from "@/actions/template-actions";
+import { BookTemplateFull } from "@/types/book";
 
 interface TemplateEditorProps {
   template: BookTemplateFull;

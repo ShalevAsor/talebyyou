@@ -1,11 +1,12 @@
 // src/components/blog/RelatedPosts.tsx
-import Link from "next/link";
+import { ArrowRight, Clock } from "lucide-react";
 import Image from "next/image";
-import { Clock, ArrowRight } from "lucide-react";
-import { RelatedPost } from "@/types/blog";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { RelatedPost } from "@/types/blog";
 
 interface RelatedPostsProps {
   posts: RelatedPost[];

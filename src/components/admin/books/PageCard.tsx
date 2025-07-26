@@ -1,23 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import {
   BookOpen,
+  Edit3,
   FileText,
   Image as ImageIcon,
-  Edit3,
-  Save,
-  X,
   Loader2,
   Palette,
+  Save,
+  X,
 } from "lucide-react";
-import { BookAdmin } from "@/types/book";
-import { updatePageText, updatePageImagePrompt } from "@/actions/book-actions";
 import Image from "next/image";
+import React, { useState } from "react";
+
+import { updatePageImagePrompt, updatePageText } from "@/actions/book-actions";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { BookAdmin } from "@/types/book";
+
 import ImageEditorModal from "./ImageEditorModal"; // NEW: Import the modal
 
 interface PageCardProps {

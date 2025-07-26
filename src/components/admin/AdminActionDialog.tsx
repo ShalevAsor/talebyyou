@@ -1,6 +1,8 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import { ReactNode } from "react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +15,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 
 interface AdminActionDialogProps {
   title: string;

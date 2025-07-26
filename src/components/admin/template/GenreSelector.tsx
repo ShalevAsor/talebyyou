@@ -1,14 +1,15 @@
 // Create a new component: src/components/admin/template/GenreSelector.tsx
 "use client";
 
+import { Genre } from "@prisma/client";
+import { Plus, X } from "lucide-react";
 import { useState } from "react";
-import { Controller, Control } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, X } from "lucide-react";
-import { Genre } from "@prisma/client";
 import { TemplateFormData } from "@/schemas/template-schema";
 
 interface GenreSelectorProps {

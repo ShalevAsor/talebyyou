@@ -1,17 +1,18 @@
 // src/components/admin/print-jobs/PrintJobsContent.tsx
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RefreshCw, Loader2 } from "lucide-react";
-import { PrintJobFull } from "@/types/print";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Loader2, RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+
+import { getAllPrintJobs } from "@/actions/print-actions";
+import { PrintJobSearch } from "@/components/admin/print-jobs/PrintJobSearch";
+import { PrintJobsFilters } from "@/components/admin/print-jobs/PrintJobsFilters";
 import { PrintJobsTable } from "@/components/admin/print-jobs/PrintJobsTable";
 import { PrintJobStats } from "@/components/admin/print-jobs/PrintJobStats";
-import { PrintJobsFilters } from "@/components/admin/print-jobs/PrintJobsFilters";
-import { PrintJobSearch } from "@/components/admin/print-jobs/PrintJobSearch";
-import { getAllPrintJobs } from "@/actions/print-actions";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PrintJobFull } from "@/types/print";
 
 interface PrintJobsContentProps {
   initialPrintJobs: PrintJobFull[];

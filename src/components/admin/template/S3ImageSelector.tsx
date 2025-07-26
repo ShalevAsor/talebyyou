@@ -1,8 +1,15 @@
 // src/components/admin/template/S3ImageSelector.tsx
 "use client";
 
-import { useState, useCallback } from "react";
+import { Image as ImageIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useCallback, useState } from "react";
+import { toast } from "react-toastify";
+
+import {
+  getTemplateS3Images,
+  updateTemplateImageUrl,
+} from "@/actions/template-actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,12 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Image as ImageIcon, Loader2 } from "lucide-react";
-import {
-  updateTemplateImageUrl,
-  getTemplateS3Images,
-} from "@/actions/template-actions";
-import { toast } from "react-toastify";
 
 interface S3ImageSelectorProps {
   templateSlug: string;

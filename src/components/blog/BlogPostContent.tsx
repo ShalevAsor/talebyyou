@@ -1,10 +1,11 @@
 // src/components/blog/BlogPostContent.tsx
 "use client";
 
-import { useState, useEffect } from "react";
 import { ChevronUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 
 interface BlogPostContentProps {
   content: string;

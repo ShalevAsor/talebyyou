@@ -1,11 +1,12 @@
 // src/components/admin/orders/OrderStatisticsPanel.tsx
 "use client";
 
+import { Decimal } from "@prisma/client/runtime/library";
+import { Calendar, CreditCard, FileText, Package } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderFull, OrderStatus } from "@/types/order";
-import { FileText, CreditCard, Package, Calendar } from "lucide-react";
-import { Decimal } from "@prisma/client/runtime/library";
 
 type OrderStatistics = {
   totalOrders: number;

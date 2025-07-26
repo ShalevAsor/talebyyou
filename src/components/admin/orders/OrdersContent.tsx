@@ -1,21 +1,22 @@
 // src/components/admin/orders/OrdersContent.tsx
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Loader2, Printer } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+
+import { getAllOrders } from "@/actions/order-actions";
+import { OrderFilters } from "@/components/admin/orders/OrderFilters";
+import { OrderSearch } from "@/components/admin/orders/OrderSearch";
+import { OrdersTable } from "@/components/admin/orders/OrdersTable";
+import { OrderStatisticsPanel } from "@/components/admin/orders/OrderStatisticsPanel";
+import { PrintQueueAction } from "@/components/admin/orders/PrintQueueAction";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OrderFull } from "@/types/order";
 
 // Component imports
-import { OrderStatisticsPanel } from "@/components/admin/orders/OrderStatisticsPanel";
-import { OrdersTable } from "@/components/admin/orders/OrdersTable";
-import { OrderFilters } from "@/components/admin/orders/OrderFilters";
-import { OrderSearch } from "@/components/admin/orders/OrderSearch";
-import { PrintQueueAction } from "@/components/admin/orders/PrintQueueAction";
-import { getAllOrders } from "@/actions/order-actions";
 
 interface OrdersContentProps {
   initialOrders: OrderFull[];

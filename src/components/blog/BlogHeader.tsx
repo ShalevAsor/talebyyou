@@ -1,5 +1,6 @@
 // src/components/blog/BlogHeader.tsx
 import { Sparkles } from "lucide-react";
+
 import TaleByYouLogo from "@/components/layout/Logo"; // Adjust path as needed
 
 export default function BlogHeader() {

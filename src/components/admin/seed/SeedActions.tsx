@@ -1,6 +1,7 @@
 // src/components/admin/SeedActions.tsx
 "use client";
 
+import AdminActionDialog from "@/components/admin/AdminActionDialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import AdminActionDialog from "@/components/admin/AdminActionDialog";
 
 interface SeedActionsProps {
   onSeed: () => Promise<void>;

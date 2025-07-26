@@ -1,15 +1,17 @@
 // src/components/admin/template/TemplatesClient.tsx
 "use client";
 
-import { useState } from "react";
+import { Plus } from "lucide-react"; // Removed Loader2 since it's not used
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Plus } from "lucide-react"; // Removed Loader2 since it's not used
+import { BookTemplateFull } from "@/types/book";
+
 import { TemplateList } from "./TemplateList";
 import { TemplateManagementTools } from "./TemplateManagementTools";
-import { BookTemplateFull } from "@/types/book";
 
 interface TemplatesClientProps {
   initialTemplates: BookTemplateFull[];

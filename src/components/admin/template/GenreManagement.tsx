@@ -1,34 +1,35 @@
 // src/components/admin/template/GenreManagement.tsx
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Trash2,
-  BarChart3,
-  AlertCircle,
-  CheckCircle,
-  Loader2,
-  Eye,
-} from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  AlertCircle,
+  BarChart3,
+  CheckCircle,
+  Eye,
+  Loader2,
+  Trash2,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "react-toastify";
+
 import {
   analyzeGenreUsage,
   cleanupOrphanedGenres,
 } from "@/actions/genre-actions";
 import AdminActionDialog from "@/components/admin/AdminActionDialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export function GenreManagement() {
   const [showAnalysis, setShowAnalysis] = useState(false);

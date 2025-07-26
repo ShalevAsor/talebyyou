@@ -1,21 +1,23 @@
 "use client";
 
+import { Genre } from "@prisma/client";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ChartColumnStacked } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
+import { getAllGenres, updateTemplateGenres } from "@/actions/template-actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { ChartColumnStacked } from "lucide-react";
-import { updateTemplateGenres, getAllGenres } from "@/actions/template-actions";
 import { BookTemplateFull } from "@/types/book";
-import { Genre } from "@prisma/client";
-import { toast } from "react-toastify";
-import { useQuery, useMutation } from "@tanstack/react-query";
+
 import { SimpleGenreSelector } from "./SimpleGenreSelector";
 
 interface EditGenresDialogProps {

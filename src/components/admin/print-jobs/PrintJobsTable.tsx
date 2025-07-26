@@ -1,9 +1,13 @@
 "use client";
 
-import { Eye } from "lucide-react";
+import { Decimal } from "@prisma/client/runtime/library";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
+
+import PrintJobDetailSheet from "@/components/admin/print-jobs/PrintJobDetailSheet";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -12,10 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { PrintJobFull } from "@/types/print";
-import { Decimal } from "@prisma/client/runtime/library";
-import PrintJobDetailSheet from "@/components/admin/print-jobs/PrintJobDetailSheet";
 import { getStatusBadgeColor } from "@/utils/printUtils";
 
 interface PrintJobsTableProps {

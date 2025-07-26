@@ -1,32 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { createBookTemplate } from "@/actions/template-actions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Genre } from "@prisma/client";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  BookTemplateCreateData,
-  BookTemplatePageCreateData,
-} from "@/types/book";
-import { Genre } from "@prisma/client";
-import { GenreSelector } from "./GenreSelector";
-import { generateSlug } from "@/utils/slugUtils";
+import { useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+
+import { createBookTemplate } from "@/actions/template-actions";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
   templateSchema,
   type TemplateFormData,
   type TemplatePageFormData,
 } from "@/schemas/template-schema";
+import {
+  BookTemplateCreateData,
+  BookTemplatePageCreateData,
+} from "@/types/book";
+import { generateSlug } from "@/utils/slugUtils";
+
+import { GenreSelector } from "./GenreSelector";
 
 // Default page template
 const defaultPage: TemplatePageFormData = {

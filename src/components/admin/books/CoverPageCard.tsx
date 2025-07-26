@@ -1,24 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen,
   Heart,
-  Palette,
   Image as ImageIcon,
+  Loader2,
+  Palette,
   Save,
   X,
-  Loader2,
 } from "lucide-react";
-import { BookAdmin } from "@/types/book";
+import Image from "next/image";
+import React, { useState } from "react";
+
 import {
   updateBookCoverDedication,
   updateCoverImagePrompt,
 } from "@/actions/book-actions";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { BookAdmin } from "@/types/book";
+
 import ImageEditorModal from "./ImageEditorModal"; // NEW: Import the modal
 
 interface CoverPageCardProps {

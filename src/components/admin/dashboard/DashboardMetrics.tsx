@@ -1,6 +1,7 @@
 // src/components/admin/DashboardMetrics.tsx
+import { BookIcon, ShoppingBagIcon, UserIcon } from "lucide-react"; // Added ShoppingBagIcon for orders
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserIcon, BookIcon, ShoppingBagIcon } from "lucide-react"; // Added ShoppingBagIcon for orders
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface MetricCardProps {

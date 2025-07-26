@@ -1,13 +1,11 @@
 // src/components/blog/BlogContent.tsx
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search, Filter } from "lucide-react";
-import { BlogPost, BlogCategory, BlogPostCard } from "@/types/blog";
-import BlogCard from "./BlogCard";
-import BlogSidebar from "./BlogSidebar";
-import { Input } from "@/components/ui/input";
+import { Filter, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,6 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BlogCategory, BlogPost, BlogPostCard } from "@/types/blog";
+
+import BlogCard from "./BlogCard";
+import BlogSidebar from "./BlogSidebar";
 
 interface BlogContentProps {
   posts: BlogPost[];

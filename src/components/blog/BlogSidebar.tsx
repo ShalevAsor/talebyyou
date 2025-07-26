@@ -1,19 +1,20 @@
 // src/components/blog/BlogSidebar.tsx
-import Link from "next/link";
 import {
   BookOpen,
   Gift,
   Heart,
   Lightbulb,
   Sparkles,
-  TrendingUp,
   Star,
+  TrendingUp,
 } from "lucide-react";
-import { BlogCategory, BlogPostCard } from "@/types/blog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+
+import TaleByYouLogo from "@/components/layout/Logo"; // Adjust path as needed
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import TaleByYouLogo from "@/components/layout/Logo"; // Adjust path as needed
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BlogCategory, BlogPostCard } from "@/types/blog";
 
 interface BlogSidebarProps {
   categories: BlogCategory[];
