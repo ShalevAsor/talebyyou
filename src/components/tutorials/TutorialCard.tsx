@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { Clock, Play } from "lucide-react";
 import Image from "next/image";
-import { Tutorial } from "@/data/tutorialsData";
+import React, { useState } from "react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
@@ -10,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Play, Clock } from "lucide-react";
+import { Tutorial } from "@/data/tutorialsData";
 
 interface TutorialCardProps {
   tutorial: Tutorial;

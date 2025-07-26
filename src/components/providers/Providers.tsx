@@ -1,8 +1,9 @@
 "use client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Bounce, ToastContainer } from "react-toastify";
+
 import { queryClient } from "@/lib/reactQuery";
-import { ToastContainer, Bounce } from "react-toastify";
 
 interface ProvidersProps {
   children: React.ReactNode;

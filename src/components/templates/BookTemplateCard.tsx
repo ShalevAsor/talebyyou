@@ -1,11 +1,11 @@
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { BookTemplateFull } from "@/types/book";
+import React from "react";
 
 // Import shadcn UI components
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { BookTemplateFull } from "@/types/book";
 
 interface BookTemplateCardProps {
   template: BookTemplateFull;

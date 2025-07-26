@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { Star } from "lucide-react";
+import { useCallback, useState } from "react";
+
 import { testimonials } from "@/data/testimonials";
 
 export default function Testimonials() {

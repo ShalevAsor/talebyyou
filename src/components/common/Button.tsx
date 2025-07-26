@@ -1,7 +1,8 @@
 // components/ui/Button.tsx
-import React from "react";
-import Link from "next/link";
 import { VariantProps, cva } from "class-variance-authority";
+import Link from "next/link";
+import React from "react";
+
 import { cn } from "@/lib/utils";
 
 // Define button variants using class-variance-authority

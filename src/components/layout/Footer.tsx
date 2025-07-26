@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { siteConfig } from "@/config/site";
 
 // Define footer links for better organization

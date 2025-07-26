@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { uploadTemplateImageToS3 } from "@/services/aws/s3-service";
-import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { NextRequest, NextResponse } from "next/server";
+
+import prisma from "@/lib/prisma";
+import { uploadTemplateImageToS3 } from "@/services/aws/s3-service";
 
 // Configure the API route to handle larger payloads
 export const config = {

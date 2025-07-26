@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import {
-  getPageGenerationStatus,
   getCoverGenerationStatus,
+  getPageGenerationStatus,
 } from "@/actions/book-actions";
 
 export async function POST(request: NextRequest) {

@@ -1,58 +1,11 @@
-// import { useQuery, useQueryClient } from "@tanstack/react-query";
-// import { getBookById } from "@/actions/book-actions";
-// import { BookFull } from "@/types/book";
-// import { useEffect } from "react";
-// import { useImageGenerationStatus } from "./useImageGenerationStatus";
-// import { GenerationStatus } from "@/generated/prisma";
-
-// export function useBookData(bookId: string, initialData?: BookFull) {
-//   const queryClient = useQueryClient();
-
-//   // Get image generation status
-//   const { data: imageGenerationStatus } = useImageGenerationStatus(bookId);
-
-//   const query = useQuery({
-//     queryKey: ["book", bookId],
-//     queryFn: async () => {
-//       const result = await getBookById(bookId);
-//       if (!result.success) {
-//         throw new Error(result.error);
-//       }
-//       return result.data;
-//     },
-//     initialData,
-//     staleTime: 30000, // Data is fresh for 30 seconds
-//     refetchInterval: false, // Don't automatically refetch
-//     refetchOnWindowFocus: false, // Don't refetch on window focus
-//   });
-
-//   // Refetch book data when image generation is complete
-//   useEffect(() => {
-//     if (imageGenerationStatus) {
-//       const allGenerationsComplete =
-//         imageGenerationStatus.coverGeneration?.coverStatus ===
-//           GenerationStatus.COMPLETE &&
-//         imageGenerationStatus.pageGenerations?.every(
-//           (gen) =>
-//             gen.status === GenerationStatus.COMPLETE ||
-//             gen.status === GenerationStatus.FAILED
-//         );
-
-//       if (allGenerationsComplete) {
-//         // Invalidate and refetch the book data
-//         queryClient.invalidateQueries({ queryKey: ["book", bookId] });
-//       }
-//     }
-//   }, [imageGenerationStatus, bookId, queryClient]);
-
-//   return query;
-// }
+import { GenerationStatus } from "@prisma/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect } from "react";
+
 import { getBookById } from "@/actions/book-actions";
 import { BookFull } from "@/types/book";
-import { useEffect, useCallback } from "react";
+
 import { useImageGenerationStatus } from "./useImageGenerationStatus";
-import { GenerationStatus } from "@prisma/client";
 
 /**
  * Hook to fetch and manage book data

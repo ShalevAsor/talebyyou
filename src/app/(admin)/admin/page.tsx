@@ -1,17 +1,18 @@
 // src/app/(admin)/admin/page.tsx
+import { AlertCircle } from "lucide-react";
 import { Suspense } from "react";
+
+import { getMaintenanceStatus } from "@/actions/maintenance-actions";
+import { getOrdersCount } from "@/actions/order-actions";
+import { getTemplatesCount } from "@/actions/template-actions";
+import { getUsersCount } from "@/actions/user-actions";
+import { AdminManagement } from "@/components/admin/AdminManagement"; // ADD THIS
 import {
   DashboardMetrics,
   MetricCardSkeleton,
 } from "@/components/admin/dashboard/DashboardMetrics";
-import { getUsersCount } from "@/actions/user-actions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { getTemplatesCount } from "@/actions/template-actions";
-import { getOrdersCount } from "@/actions/order-actions";
-import { getMaintenanceStatus } from "@/actions/maintenance-actions";
 import MaintenanceControl from "@/components/admin/MaintenanceControl";
-import { AdminManagement } from "@/components/admin/AdminManagement"; // ADD THIS
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // This component handles data fetching
 async function DashboardContent() {

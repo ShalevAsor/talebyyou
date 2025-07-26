@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { FiShoppingCart } from "react-icons/fi";
 import Link from "next/link";
+import { FiShoppingCart } from "react-icons/fi";
+
+import { Button } from "@/components/ui/button";
 import { BookFull, PageType } from "@/types/book";
 
 export const BookProgressIndicator: React.FC<{ book: BookFull }> = ({

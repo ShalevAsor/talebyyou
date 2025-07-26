@@ -1,8 +1,9 @@
 // src/app/(admin)/admin/print-jobs/page.tsx
-import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
-import { PrintJobsContent } from "@/components/admin/print-jobs/PrintJobsContent";
+import { Suspense } from "react";
+
 import { getAllPrintJobs } from "@/actions/print-actions";
+import { PrintJobsContent } from "@/components/admin/print-jobs/PrintJobsContent";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Loading component

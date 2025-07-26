@@ -1,7 +1,8 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import React from "react";
 import { FiEdit3 } from "react-icons/fi";
+
+import { Button } from "@/components/ui/button";
 
 interface CallToActionProps {
   templateSlug: string;

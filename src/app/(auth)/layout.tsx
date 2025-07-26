@@ -1,6 +1,3 @@
-/**
- * Auth layout
- */
 export default function AuthLayout({
   children,
 }: Readonly<{

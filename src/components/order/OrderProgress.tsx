@@ -1,65 +1,9 @@
-// // src/components/order/OrderProgress.tsx
-// import React from "react";
-// import { Progress } from "@/components/ui/progress";
-// import { OrderStep } from "@/types/order";
-
-// interface OrderProgressProps {
-//   currentStep: OrderStep;
-// }
-
-// export function OrderProgress({ currentStep }: OrderProgressProps) {
-//   const progressValue = currentStep === "details" ? 50 : 100;
-
-//   return (
-//     <div className="mb-8">
-//       <div className="flex justify-between mb-2">
-//         <div
-//           className={`flex items-center ${
-//             currentStep === "details"
-//               ? "text-blue-600 font-medium"
-//               : "text-gray-500"
-//           }`}
-//         >
-//           <div
-//             className={`flex items-center justify-center w-8 h-8 rounded-full mr-2 ${
-//               currentStep === "details"
-//                 ? "bg-blue-100 text-blue-600"
-//                 : "bg-gray-200"
-//             }`}
-//           >
-//             1
-//           </div>
-//           <span>Book Details</span>
-//         </div>
-//         <div
-//           className={`flex items-center ${
-//             currentStep === "payment"
-//               ? "text-blue-600 font-medium"
-//               : "text-gray-500"
-//           }`}
-//         >
-//           <div
-//             className={`flex items-center justify-center w-8 h-8 rounded-full mr-2 ${
-//               currentStep === "payment"
-//                 ? "bg-blue-100 text-blue-600"
-//                 : "bg-gray-200"
-//             }`}
-//           >
-//             2
-//           </div>
-//           <span>Review & Payment</span>
-//         </div>
-//       </div>
-//       <Progress value={progressValue} className="h-2" />
-//     </div>
-//   );
-// }
 "use client";
 
-import React from "react";
+import { CheckCircle2 } from "lucide-react";
+
 import { Progress } from "@/components/ui/progress";
 import { OrderStep } from "@/types/order";
-import { CheckCircle2 } from "lucide-react";
 
 interface OrderProgressProps {
   currentStep: OrderStep;

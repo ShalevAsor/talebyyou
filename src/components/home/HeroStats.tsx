@@ -1,6 +1,6 @@
 // src/components/home/HeroStats.tsx
+import { BookOpen, Heart, Leaf, Sparkles } from "lucide-react";
 import React from "react";
-import { BookOpen, Heart, Sparkles, Leaf } from "lucide-react";
 
 const HeroStats: React.FC = () => {
   const stats = [

@@ -1,20 +1,22 @@
 // export default CharacterCustomizationForm;
-import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField } from "@/components/common/TextField";
-import { SelectField } from "@/components/common/SelectField";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+
 import { Button } from "@/components/common/Button";
+import { SelectField } from "@/components/common/SelectField";
+import { TextField } from "@/components/common/TextField";
 import ImageUpload from "@/components/customization/ImageUpload";
 import {
-  characterSchema,
   CharacterData,
+  characterSchema,
   eyeColorOptions,
   hairColorOptions,
   hairStyleOptions,
   skinToneOptions,
 } from "@/schemas/character-schema";
-import { z } from "zod";
+
 import PhotoGuidelines from "../customization/PhotoGuidelines";
 
 // Create a modified schema that doesn't require the File object

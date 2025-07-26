@@ -2,10 +2,11 @@
 "use client";
 
 import React from "react";
-import { ContactForm } from "@/components/form/ContactForm";
-import { ContactInformation } from "@/components/contact/ContactInformation";
-import { ContactFormData } from "@/schemas/contact-schema";
 import { toast } from "react-toastify";
+
+import { ContactInformation } from "@/components/contact/ContactInformation";
+import { ContactForm } from "@/components/form/ContactForm";
+import { ContactFormData } from "@/schemas/contact-schema";
 
 /**
  * Client component for displaying contact content

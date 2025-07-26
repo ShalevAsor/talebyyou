@@ -1,18 +1,19 @@
 "use client";
+import { BookStatus, GenerationStatus } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { BookFull } from "@/types/book";
-import { ErrorAlert } from "@/components/common";
-import { Loading } from "@/components/common";
-import useBookStore from "@/store/useBookPreviewStore";
-import { useBookData } from "@/hooks/useBookData";
+import { toast } from "react-toastify";
+
+import { ErrorAlert, Loading } from "@/components/common";
 import BookEditor from "@/components/preview/bookEditor/BookEditor";
+import { useBookData } from "@/hooks/useBookData";
+import { useBookUpdateMutation } from "@/hooks/useBookUpdateMutation";
 import { useImageGenerationStatus } from "@/hooks/useImageGenerationStatus";
+import useBookStore from "@/store/useBookPreviewStore";
+import { BookFull } from "@/types/book";
+
 import { ActionBar } from "./ActionBar";
 import ImageLoader from "./ImageLoader";
-import { BookStatus, GenerationStatus } from "@prisma/client";
-import { useBookUpdateMutation } from "@/hooks/useBookUpdateMutation";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 
 /**
  * Props for the BookPreviewClient component

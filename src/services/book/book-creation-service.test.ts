@@ -1,99 +1,10 @@
-// // src/services/book/__tests__/book-creation-service.test.ts
-
-// import { createBookFromTemplate } from "./book-creation-service";
-// import { BookStatus } from "@/generated/prisma";
-// import { BookTemplateFull, PageType } from "@/types/book";
-// import { BOOK_DEFAULT_PAGES } from "@/constants/bookConstants";
-// import { CharacterData } from "@/schemas/character-schema";
-
-// // Mock the logger to prevent console output during tests
-// jest.mock("@/lib/logger", () => ({
-//   logger: {
-//     debug: jest.fn(),
-//   },
-// }));
-
-// // Mock constants that might be imported
-// jest.mock("@/constants/prompts", () => ({
-//   IMAGE_STYLE: "high quality illustration",
-//   IMAGE_STYLE_PROMPT: "highly detailed, vibrant colors",
-// }));
-
-// describe("Book Creation Service", () => {
-//   test("should create a book with correct structure from template", () => {
-//     // Arrange - Mock data
-//     const mockTemplate: BookTemplateFull = {
-//       id: "template1",
-//       title: "Adventure Book",
-//       description: "A fun adventure book",
-//       pageCount: 2,
-//       published: true,
-//       coverImage: "https://example.com/cover.jpg",
-//       coverPrompt: "A child going on an adventure",
-//       minAge: 3,
-//       maxAge: 8,
-//       pages: [
-//         {
-//           id: "page1",
-//           pageNumber: 1,
-//           content: "Hello [CHILD_NAME], this is a story about a [BOY_GIRL].",
-//           imagePrompt: "A child named [CHILD_NAME] playing",
-//           imageUrl: "https://example.com/image1.jpg",
-//           createdAt: new Date(),
-//           updatedAt: new Date(),
-//           templateId: "template1",
-//         },
-//       ],
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//       genres: [],
-//     };
-
-//     const mockCharacterData: CharacterData = {
-//       name: "emma",
-//       age: 6,
-//       gender: "girl",
-//       hairColor: "brown",
-//       eyeColor: "blue",
-//       skinTone: "light",
-//       wearingGlasses: true,
-//     };
-
-//     // Act
-//     const result = createBookFromTemplate(
-//       mockTemplate,
-//       mockCharacterData,
-//       "user123"
-//     );
-
-//     // Assert
-//     expect(result).toBeDefined();
-//     expect(result.title).toBe("Adventure Book");
-//     expect(result.status).toBe(BookStatus.CUSTOMIZING);
-//     expect(result.templateId).toBe("template1");
-//     expect(result.userId).toBe("user123");
-
-//     // Check page structure
-//     expect(result.pages.length).toBe(2 + BOOK_DEFAULT_PAGES); // template pages * 2 + default pages
-
-//     // Check that placeholders are replaced correctly in text content
-//     const textPage = result.pages.find((p) => p.type === PageType.TEXT);
-//     expect(textPage?.textContent).toContain("Emma");
-//     expect(textPage?.textContent).toContain("girl");
-
-//     // Check that image prompts contain character details
-//     const imagePage = result.pages.find((p) => p.type === PageType.IMAGE);
-//     expect(imagePage?.imagePrompt).toContain("brown hair");
-//     expect(imagePage?.imagePrompt).toContain("blue eyes");
-//   });
-// });
-// src/services/book/__tests__/book-creation-service.test.ts
-
-import { createBookFromTemplate } from "./book-creation-service";
 import { BookStatus } from "@prisma/client";
-import { BookTemplateFull, PageType } from "@/types/book";
+
 import { BOOK_DEFAULT_PAGES } from "@/constants/bookConstants";
 import { CharacterData } from "@/schemas/character-schema";
+import { BookTemplateFull, PageType } from "@/types/book";
+
+import { createBookFromTemplate } from "./book-creation-service";
 
 // Mock the logger to prevent console output during tests
 jest.mock("@/lib/logger", () => ({
@@ -120,6 +31,7 @@ describe("Book Creation Service", () => {
     slug: "adventure-book",
     coverImage: "https://example.com/cover.jpg",
     coverPrompt: "A child named [CHILD_NAME] going on an adventure",
+    consistentOutfit: null,
     minAge: 3,
     maxAge: 8,
     pages: [
@@ -133,6 +45,7 @@ describe("Book Creation Service", () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         templateId: "template1",
+        pageOutfit: null,
       },
       {
         id: "page2",
@@ -144,6 +57,7 @@ describe("Book Creation Service", () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         templateId: "template1",
+        pageOutfit: null,
       },
     ].slice(0, pageCount),
     createdAt: new Date(),
@@ -363,6 +277,9 @@ describe("Book Creation Service", () => {
       published: true,
       coverImage: "https://example.com/cover.jpg",
       coverPrompt: "A child having an adventure",
+      consistentOutfit: null,
+      characterGender: "girl",
+      slug: "template1",
       minAge: 3,
       maxAge: 8,
       pages: [
@@ -376,6 +293,7 @@ describe("Book Creation Service", () => {
           createdAt: new Date(),
           updatedAt: new Date(),
           templateId: "template1",
+          pageOutfit: null,
         },
       ],
       createdAt: new Date(),

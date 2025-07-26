@@ -1,9 +1,10 @@
 // src/app/(admin)/admin/templates/page.tsx
-import { Suspense } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
+
 import { getAllBookTemplates } from "@/actions/template-actions";
 import { TemplatesClient } from "@/components/admin/template/TemplatesClient";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Loading component
 function TemplatesLoading() {

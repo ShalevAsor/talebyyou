@@ -1,8 +1,9 @@
-import { Suspense, lazy } from "react";
 import { Loader2 } from "lucide-react";
+import { Suspense, lazy } from "react";
+
+import BestSellers from "@/components/home/BestSellers";
 import Hero from "@/components/home/Hero";
 import HowItWorks from "@/components/home/HowItWorks";
-import BestSellers from "@/components/home/BestSellers";
 import { createMetadata, generateStructuredData } from "@/config/site";
 
 // Lazy load components that are likely below the fold

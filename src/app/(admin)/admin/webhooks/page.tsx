@@ -1,8 +1,9 @@
 // src/app/(admin)/admin/webhooks/page.tsx
-import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
-import { WebhookManagement } from "@/components/admin/webhooks/WebhookManagement";
+import { Suspense } from "react";
+
 import { getLuluWebhookStatus } from "@/actions/admin-actions";
+import { WebhookManagement } from "@/components/admin/webhooks/WebhookManagement";
 import { Card, CardContent } from "@/components/ui/card";
 
 // Loading component

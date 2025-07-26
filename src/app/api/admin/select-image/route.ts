@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { selectPageImage, selectCoverImage } from "@/actions/book-actions";
+
+import { selectCoverImage, selectPageImage } from "@/actions/book-actions";
 
 export async function POST(request: NextRequest) {
   try {

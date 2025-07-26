@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import { createMetadata, generateStructuredData } from "@/config/site";
 import {
   privacyPolicyLastUpdated,

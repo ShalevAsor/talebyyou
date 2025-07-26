@@ -1,5 +1,6 @@
-import { StageInfo } from "@/components/customization/BookCreationLoader";
 import { BookOpen, Palette, Upload } from "lucide-react";
+
+import { StageInfo } from "@/components/customization/BookCreationLoader";
 
 export const stages: StageInfo[] = [
   {

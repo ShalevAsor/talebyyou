@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+
 import { getPricingStatus } from "@/actions/pricing-actions";
 import { PricingData } from "@/types/pricing";
 

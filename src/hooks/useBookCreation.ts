@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { CharacterData } from "@/schemas/character-schema";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
 import { createPersonalizedBook } from "@/actions/book-actions";
+import { addBookToGuestSession } from "@/actions/guest-actions";
 import {
   generateBookCoverImage,
   generateBookFirstPageImage,
@@ -10,9 +13,7 @@ import {
 } from "@/actions/image-actions";
 import { BookCreationStage } from "@/components/customization/BookCreationLoader";
 import { logger } from "@/lib/logger";
-import { toast } from "react-toastify";
-import { addBookToGuestSession } from "@/actions/guest-actions";
-import { useAuth } from "@clerk/nextjs";
+import { CharacterData } from "@/schemas/character-schema";
 import { getStageSpecificError } from "@/utils/errorUtils";
 
 /**

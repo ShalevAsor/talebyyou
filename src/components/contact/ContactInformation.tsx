@@ -1,7 +1,8 @@
 // src/components/contact/ContactInformation.tsx
-import React from "react";
+import { Info, Mail } from "lucide-react";
 import Link from "next/link";
-import { Mail, Info } from "lucide-react";
+import React from "react";
+
 import config from "@/lib/config";
 
 /**

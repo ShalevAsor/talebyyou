@@ -1,10 +1,11 @@
 "use client";
+import { Clock, Tag } from "lucide-react";
+
 import { useDiscountStatus } from "@/hooks/useDiscountStatus";
 import {
-  getDiscountTimeRemaining,
   getDiscountDisplayText,
+  getDiscountTimeRemaining,
 } from "@/utils/pricingUtils";
-import { Tag, Clock } from "lucide-react";
 
 /**
  * Simple server-rendered discount banner component

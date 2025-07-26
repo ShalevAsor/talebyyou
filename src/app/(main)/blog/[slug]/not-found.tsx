@@ -1,6 +1,7 @@
 // src/app/(main)/blog/[slug]/not-found.tsx
+import { ArrowLeft, Home, SearchX } from "lucide-react";
 import Link from "next/link";
-import { SearchX, ArrowLeft, Home } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 

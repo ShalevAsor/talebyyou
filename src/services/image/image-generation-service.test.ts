@@ -1,11 +1,13 @@
-import { leonardoImageService } from "./image-generation-service";
-import { getLeonardoClient } from "@/lib/leonardo-ai";
-import { ImageMetadata } from "@/types/image";
 import {
   InitImageType,
   StrengthType,
 } from "@leonardo-ai/sdk/sdk/models/shared";
+
 import { DEFAULT_MODEL_ID } from "@/constants/image";
+import { getLeonardoClient } from "@/lib/leonardo-ai";
+import { ImageMetadata } from "@/types/image";
+
+import { leonardoImageService } from "./image-generation-service";
 
 // Mock dependencies
 jest.mock("@/lib/leonardo-ai", () => ({

@@ -1,10 +1,10 @@
 // src/app/(admin)/admin/templates/create/page.tsx
+import { AlertCircle, Loader2 } from "lucide-react";
 import { Suspense } from "react";
-import { Loader2 } from "lucide-react";
+
 import { getAllGenres } from "@/actions/template-actions";
 import { CreateTemplateContent } from "@/components/admin/template/CreateTemplateContent";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 
 // Loading component
 function CreateTemplateLoading() {

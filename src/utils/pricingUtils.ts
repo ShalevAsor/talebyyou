@@ -1,5 +1,6 @@
 import { ProductType } from "@prisma/client";
-import { PricingConfig, DiscountConfig, BOOK_PRICES } from "@/types/pricing";
+
+import { BOOK_PRICES, DiscountConfig, PricingConfig } from "@/types/pricing";
 
 /**
  * Convert price to number for calculations

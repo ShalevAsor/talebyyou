@@ -1,19 +1,21 @@
 "use client";
 
+import { Menu } from "lucide-react";
 import { useCallback } from "react";
+
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
-  SheetTrigger,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
-  SheetClose,
+  SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
-import { NavLinks } from "./NavLinks";
+
 import { AuthSection } from "./AuthSection";
+import { NavLinks } from "./NavLinks";
 
 interface MobileNavbarProps {
   open: boolean;

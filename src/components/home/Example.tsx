@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
-
-import Link from "next/link";
 
 export default function Example() {
   // For SEO - structured data for this example section

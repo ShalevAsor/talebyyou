@@ -2,12 +2,13 @@
 "use client";
 
 import { useState } from "react";
+
 import {
-  seedBookTemplates,
   removeAllBookTemplates,
+  seedBookTemplates,
 } from "@/actions/template-actions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { SeedActions } from "@/components/admin/seed/SeedActions";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function SeedPage() {
   const [message, setMessage] = useState<{

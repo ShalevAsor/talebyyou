@@ -1,7 +1,8 @@
+import { Clock, Wrench } from "lucide-react";
+
 import { getMaintenanceStatus } from "@/actions/maintenance-actions";
-import { Wrench, Clock } from "lucide-react";
-import RefreshButton from "@/components/common/RefreshButton";
 import AdminLink from "@/components/common/AdminLink";
+import RefreshButton from "@/components/common/RefreshButton";
 
 export default async function MaintenancePage() {
   const result = await getMaintenanceStatus();

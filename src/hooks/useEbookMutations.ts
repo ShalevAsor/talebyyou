@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
 import { generateEbook, getEbookDownloadUrl } from "@/actions/ebook-actions";
 import { EbookFileType } from "@/types/ebook";
-import { toast } from "react-toastify";
 
 export function useEbookMutations() {
   const queryClient = useQueryClient();

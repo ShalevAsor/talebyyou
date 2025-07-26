@@ -1,9 +1,11 @@
+import crypto from "crypto";
+
 import { NextRequest, NextResponse } from "next/server";
+
+import { processWebhook } from "@/actions/webhook-actions";
+import config from "@/lib/config";
 import { logger } from "@/lib/logger";
 import { PrintJobStatusChangedPayload } from "@/types/print";
-import crypto from "crypto";
-import config from "@/lib/config";
-import { processWebhook } from "@/actions/webhook-actions";
 
 /**
  * Verify the HMAC signature of the webhook

@@ -1,9 +1,10 @@
 // src/app/(admin)/admin/books/page.tsx
-import { BooksStats } from "@/components/admin/books/BooksStats";
-import { BooksClient } from "@/components/admin/books/BooksClient";
-import { getBooksStats } from "@/actions/book-actions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+
+import { getBooksStats } from "@/actions/book-actions";
+import { BooksClient } from "@/components/admin/books/BooksClient";
+import { BooksStats } from "@/components/admin/books/BooksStats";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default async function BooksPage() {
   // Fetch real books statistics

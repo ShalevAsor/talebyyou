@@ -1,7 +1,8 @@
 "use client";
 
-import React, { memo } from "react";
-import { Shield, CheckCircle, Clock, Award } from "lucide-react";
+import { Award, CheckCircle, Clock, Shield } from "lucide-react";
+import { memo } from "react";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 /**

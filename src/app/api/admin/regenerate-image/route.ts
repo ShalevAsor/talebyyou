@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import {
-  regeneratePageImage,
   regenerateCoverImage,
+  regeneratePageImage,
 } from "@/actions/book-actions";
 
 export async function POST(request: NextRequest) {

@@ -1,6 +1,7 @@
 // src/hooks/useAdmin.ts
-import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
+
 import { isUserAdmin } from "@/actions/admin-actions";
 
 export function useAdmin() {

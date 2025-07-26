@@ -1,4 +1,5 @@
 import config from "@/lib/config";
+
 export async function isMaintenanceMode(): Promise<boolean> {
   try {
     const response = await fetch(`${config.APP.CLIENT_URL}/api/maintenance`, {

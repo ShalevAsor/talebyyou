@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { isMaintenanceMode } from "@/actions/maintenance-actions";
 
 export async function GET() {

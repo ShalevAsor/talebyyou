@@ -1,8 +1,9 @@
-import {
-  LuluValidationErrorResponse,
-  AddressValidationResult,
-} from "@/types/print";
 import axios from "axios";
+
+import {
+  AddressValidationResult,
+  LuluValidationErrorResponse,
+} from "@/types/print";
 
 /**
  * Handles shipping address validation errors from Lulu API

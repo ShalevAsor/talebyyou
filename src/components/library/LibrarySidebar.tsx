@@ -1,9 +1,11 @@
-import React from "react";
-import { GenreFilter } from "../templates/GenreFilter";
-import { Loading } from "@/components/common";
 import { Genre } from "@prisma/client";
+import React from "react";
 import { FiFilter } from "react-icons/fi";
-import PricingDisplay from "../common/PricingDisplay";
+
+import { Loading } from "@/components/common";
+
+import { PricingDisplay } from "../common/PricingDisplay";
+import { GenreFilter } from "../templates/GenreFilter";
 
 interface LibrarySidebarProps {
   genres: Genre[];

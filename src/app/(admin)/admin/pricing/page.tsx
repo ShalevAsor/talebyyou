@@ -1,10 +1,11 @@
 // src/app/(admin)/admin/pricing/page.tsx
-import { Suspense } from "react";
-import { getPricingStatus } from "@/actions/pricing-actions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Suspense } from "react";
+
+import { getPricingStatus } from "@/actions/pricing-actions";
 import { BasePriceSettings } from "@/components/admin/pricing/BasePriceSettings";
 import { DiscountManagement } from "@/components/admin/pricing/DiscountManagement";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Component skeleton for loading states
 function PricingCardSkeleton() {

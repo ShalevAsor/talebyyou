@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
-import { ErrorAlert } from "@/components/common";
-import BookCustomizeClient from "@/components/customization/BookCustomizeClient";
-import { getBookTemplateBySlug } from "@/actions/template-actions";
 import { Suspense } from "react";
-import { Loading } from "@/components/common";
-import { logger } from "@/lib/logger";
-import PageHeader from "@/components/layout/PageHeader";
 import { FiArrowLeft } from "react-icons/fi";
+
+import { getBookTemplateBySlug } from "@/actions/template-actions";
+import { ErrorAlert, Loading } from "@/components/common";
+import BookCustomizeClient from "@/components/customization/BookCustomizeClient";
+import PageHeader from "@/components/layout/PageHeader";
 import { createMetadata, siteConfig } from "@/config/site";
+import { logger } from "@/lib/logger";
 
 interface BookCustomizePageProps {
   params: Promise<{

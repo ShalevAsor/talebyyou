@@ -1,21 +1,21 @@
+import { BookStatus } from "@prisma/client";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
+import { FiArrowLeft } from "react-icons/fi";
+
 import { getBookById } from "@/actions/book-actions";
 import { getCurrentUser } from "@/actions/user-actions";
 import { ErrorAlert } from "@/components/common";
-import { OrderContent } from "@/components/order/OrderContent";
-import { redirect } from "next/navigation";
-import { BookStatus } from "@prisma/client";
-import PageHeader from "@/components/layout/PageHeader";
-import { FiArrowLeft } from "react-icons/fi";
-import { PAYPAL_CLIENT_ID } from "@/constants/payment";
 import { BookStoreLoading } from "@/components/common/BookStoreLoading";
+import PageHeader from "@/components/layout/PageHeader";
+import { OrderContent } from "@/components/order/OrderContent";
 import {
   createMetadata,
   generateStructuredData,
   siteConfig,
 } from "@/config/site";
+import { PAYPAL_CLIENT_ID } from "@/constants/payment";
 import { logger } from "@/lib/logger";
-import { notFound } from "next/navigation";
 
 interface OrderPageProps {
   params: Promise<{

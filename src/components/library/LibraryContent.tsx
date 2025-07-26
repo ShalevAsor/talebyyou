@@ -1,14 +1,16 @@
 "use client";
-import React, { useMemo, useState, useCallback } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { BookTemplateGrid } from "@/components/templates/BookTemplateGrid";
-import { ErrorAlert } from "@/components/common";
 import { Genre } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useMemo, useState } from "react";
+
 import { getGenres } from "@/actions/genre-actions";
 import { getAllBookTemplates } from "@/actions/template-actions";
+import { ErrorAlert } from "@/components/common";
 import ErrorBoundary from "@/components/error/ErrorBoundary";
+import { BookTemplateGrid } from "@/components/templates/BookTemplateGrid";
 import { BookTemplateFull } from "@/types/book";
+
 import LibrarySidebar from "./LibrarySidebar";
 
 interface LibraryContentProps {

@@ -1,6 +1,7 @@
 import React from "react";
-import { Button } from "@/components/common/Button";
 import { FiEdit3 } from "react-icons/fi";
+
+import { Button } from "@/components/common/Button";
 
 interface MobileFooterProps {
   templateId: string;

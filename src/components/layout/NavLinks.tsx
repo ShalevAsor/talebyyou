@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { memo, useState } from "react";
-import { navigationItems, adminNavigationItem } from "@/data/navData";
+
+import { adminNavigationItem, navigationItems } from "@/data/navData";
+import { useAdmin } from "@/hooks/useAdmin";
+import { cn } from "@/lib/utils";
 import {
+  DropdownItem,
   NavLinksProps,
   NavigationItem,
-  DropdownItem,
 } from "@/types/navigation";
-import { useAdmin } from "@/hooks/useAdmin";
 
 /**
  * Renders navigation links with modern styling and Resources dropdown

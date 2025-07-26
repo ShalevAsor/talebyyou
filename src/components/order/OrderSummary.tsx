@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useCallback } from "react";
+import { Minus, Plus } from "lucide-react";
 import Image from "next/image";
-import { BookFull } from "@/types/book";
-import { Card, CardContent } from "@/components/ui/card";
-import { ProductType } from "@/types/order";
-import { useOrderStore } from "@/store/useOrderStore";
+import { useCallback } from "react";
+
 import { Button } from "@/components/ui/button";
-import { Plus, Minus } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useOrderStore } from "@/store/useOrderStore";
+import { BookFull } from "@/types/book";
+import { ProductType } from "@/types/order";
 
 interface OrderSummaryProps {
   book: BookFull;

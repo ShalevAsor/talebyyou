@@ -1,19 +1,19 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getBookById } from "@/actions/book-actions";
-import { ErrorAlert } from "@/components/common";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { Loading } from "@/components/common";
-import { logger } from "@/lib/logger";
 import { FiArrowLeft } from "react-icons/fi";
-import BookPreviewClient from "@/components/preview/BookPreviewClient";
+
+import { getBookById } from "@/actions/book-actions";
+import { ErrorAlert, Loading } from "@/components/common";
 import PageHeader from "@/components/layout/PageHeader";
+import BookPreviewClient from "@/components/preview/BookPreviewClient";
+import { Button } from "@/components/ui/button";
 import {
   createMetadata,
   generateStructuredData,
   siteConfig,
 } from "@/config/site";
-import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
 
 /**
  * Props for the BookPreviewPage component

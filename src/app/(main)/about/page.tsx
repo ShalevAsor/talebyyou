@@ -1,5 +1,5 @@
-import { createMetadata, generateStructuredData } from "@/config/site";
 import TaleByYouLogo from "@/components/layout/Logo";
+import { createMetadata, generateStructuredData } from "@/config/site";
 
 // Generate metadata using the centralized function
 export const metadata = createMetadata({

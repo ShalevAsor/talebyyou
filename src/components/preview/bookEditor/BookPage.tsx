@@ -1,9 +1,10 @@
 "use client";
-import React, { memo, useCallback } from "react";
+import { Image as ImageIcon, Lock, Pencil } from "lucide-react";
 import Image from "next/image";
-import useBookPreviewStore from "@/store/useBookPreviewStore";
-import { Pencil, Image as ImageIcon, Lock } from "lucide-react";
+import React, { memo, useCallback } from "react";
+
 import { TooltipButton } from "@/components/common/TooltipButton";
+import useBookPreviewStore from "@/store/useBookPreviewStore";
 import { BookStatus, PageType } from "@/types/book";
 
 export interface BookPageProps {

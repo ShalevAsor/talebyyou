@@ -1,11 +1,14 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { FaBookOpen } from "react-icons/fa6";
 import { IoSparklesSharp } from "react-icons/io5";
-import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+
+import { PricingDisplay } from "../common/PricingDisplay";
+
 import HeroStats from "./HeroStats";
-import PricingDisplay from "../common/PricingDisplay";
 
 export default function Hero() {
   return (

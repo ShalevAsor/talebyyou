@@ -1,11 +1,13 @@
-import { LuluPrintingService } from "./print-service";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
+
+import { SKU } from "@/constants/printing";
 import { logger } from "@/lib/logger";
 import {
   CalculatePrintJobCostRequest,
   CreatePrintJobRequest,
 } from "@/types/print";
-import { SKU } from "@/constants/printing";
+
+import { LuluPrintingService } from "./print-service";
 
 // Mock dependencies
 jest.mock("axios");
@@ -85,45 +87,6 @@ jest.mock("@/lib/config", () => ({
   },
 }));
 
-/**
- * 
- * PRINTING: {
-    LULU: {
-      // Current environment settings (automatically switches based on NODE_ENV)
-      API_URL: isProduction
-        ? process.env.LULU_API_URL || "https://api.lulu.com"
-        : process.env.LULU_API_SANDBOX_URL || "https://api.sandbox.lulu.com",
-      CLIENT_KEY: isProduction
-        ? process.env.LULU_API_CLIENT_KEY || ""
-        : process.env.LULU_API_SANDBOX_CLIENT_KEY || "",
-      CLIENT_SECRET: isProduction
-        ? process.env.LULU_API_CLIENT_SECRET || ""
-        : process.env.LULU_API_SANDBOX_CLIENT_SECRET || "",
-      BASE64_AUTH: isProduction
-        ? process.env.LULU_API_BASE64 || ""
-        : process.env.LULU_API_SANDBOX_BASE64 || "",
-      CONTACT_EMAIL: process.env.LULU_CONTACT_EMAIL || "support@talebyyou.com",
-
-      // Explicit environment configurations (for manual switching if needed)
-      ENVIRONMENTS: {
-        SANDBOX: {
-          API_URL:
-            process.env.LULU_API_SANDBOX_URL || "https://api.sandbox.lulu.com",
-          CLIENT_KEY: process.env.LULU_API_SANDBOX_CLIENT_KEY || "",
-          CLIENT_SECRET: process.env.LULU_API_SANDBOX_CLIENT_SECRET || "",
-          BASE64_AUTH: process.env.LULU_API_SANDBOX_BASE64 || "",
-        },
-        PRODUCTION: {
-          API_URL: process.env.LULU_API_URL || "https://api.lulu.com",
-          CLIENT_KEY: process.env.LULU_API_CLIENT_KEY || "",
-          CLIENT_SECRET: process.env.LULU_API_CLIENT_SECRET || "",
-          BASE64_AUTH: process.env.LULU_API_BASE64 || "",
-        },
-      },
-    },
-  },
- */
-
 describe("LuluPrintingService", () => {
   let printingService: LuluPrintingService;
 
@@ -135,7 +98,7 @@ describe("LuluPrintingService", () => {
     jest.mocked(axios).mockReset();
 
     // Create new instance of the service
-    printingService = new LuluPrintingService(true); // Use sandbox for tests
+    printingService = new LuluPrintingService();
   });
 
   describe("getAccessToken", () => {
@@ -186,7 +149,7 @@ describe("LuluPrintingService", () => {
       };
 
       jest.mocked(axios.post).mockRejectedValueOnce(mockError);
-      jest.mocked(axios.isAxiosError).mockReturnValueOnce(true);
+      jest.mocked(isAxiosError).mockReturnValueOnce(true);
 
       // Call the method and expect it to throw
       await expect(printingService.getAccessToken()).rejects.toThrow(
@@ -908,7 +871,7 @@ describe("LuluPrintingService", () => {
       });
 
       jest.mocked(axios).mockRejectedValueOnce(serviceError);
-      jest.mocked(axios.isAxiosError).mockReturnValueOnce(true);
+      jest.mocked(isAxiosError).mockReturnValueOnce(true);
 
       // Call the method and expect it to throw
       await expect(
@@ -1526,7 +1489,7 @@ describe("LuluPrintingService", () => {
 
       // Mock the axios call to throw a validation error
       jest.mocked(axios).mockRejectedValueOnce(validationError);
-      jest.mocked(axios.isAxiosError).mockReturnValueOnce(true);
+      jest.mocked(isAxiosError).mockReturnValueOnce(true);
 
       // Create an invalid print job request (with invalid country code)
       const invalidPrintJobRequest: CreatePrintJobRequest = {
@@ -1596,7 +1559,7 @@ describe("LuluPrintingService", () => {
 
       // Mock the axios call to throw a server error
       jest.mocked(axios).mockRejectedValueOnce(serverError);
-      jest.mocked(axios.isAxiosError).mockReturnValueOnce(true);
+      jest.mocked(isAxiosError).mockReturnValueOnce(true);
 
       // Create a valid print job request
       const printJobRequest: CreatePrintJobRequest = {

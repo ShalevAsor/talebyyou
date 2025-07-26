@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import { TutorialCard } from "./TutorialCard";
+
 import { tutorialsData } from "@/data/tutorialsData";
+
+import { TutorialCard } from "./TutorialCard";
 
 export const TutorialsContent: React.FC = () => {
   return (

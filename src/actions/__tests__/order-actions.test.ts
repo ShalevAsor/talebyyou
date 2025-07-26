@@ -1,5 +1,3 @@
-// src/actions/__tests__/order-actions.test.ts
-
 import {
   createOrderWithShipping,
   createOrRecoverOrder,
@@ -7,7 +5,8 @@ import {
   getPendingOrderForBook,
   updateOrder,
   updateOrderWithShipping,
-} from "../order-actions";
+} from "@/actions/order-actions";
+
 import { OrderStatus, ProductType, ShippingLevel } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -55,11 +54,13 @@ jest.mock("@/constants/bookConstants", () => ({
   },
 }));
 
-import prisma from "@/lib/prisma";
-import { getCurrentUser } from "../user-actions";
 import { revalidatePath } from "next/cache";
-import { generateOrderNumber } from "@/utils/orderUtils";
+
+import prisma from "@/lib/prisma";
 import { CheckoutFormData } from "@/schemas/checkout-schema";
+import { generateOrderNumber } from "@/utils/orderUtils";
+
+import { getCurrentUser } from "../user-actions";
 
 describe("Order Actions", () => {
   // Reset all mocks before each test

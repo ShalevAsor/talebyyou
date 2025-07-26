@@ -1,9 +1,10 @@
 import { Metadata } from "next";
+
 import { createMetadata, generateStructuredData } from "@/config/site";
 import {
+  relatedLinks,
   termsLastUpdated,
   termsOfUseSections,
-  relatedLinks,
 } from "@/data/termsOfUseData";
 
 // Generate metadata using the centralized function

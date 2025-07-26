@@ -1,34 +1,38 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { BookFull } from "@/types/book";
-import { OrderSummary } from "./OrderSummary";
-import { PhysicalCheckoutForm } from "@/components/form/PhysicalCheckoutForm";
+import { useEffect, useState } from "react";
+
+import { getPendingOrderForBook } from "@/actions/order-actions";
+import { calculatePrintJobCost } from "@/actions/print-actions";
 import { DigitalCheckoutForm } from "@/components/form/DigitalCheckoutForm";
-import { TrustBadges } from "./TrustBadges";
-import { ProductTypeSelection } from "./ProductTypeSelection";
-import { WhatHappensNext } from "./WhatHappensNext";
-import { OrderProgress } from "./OrderProgress";
-import { OrderReview } from "./OrderReview";
+import { PhysicalCheckoutForm } from "@/components/form/PhysicalCheckoutForm";
+import { ShippingOptionsSelection } from "@/components/order/ShippingOptionsSelection";
 import { PaymentSection } from "@/components/payment/PaymentSection";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOrderMutation } from "@/hooks/useOrderMutations";
-import { ProductType } from "@/types/order";
+import { usePricing } from "@/hooks/usePricing";
 import {
   CheckoutFormData,
-  PhysicalOrderFormData,
   DigitalOrderFormData,
+  PhysicalOrderFormData,
 } from "@/schemas/checkout-schema";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useOrderStore } from "@/store/useOrderStore";
-import { getPendingOrderForBook } from "@/actions/order-actions";
-import { ShippingOptionsSelection } from "@/components/order/ShippingOptionsSelection";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BookFull } from "@/types/book";
+import { ProductType } from "@/types/order";
 import { ShippingAddressForOptions, ShippingLevel } from "@/types/print";
-import { mapFormToShippingAddress } from "@/utils/orderUtils";
-import { calculatePrintJobCost } from "@/actions/print-actions";
-import { usePricing } from "@/hooks/usePricing";
-import { getPricingDetails } from "@/utils/orderUtils";
 import { trackInitiateCheckout } from "@/utils/metaTracking";
+import {
+  getPricingDetails,
+  mapFormToShippingAddress,
+} from "@/utils/orderUtils";
+
+import { OrderProgress } from "./OrderProgress";
+import { OrderReview } from "./OrderReview";
+import { OrderSummary } from "./OrderSummary";
+import { ProductTypeSelection } from "./ProductTypeSelection";
+import { TrustBadges } from "./TrustBadges";
+import { WhatHappensNext } from "./WhatHappensNext";
 
 interface OrderContentProps {
   book: BookFull;

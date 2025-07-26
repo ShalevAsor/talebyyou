@@ -1,7 +1,8 @@
 // src/app/(admin)/admin/templates/[slug]/images/page.tsx
-import { Suspense } from "react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Suspense } from "react";
+
 import { getBookTemplateBySlug } from "@/actions/template-actions";
 import { TemplateImageManager } from "@/components/admin/template/TemplateImageManager";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

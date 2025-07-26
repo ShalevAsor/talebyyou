@@ -1,10 +1,15 @@
 // src/app/(main)/contact/page.tsx
 import { Suspense } from "react";
+
+import { Loading } from "@/components/common";
 import { ContactContent } from "@/components/contact/ContactContent";
 import PageHeader from "@/components/layout/PageHeader";
-import { createMetadata, generateStructuredData } from "@/config/site";
-import { Loading } from "@/components/common";
-import { siteConfig } from "@/config/site";
+import {
+  createMetadata,
+  generateStructuredData,
+  siteConfig,
+} from "@/config/site";
+
 // Generate metadata using your centralized function
 export const metadata = createMetadata({
   title: "Contact Us - Get Help with Your Personalized Children's Books",

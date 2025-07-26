@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
 import { BookFull, PageType } from "@/types/book";
 
 /**

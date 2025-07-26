@@ -1,10 +1,11 @@
 // src/app/(admin)/admin/templates/[slug]/edit/page.tsx
-import { Suspense } from "react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Suspense } from "react";
+
 import { getBookTemplateBySlug } from "@/actions/template-actions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TemplateEditor } from "@/components/admin/template/TemplateEditor";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface TemplateImagesPageProps {
   params: Promise<{

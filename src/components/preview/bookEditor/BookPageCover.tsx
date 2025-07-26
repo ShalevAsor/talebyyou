@@ -1,11 +1,12 @@
 "use client";
-import React, { memo, useCallback } from "react";
-import Image from "next/image";
-import useBookPreviewStore from "@/store/useBookPreviewStore";
-import { Pencil, Image as ImageIcon } from "lucide-react";
-import { TbPencilHeart } from "react-icons/tb";
-import { TooltipButton } from "@/components/common/TooltipButton";
 import { BookStatus } from "@prisma/client";
+import { Image as ImageIcon, Pencil } from "lucide-react";
+import Image from "next/image";
+import React, { memo, useCallback } from "react";
+import { TbPencilHeart } from "react-icons/tb";
+
+import { TooltipButton } from "@/components/common/TooltipButton";
+import useBookPreviewStore from "@/store/useBookPreviewStore";
 
 interface BookPageCoverProps {
   children: React.ReactNode;

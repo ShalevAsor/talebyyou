@@ -1,203 +1,9 @@
-// import React, { memo, useMemo } from "react";
-// import Image from "next/image";
-// import { BookFull } from "@/types/book";
-// import { ProductType } from "@prisma/client";
-// import {
-//   CheckoutFormData,
-//   PhysicalOrderFormData,
-//   DigitalOrderFormData,
-// } from "@/schemas/checkout-schema";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Card,
-//   CardContent,
-//   CardFooter,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import { Separator } from "@/components/ui/separator";
-// import { ShippingLevel } from "@/types/print";
-// import { useOrderStore } from "@/store/useOrderStore";
-// import { getProductPrice } from "@/utils/orderUtils";
-// import { ArrowLeft } from "lucide-react";
-
-// interface OrderReviewProps {
-//   book: BookFull;
-//   productType: ProductType;
-//   formData: CheckoutFormData;
-//   shippingCost?: number;
-//   shippingLevel?: ShippingLevel;
-//   onBack: () => void;
-// }
-
-// /**
-//  * OrderReview component displays the order summary before payment
-//  * Shows product details, pricing, and shipping information
-//  */
-// export const OrderReview = memo(function OrderReview({
-//   book,
-//   productType,
-//   formData,
-//   shippingCost,
-//   shippingLevel,
-//   onBack,
-// }: OrderReviewProps) {
-//   const totalCost = useOrderStore((state) => state.totalCost);
-
-//   const quantity = useOrderStore((state) => state.quantity);
-
-//   // Type guards with proper memoization
-//   const hasShippingAddress = useMemo(
-//     () => productType === ProductType.BOOK && "shippingAddress" in formData,
-//     [formData, productType]
-//   );
-
-//   const isDigitalOrder = useMemo(
-//     () => productType === ProductType.EBOOK,
-//     [productType]
-//   );
-
-//   // Use the helper function to calculate product price with quantity
-//   const productPrice = useMemo(
-//     () => getProductPrice(productType, quantity),
-//     [productType, quantity]
-//   );
-
-//   // Format shipping level display name
-//   const formattedShippingLevel = useMemo(() => {
-//     if (!shippingLevel) return "";
-//     return shippingLevel.replace("_", " ");
-//   }, [shippingLevel]);
-
-//   // Format the total cost properly
-//   const formattedTotalCost = useMemo(() => {
-//     return typeof totalCost === "string"
-//       ? parseFloat(totalCost).toFixed(2)
-//       : (totalCost || 0).toFixed(2);
-//   }, [totalCost]);
-
-//   return (
-//     <Card>
-//       <CardHeader>
-//         <CardTitle>Order Summary</CardTitle>
-//       </CardHeader>
-//       <CardContent className="space-y-4">
-//         {/* Book info */}
-//         <div className="flex items-center">
-//           <div className="relative w-16 h-16 bg-gray-200 rounded overflow-hidden mr-3">
-//             {book.coverImage && (
-//               <Image
-//                 src={book.coverImage}
-//                 alt={`Cover of ${book.title}`}
-//                 fill
-//                 sizes="64px"
-//                 className="object-cover"
-//                 priority={false}
-//                 loading="lazy"
-//               />
-//             )}
-//           </div>
-//           <div>
-//             <h3 className="font-medium">{book.title}</h3>
-//             <p className="text-sm text-gray-600">
-//               {productType === ProductType.BOOK
-//                 ? "Physical Book + Digital Copy"
-//                 : "Digital Copy Only"}
-//             </p>
-//             {quantity > 1 && (
-//               <p className="text-sm text-gray-600">Quantity: {quantity}</p>
-//             )}
-//           </div>
-//         </div>
-
-//         <Separator />
-
-//         {/* Price breakdown */}
-//         <div className="space-y-2" aria-label="Price breakdown">
-//           <div className="flex justify-between">
-//             <span>
-//               {quantity > 1 ? `Product (${quantity} copies):` : "Product:"}
-//             </span>
-//             <span>${productPrice.toFixed(2)}</span>
-//           </div>
-
-//           {productType === ProductType.BOOK && (
-//             <div className="flex justify-between">
-//               <span>Shipping ({formattedShippingLevel}):</span>
-//               <span>${shippingCost?.toFixed(2) || "0.00"}</span>
-//             </div>
-//           )}
-
-//           <Separator />
-
-//           <div className="flex justify-between font-medium">
-//             <span>Total:</span>
-//             <span>${formattedTotalCost}</span>
-//           </div>
-//         </div>
-
-//         {/* Shipping details for physical books */}
-//         {hasShippingAddress && (
-//           <div className="mt-4">
-//             <h3 className="font-medium mb-2">Shipping To:</h3>
-//             <div className="text-sm bg-gray-50 p-3 rounded-md">
-//               <p>{(formData as PhysicalOrderFormData).shippingAddress.name}</p>
-//               <p>
-//                 {(formData as PhysicalOrderFormData).shippingAddress.street1}
-//               </p>
-//               {(formData as PhysicalOrderFormData).shippingAddress.street2 && (
-//                 <p>
-//                   {(formData as PhysicalOrderFormData).shippingAddress.street2}
-//                 </p>
-//               )}
-//               <p>
-//                 {(formData as PhysicalOrderFormData).shippingAddress.city},{" "}
-//                 {(formData as PhysicalOrderFormData).shippingAddress.state_code}{" "}
-//                 {(formData as PhysicalOrderFormData).shippingAddress.postcode}
-//               </p>
-//               <p>
-//                 {(formData as PhysicalOrderFormData).shippingAddress.country}
-//               </p>
-//             </div>
-//           </div>
-//         )}
-
-//         {/* Customer email for digital orders */}
-//         {isDigitalOrder && (
-//           <div className="mt-4">
-//             <h3 className="font-medium mb-2">Digital Delivery:</h3>
-//             <div className="text-sm bg-gray-50 p-3 rounded-md">
-//               <p>
-//                 Your ebook will be delivered to:{" "}
-//                 {(formData as DigitalOrderFormData).customerEmail}
-//               </p>
-//             </div>
-//           </div>
-//         )}
-//       </CardContent>
-
-//       <CardFooter>
-//         <Button
-//           variant="outline"
-//           onClick={onBack}
-//           className="flex items-center"
-//         >
-//           <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" />
-//           Back
-//         </Button>
-//       </CardFooter>
-//     </Card>
-//   );
-// });
-import React, { memo, useMemo } from "react";
-import Image from "next/image";
-import { BookFull } from "@/types/book";
 import { ProductType } from "@prisma/client";
-import {
-  CheckoutFormData,
-  PhysicalOrderFormData,
-  DigitalOrderFormData,
-} from "@/schemas/checkout-schema";
+import { ArrowLeft, Tag } from "lucide-react";
+import Image from "next/image";
+import { memo, useMemo } from "react";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -207,13 +13,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { ShippingLevel } from "@/types/print";
+import {
+  CheckoutFormData,
+  DigitalOrderFormData,
+  PhysicalOrderFormData,
+} from "@/schemas/checkout-schema";
 import { useOrderStore } from "@/store/useOrderStore";
+import { BookFull } from "@/types/book";
+import { DiscountConfig, PricingConfig } from "@/types/pricing";
+import { ShippingLevel } from "@/types/print";
 import { getPricingDetails } from "@/utils/orderUtils";
 import { formatPrice, getDiscountDisplayText } from "@/utils/pricingUtils";
-import { PricingConfig, DiscountConfig } from "@/types/pricing";
-import { ArrowLeft, Tag } from "lucide-react";
 
 interface OrderReviewProps {
   book: BookFull;

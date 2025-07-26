@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useCallback, memo } from "react";
 import { Menu, X } from "lucide-react";
+import { memo, useCallback, useState } from "react";
+
 import { Button } from "@/components/ui/button";
-import { NavLinks } from "./NavLinks";
-import { AuthSection } from "./AuthSection";
 import { generateStructuredData } from "@/config/site";
+
+import { AuthSection } from "./AuthSection";
+import { NavLinks } from "./NavLinks";
 import { NavLogo } from "./NavLogo";
 
 /**

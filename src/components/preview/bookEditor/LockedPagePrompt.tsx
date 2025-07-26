@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { FiLock, FiShoppingCart } from "react-icons/fi";
 import Link from "next/link";
+import { FiLock, FiShoppingCart } from "react-icons/fi";
+
+import { Button } from "@/components/ui/button";
 
 interface LockedPagePromptProps {
   pageNumber: number;

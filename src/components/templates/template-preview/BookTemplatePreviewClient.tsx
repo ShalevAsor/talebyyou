@@ -1,7 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
+import dynamic from "next/dynamic";
+
 import { BookTemplateFull } from "@/types/book"; // Adjust import path as needed
 
 // Now this works because we're in a client component

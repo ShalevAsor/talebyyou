@@ -1,8 +1,9 @@
 "use client";
 
+import { Bookmark, BookOpen, BookOpenCheck, Library } from "lucide-react";
 import React from "react";
+
 import { cn } from "@/lib/utils";
-import { BookOpen, BookOpenCheck, Library, Bookmark } from "lucide-react";
 
 interface BookStoreLoadingProps {
   message?: string;

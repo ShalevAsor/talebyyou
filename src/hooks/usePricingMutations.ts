@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { PricingStatusResult } from "@/types/pricing";
 import React from "react";
+
+import { PricingStatusResult } from "@/types/pricing";
 
 interface UsePricingMutationsReturn {
   invalidatePricing: () => Promise<void>;

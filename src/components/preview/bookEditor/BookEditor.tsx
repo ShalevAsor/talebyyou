@@ -1,22 +1,25 @@
 "use client";
+import { debounce } from "lodash";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, {
+  memo,
+  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
-  useCallback,
-  useMemo,
 } from "react";
 import HTMLFlipBook from "react-pageflip";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import BookPageCover from "@/components/preview/bookEditor/BookPageCover";
+
 import BookPage from "@/components/preview/bookEditor/BookPage";
-import PageThumbnails from "./PageThumbnails";
-import useBookPreviewStore from "@/store/useBookPreviewStore";
-import TextEditor from "../editors/TextEditor";
-import ImageEditor from "../editors/ImageEditor";
-import { memo } from "react";
+import BookPageCover from "@/components/preview/bookEditor/BookPageCover";
 import { Button } from "@/components/ui/button";
-import { debounce } from "lodash";
+import useBookPreviewStore from "@/store/useBookPreviewStore";
+
+import ImageEditor from "../editors/ImageEditor";
+import TextEditor from "../editors/TextEditor";
+
+import PageThumbnails from "./PageThumbnails";
 
 // Define PageFlip interface for proper typing
 interface PageFlip {

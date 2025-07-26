@@ -1,14 +1,16 @@
+import { BookStatus, ProductType } from "@prisma/client";
 import React from "react";
-import { Button } from "@/components/ui/button";
 import {
+  FiDownload,
   FiEdit,
   FiEye,
   FiPrinter,
   FiShoppingCart,
-  FiDownload,
 } from "react-icons/fi";
+
+import { Button } from "@/components/ui/button";
 import useBookPreviewStore from "@/store/useBookPreviewStore";
-import { BookStatus, ProductType } from "@prisma/client";
+
 import ActionDialog from "../common/ActionDialog";
 
 interface ActionBarProps {

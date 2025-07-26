@@ -1,6 +1,7 @@
 "use client";
 
 import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
+
 import { Loading } from "../common";
 
 export const PayPalLoader: React.FC = () => {

@@ -1,8 +1,9 @@
-import { Suspense, lazy } from "react";
 import { Loader2 } from "lucide-react";
-import { createMetadata, generateStructuredData } from "@/config/site";
-import { blogPosts, blogCategories } from "@/data/blogData";
+import { Suspense, lazy } from "react";
+
 import BlogHeader from "@/components/blog/BlogHeader";
+import { createMetadata, generateStructuredData } from "@/config/site";
+import { blogCategories, blogPosts } from "@/data/blogData";
 
 // Lazy load components below the fold
 const BlogContent = lazy(() => import("@/components/blog/BlogContent"));

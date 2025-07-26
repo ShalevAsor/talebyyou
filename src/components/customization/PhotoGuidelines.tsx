@@ -1,12 +1,12 @@
-import React, { useState } from "react";
 import {
-  CheckCircle,
-  XCircle,
   Camera,
+  CheckCircle,
   ChevronDown,
   ChevronUp,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
+import React, { useState } from "react";
 
 interface PhotoGuidelinesProps {
   variant?: "compact" | "detailed" | "inline";

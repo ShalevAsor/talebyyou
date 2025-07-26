@@ -1,7 +1,8 @@
 import { Suspense } from "react";
-import { TutorialsContent } from "@/components/tutorials/TutorialsContent";
-import PageHeader from "@/components/layout/PageHeader";
+
 import { BookStoreLoading } from "@/components/common/BookStoreLoading";
+import PageHeader from "@/components/layout/PageHeader";
+import { TutorialsContent } from "@/components/tutorials/TutorialsContent";
 import { createMetadata, generateStructuredData } from "@/config/site";
 import { tutorialsData } from "@/data/tutorialsData";
 

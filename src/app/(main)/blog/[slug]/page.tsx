@@ -1,14 +1,15 @@
 // src/app/(main)/blog/[slug]/page.tsx
-import { Suspense, lazy } from "react";
-import { notFound } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { notFound } from "next/navigation";
+import { Suspense, lazy } from "react";
+
+import BlogPostHeader from "@/components/blog/BlogPostHeader";
 import {
   createMetadata,
-  generateStructuredData,
   generateBreadcrumbSchema,
+  generateStructuredData,
 } from "@/config/site";
 import { getPostBySlug, getRelatedPosts } from "@/data/blogData";
-import BlogPostHeader from "@/components/blog/BlogPostHeader";
 
 // Lazy load components below the fold
 const BlogPostContent = lazy(() => import("@/components/blog/BlogPostContent"));
