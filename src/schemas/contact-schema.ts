@@ -1,4 +1,3 @@
-// src/schemas/contact-schema.ts
 import { z } from "zod";
 
 // Define the possible contact categories

@@ -1,4 +1,3 @@
-// src/schemas/template-schema.ts
 import { z } from "zod";
 
 // Schema for individual template pages

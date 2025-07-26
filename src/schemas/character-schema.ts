@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { MAX_FILE_SIZE, ACCEPTED_IMAGE_TYPES } from "@/constants/formConstants";
+
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/constants/formConstants";
 
 // Define character customization options
 export const eyeColorOptions = [
