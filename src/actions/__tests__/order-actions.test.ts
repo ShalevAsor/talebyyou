@@ -1,3 +1,7 @@
+import { OrderStatus, ProductType, ShippingLevel } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
+import { revalidatePath } from "next/cache";
+
 import {
   createOrderWithShipping,
   createOrRecoverOrder,
@@ -6,9 +10,11 @@ import {
   updateOrder,
   updateOrderWithShipping,
 } from "@/actions/order-actions";
+import prisma from "@/lib/prisma";
+import { CheckoutFormData } from "@/schemas/checkout-schema";
+import { generateOrderNumber } from "@/utils/orderUtils";
 
-import { OrderStatus, ProductType, ShippingLevel } from "@prisma/client";
-import { Decimal } from "@prisma/client/runtime/library";
+import { getCurrentUser } from "../user-actions";
 
 // Mock dependencies
 jest.mock("@/lib/prisma", () => ({
@@ -53,14 +59,6 @@ jest.mock("@/constants/bookConstants", () => ({
     base: 19.99,
   },
 }));
-
-import { revalidatePath } from "next/cache";
-
-import prisma from "@/lib/prisma";
-import { CheckoutFormData } from "@/schemas/checkout-schema";
-import { generateOrderNumber } from "@/utils/orderUtils";
-
-import { getCurrentUser } from "../user-actions";
 
 describe("Order Actions", () => {
   // Reset all mocks before each test

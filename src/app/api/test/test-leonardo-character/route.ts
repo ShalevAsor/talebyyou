@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getLeonardoClient } from "@/lib/leonardo-ai";
 import {
   InitImageType,
   StrengthType,
 } from "@leonardo-ai/sdk/sdk/models/shared";
+import { NextRequest, NextResponse } from "next/server";
+
+import { getLeonardoClient } from "@/lib/leonardo-ai";
 
 export async function GET(req: NextRequest) {
   try {

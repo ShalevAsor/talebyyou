@@ -1,8 +1,13 @@
-import { capturePayPalOrder, createPayPalOrder } from "../payment-actions";
-
 import { OrderStatus, ProductType } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
+import { revalidatePath } from "next/cache";
 
+import prisma from "@/lib/prisma";
+import { paypal } from "@/services/payment/paypal-service";
+
+import { sendOrderConfirmationEmail } from "../email-actions";
+import { generateRemainingPageImages } from "../image-actions";
+import { capturePayPalOrder, createPayPalOrder } from "../payment-actions";
 // Mock entire payment-actions module
 jest.mock("../payment-actions", () => {
   // Get the original module
@@ -59,15 +64,6 @@ jest.mock("../email-actions", () => ({
 jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),
 }));
-
-// Import the modules AFTER mocking
-import { revalidatePath } from "next/cache";
-
-import prisma from "@/lib/prisma";
-import { paypal } from "@/services/payment/paypal-service";
-
-import { sendOrderConfirmationEmail } from "../email-actions";
-import { generateRemainingPageImages } from "../image-actions";
 
 describe("Payment Actions", () => {
   // Reset all mocks before each test

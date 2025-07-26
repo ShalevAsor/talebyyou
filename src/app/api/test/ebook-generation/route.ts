@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import { generateEbook } from "@/actions/ebook-actions";
 
 export async function GET(req: NextRequest) {
