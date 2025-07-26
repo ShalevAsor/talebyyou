@@ -1,10 +1,11 @@
-import path from "path";
 import fs from "fs";
 import os from "os";
-import { v4 as uuidv4 } from "uuid";
+import path from "path";
+
 import PDFDocument from "pdfkit";
-import { BookForEbook } from "@/types/ebook";
-import { EbookGenerationResult } from "@/types/ebook";
+import { v4 as uuidv4 } from "uuid";
+
+import { BookForEbook, EbookGenerationResult } from "@/types/ebook";
 import { fetchImageAsBuffer } from "@/utils/imageUtils";
 
 // Helper type for common page operations

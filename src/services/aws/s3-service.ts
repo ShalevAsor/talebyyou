@@ -131,18 +131,16 @@ export async function uploadPrintingPdfToS3(
     const datePrefix = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const key = `printing/${datePrefix}/${bookId}/${pdfType}_${fileName}`;
 
-    // Upload to S3 - note we're no longer using ACL: "public-read"
     await s3Client.send(
       new PutObjectCommand({
         Bucket: BUCKET_NAME,
         Key: key,
         Body: fileContent,
         ContentType: "application/pdf",
-        // No ACL here, keeping the file private
       })
     );
 
-    // Create a pre-signed URL with long expiration (7 days = 604800 seconds)
+    // Create a pre-signed URL with long expiration
     // Lulu should be able to access this URL during this time window
     const url = await getSignedUrl(
       s3Client,
@@ -150,7 +148,7 @@ export async function uploadPrintingPdfToS3(
         Bucket: BUCKET_NAME,
         Key: key,
       }),
-      { expiresIn: 604800 } // 7 days in seconds
+      { expiresIn: 60 * 60 * 24 * 7 } // 7 days in seconds
     );
 
     // Clean up local temp file after successful upload
@@ -171,7 +169,7 @@ export async function cleanupPrintingFiles(bookId: string): Promise<void> {
       throw new Error("S3 bucket name not configured");
     }
 
-    // First, list all objects with the prefix for this book
+    // list all objects with the prefix for this book
     const listCommand = new ListObjectsV2Command({
       Bucket: BUCKET_NAME,
       Prefix: `printing/${bookId}/`,
@@ -246,11 +244,6 @@ export async function uploadTemplateImageToS3(
       throw new Error("S3 bucket name not configured");
     }
 
-    console.log("=== S3 Upload Debug Info ===");
-    console.log("Bucket Name:", BUCKET_NAME);
-    console.log("Template Slug:", templateSlug);
-    console.log("Image Name:", imageName);
-
     // Read file content based on input type
     const fileContent = typeof file === "string" ? fs.readFileSync(file) : file;
 
@@ -276,7 +269,6 @@ export async function uploadTemplateImageToS3(
 
     // Create organized path in S3
     const key = `templates/${templateSlug}/${imageName}`;
-    console.log("S3 Key:", key);
 
     // Check if file already exists and delete it first (optional - S3 will overwrite anyway)
     try {

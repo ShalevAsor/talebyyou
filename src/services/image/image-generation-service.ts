@@ -4,6 +4,11 @@
  * Character reference
  */
 
+import {
+  InitImageType,
+  StrengthType,
+} from "@leonardo-ai/sdk/sdk/models/shared";
+
 import { DEFAULT_MODEL_ID, NUM_IMAGES } from "@/constants/image";
 import { getLeonardoClient } from "@/lib/leonardo-ai";
 import { logger } from "@/lib/logger";
@@ -12,10 +17,6 @@ import {
   ImageMetadata,
   ImageUploadResult,
 } from "@/types/image";
-import {
-  InitImageType,
-  StrengthType,
-} from "@leonardo-ai/sdk/sdk/models/shared";
 
 export const leonardoImageService = {
   /**

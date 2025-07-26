@@ -1,10 +1,15 @@
+import { ProductType } from "@prisma/client";
 import nodemailer, {
-  Transporter,
   SendMailOptions,
   SentMessageInfo,
+  Transporter,
 } from "nodemailer";
-import { logger } from "@/lib/logger";
+
 import config from "@/lib/config";
+import { logger } from "@/lib/logger";
+import { ContactCategory } from "@/schemas/contact-schema";
+import { EmailType } from "@/types/email";
+
 import {
   getBookCompletionEmailTemplate,
   getContactConfirmationTemplate,
@@ -13,9 +18,6 @@ import {
   getShippingConfirmationEmailTemplate,
   getWelcomeEmailTemplate,
 } from "./email-templates";
-import { ProductType } from "@prisma/client";
-import { EmailType } from "@/types/email";
-import { ContactCategory } from "@/schemas/contact-schema";
 
 /**
  * Interface for email options

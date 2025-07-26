@@ -1,14 +1,15 @@
-import {
-  BookCreateData,
-  PageCreateData,
-  BookTemplateFull,
-  PageType,
-} from "@/types/book";
 import { BookStatus } from "@prisma/client";
-import { CharacterData } from "@/schemas/character-schema";
+
+import { BOOK_DEFAULT_PAGES } from "@/constants/bookConstants";
 import { IMAGE_STYLE, IMAGE_STYLE_PROMPT } from "@/constants/prompts";
 import { logger } from "@/lib/logger";
-import { BOOK_DEFAULT_PAGES } from "@/constants/bookConstants";
+import { CharacterData } from "@/schemas/character-schema";
+import {
+  BookCreateData,
+  BookTemplateFull,
+  PageCreateData,
+  PageType,
+} from "@/types/book";
 
 /**
  * Creates a book from a template with personalized content
